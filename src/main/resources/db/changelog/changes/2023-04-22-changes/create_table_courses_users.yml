@@ -31,3 +31,14 @@ databaseChangeLog:
             referencedColumnNames: ID
             referencedTableName: COURSES
             constraintName: COURSES_USERS_COURSES_ID_FK
+
+  - changeSet:
+      id: create_courses_users_users_id_fk
+      author: mzbiewski
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: USERS_ID
+            baseTableName: COURSES_USERS
+            referencedColumnNames: ID
+            referencedTableName: USERS
+            constraintName: COURSES_USERS_USERS_ID_FK
