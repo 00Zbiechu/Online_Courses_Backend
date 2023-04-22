@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_table_courses_users
+      author: mzbiewski
+      changes:
+        - createTable:
+           tableName: COURSES_USERS
+           columns:
+             - column:
+                 name: courses_id
+                 type: NUMBER(38,0)
+                 constraints:
+                   - primaryKey: true
+                     primaryKeyName: COURSES_USERS_ID_PK
+                     nullable: false
+             - column:
+                 name: users_id
+                 type: NUMBER(38,0)
+                 constraints:
+                   - primaryKey: true
+                     primaryKeyName: COURSES_USERS_ID_PK
+                     nullable: false
+
+  - changeSet:
+      id: create_courses_users_courses_id_fk
+      author: mzbiewski
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: COURSES_ID
+            baseTableName: COURSES_USERS
+            referencedColumnNames: ID
+            referencedTableName: COURSES
+            constraintName: COURSES_USERS_COURSES_ID_FK

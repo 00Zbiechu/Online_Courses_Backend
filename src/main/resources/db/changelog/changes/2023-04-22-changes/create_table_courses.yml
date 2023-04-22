@@ -1,0 +1,40 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_table_courses
+      author: mzbiewski
+      changes:
+      - createTable:
+          tableName: COURSES
+          columns:
+            - column:
+                name: id
+                type: NUMBER(38,0)
+                constraints:
+                  - primaryKey: true
+                    primaryKeyName: COURSES_ID_PK
+                    nullable: false
+            - column:
+                name: title
+                type: varchar(30)
+                constraints:
+                  nullable: false
+            - column:
+                name: start_data
+                type: date
+                constraints:
+                  nullable: false
+            - column:
+                name: end_data
+                type: date
+                constraints:
+                  nullable: false
+            - column:
+                name: topic
+                type: varchar(30)
+                constraints:
+                  nullable: false
+            - column:
+                name: password
+                type: varchar(30)
+                constraints:
+                  nullable: false

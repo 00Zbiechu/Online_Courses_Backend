@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - include:
+      file: ./changes/2023-04-22-changes/init_database.yml
+      relativeToChangelogFile: true
+  - include:
+      file: ./changes/2023-04-22-changes/create_table_courses.yml
+      relativeToChangelogFile: true
+  - include:
+      file: ./changes/2023-04-22-changes/create_table_users.yml
+      relativeToChangelogFile: true
+  - include:
+      file: ./changes/2023-04-22-changes/create_table_courses_users.yml
+      relativeToChangelogFile: true
