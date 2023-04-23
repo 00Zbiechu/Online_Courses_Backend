@@ -19,7 +19,7 @@ public class FileStorageUtilImpl implements FileStorageUtil{
             throws IOException {
 
         //Save directory
-        Path uploadPath = Paths.get("upload");
+        Path uploadPath = Paths.get("../online-trainig-project/src/assets/course_icon");
 
         //create directory
         if (!Files.exists(uploadPath)) {
