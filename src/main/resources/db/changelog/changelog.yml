@@ -14,3 +14,9 @@ databaseChangeLog:
   - include:
       file: ./changes/2023-04-23-changes/create_sequence.yml
       relativeToChangelogFile: true
+  - include:
+      file: ./changes/2023-04-23-changes/modify_table_courses_add_description.yml
+      relativeToChangelogFile: true
+  - include:
+      file: ./changes/2023-04-23-changes/modify_table_courses_add_image_path.yml
+      relativeToChangelogFile: true

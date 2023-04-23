@@ -36,6 +36,12 @@ public class CoursesEntity extends BaseEntity {
     @Column(length = 30, nullable = false)
     private String password;
 
+    @Column(length = 50, nullable = false)
+    private String description;
+
+    @Column(length = 20)
+    private String image;
+
     @ManyToMany
     @JoinTable(
             name = "COURSES_USERS",

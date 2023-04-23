@@ -23,4 +23,8 @@ public class CoursesDTO {
 
     private String password;
 
+    private String description;
+
+    private String image;
+
 }

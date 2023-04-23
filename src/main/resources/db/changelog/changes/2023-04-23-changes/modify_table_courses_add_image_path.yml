@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: modify_table_courses_add_image_path
+      author: mzbiewski
+      changes:
+        - addColumn:
+            tableName: COURSES
+            columns:
+              - column:
+                  name: image
+                  type: varchar(20)

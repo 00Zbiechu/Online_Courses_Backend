@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: modify_table_courses_add_description
+      author: mzbiewski
+      changes:
+        - addColumn:
+            tableName: COURSES
+            columns:
+              - column:
+                  name: description
+                  type: varchar(50)

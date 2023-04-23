@@ -13,6 +13,7 @@ import pl.courses.online_courses_backend.repository.CoursesRepository;
 @RequiredArgsConstructor
 public class CoursesService extends AbstractService<CoursesEntity, CoursesDTO> {
 
+
     private final CoursesRepository coursesRepository;
 
     private final CoursesMapper coursesMapper;
@@ -26,4 +27,6 @@ public class CoursesService extends AbstractService<CoursesEntity, CoursesDTO> {
     protected BaseMapper<CoursesEntity, CoursesDTO> getMapper() {
         return coursesMapper;
     }
+
+
 }
