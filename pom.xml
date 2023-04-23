@@ -16,7 +16,6 @@
     <properties>
         <java.version>17</java.version>
         <org.mapstruct.version>1.5.4.Final</org.mapstruct.version>
-        <org.projectlombok.version>1.18.26</org.projectlombok.version>
     </properties>
     <dependencies>
 
@@ -64,6 +63,18 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.6.1</version>
@@ -74,7 +85,6 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
-                            <version>${org.projectlombok.version}</version>
                         </path>
                         <!-- This is needed when using Lombok 1.18.16 and above -->
                         <path>

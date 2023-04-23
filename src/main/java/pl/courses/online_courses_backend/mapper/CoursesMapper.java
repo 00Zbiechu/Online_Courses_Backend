@@ -4,7 +4,7 @@ import org.mapstruct.Mapper;
 import pl.courses.online_courses_backend.entity.CoursesEntity;
 import pl.courses.online_courses_backend.model.CoursesDTO;
 
-@Mapper(uses = CoursesMapper.class, componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {CoursesMapper.class})
 public interface CoursesMapper extends BaseMapper<CoursesEntity, CoursesDTO> {
 
 

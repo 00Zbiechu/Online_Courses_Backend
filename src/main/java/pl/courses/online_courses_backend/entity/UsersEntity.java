@@ -1,18 +1,22 @@
 package pl.courses.online_courses_backend.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.Set;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "USERS")
-@Data
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = false)
+@SequenceGenerator(name = "generator_seq",
+        sequenceName = "users_id_seq",
+        allocationSize = 1
+)
 public class UsersEntity extends BaseEntity {
 
     @Column(length = 20, nullable = false)

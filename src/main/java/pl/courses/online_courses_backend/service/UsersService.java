@@ -11,7 +11,7 @@ import pl.courses.online_courses_backend.repository.UsersRepository;
 
 @Service
 @RequiredArgsConstructor
-public class UsersServiceImpl extends AbstractService<UsersEntity, UsersDTO> {
+public class UsersService extends AbstractService<UsersEntity, UsersDTO> {
 
     private final UsersRepository usersRepository;
 

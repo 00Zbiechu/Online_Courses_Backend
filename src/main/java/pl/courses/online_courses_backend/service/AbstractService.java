@@ -7,7 +7,7 @@ import pl.courses.online_courses_backend.mapper.BaseMapper;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class AbstractService<E extends BaseEntity, D> {
+public abstract class AbstractService<E extends BaseEntity, D> implements BaseService<D>{
 
     protected abstract JpaRepository<E, Long> getRepository();
 
@@ -17,17 +17,20 @@ public abstract class AbstractService<E extends BaseEntity, D> {
         return getRepository().findAll().stream().map(getMapper()::toDTO).collect(Collectors.toList());
     }
 
-    public void create(D dto) {
+    public D create(D dto) {
         getRepository().save(getMapper().toEntity(dto));
+        return dto;
     }
 
-    public void update(Long id, D dto) {
+    public D update(Long id, D dto) {
         getRepository().deleteById(id);
         getRepository().save(getMapper().toEntity(dto));
+        return dto;
     }
 
-    public void delete(D dto) {
+    public D delete(D dto) {
         getRepository().delete(getMapper().toEntity(dto));
+        return dto;
     }
 
 }

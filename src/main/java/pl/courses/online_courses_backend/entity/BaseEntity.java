@@ -1,9 +1,6 @@
 package pl.courses.online_courses_backend.entity;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 import lombok.Getter;
 
 @Getter
@@ -11,7 +8,7 @@ import lombok.Getter;
 public class BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generator_seq")
     private Long id;
 
 }

@@ -4,17 +4,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.courses.online_courses_backend.model.UsersDTO;
-import pl.courses.online_courses_backend.service.UsersServiceImpl;
+import pl.courses.online_courses_backend.service.UsersService;
 
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
-public class UsersController extends BaseController<UsersDTO, UsersServiceImpl> {
+public class UsersController extends BaseController<UsersDTO, UsersService> {
 
-    private final UsersServiceImpl usersService;
+    private final UsersService usersService;
 
     @Override
-    protected UsersServiceImpl getService() {
+    protected UsersService getService() {
         return usersService;
     }
 }
