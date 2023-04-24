@@ -2,6 +2,8 @@ package pl.courses.online_courses_backend.controller;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +29,13 @@ public class CoursesController extends BaseController<CoursesDTO, CoursesService
     protected CoursesService getService() {
         return coursesService;
     }
+
+
+    @GetMapping("/get-course-page")
+    public ResponseEntity<Page<CoursesDTO>> findCoursesPage(Pageable pageable) {
+        return new ResponseEntity<>(coursesService.findCoursesPage(pageable), HttpStatus.OK);
+    }
+
 
     @PostMapping(value = "/add-course", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<CoursesDTO> uploadFile(
