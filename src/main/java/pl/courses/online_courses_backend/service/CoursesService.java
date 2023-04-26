@@ -33,6 +33,9 @@ public class CoursesService extends AbstractService<CoursesEntity, CoursesDTO> {
         return coursesMapper;
     }
 
+    public Long howManyCoursesIsInDatabase(){
+        return coursesRepository.count();
+    }
 
     public Page<CoursesDTO> findCoursesPage(Pageable pageable) {
 
@@ -43,6 +46,8 @@ public class CoursesService extends AbstractService<CoursesEntity, CoursesDTO> {
         return new PageImpl<>(list);
 
     }
+
+
 
 
 }

@@ -3,6 +3,7 @@ package pl.courses.online_courses_backend.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,10 +31,17 @@ public class CoursesController extends BaseController<CoursesDTO, CoursesService
         return coursesService;
     }
 
+    @GetMapping("/how-many-courses")
+    public ResponseEntity<Long> howManyCoursesIsInDatabase(){
+        return new ResponseEntity<>(coursesService.howManyCoursesIsInDatabase(),HttpStatus.OK);
+    }
+
 
     @GetMapping("/get-course-page")
-    public ResponseEntity<Page<CoursesDTO>> findCoursesPage(Pageable pageable) {
-        return new ResponseEntity<>(coursesService.findCoursesPage(pageable), HttpStatus.OK);
+    public ResponseEntity<Page<CoursesDTO>> findCoursesPage(@RequestParam(name = "page") int page,
+                                                            @RequestParam(name = "size") int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return new ResponseEntity<>(coursesService.findCoursesPage(pageRequest), HttpStatus.OK);
     }
 
 
@@ -51,6 +59,8 @@ public class CoursesController extends BaseController<CoursesDTO, CoursesService
 
 
     }
+
+
 
 
 }
