@@ -15,28 +15,21 @@ import java.nio.file.StandardCopyOption;
 public class FileStorageUtilImpl implements FileStorageUtil{
 
     @Override
-    public String saveFile(MultipartFile multipartFile)
-            throws IOException {
+    public String saveFile(MultipartFile multipartFile) throws IOException {
 
+        String fileName = multipartFile.getOriginalFilename();
         //Save directory
-        Path uploadPath = Paths.get("../Online_Courses/src/assets/course_icon");
+        Path uploadPath = Paths.get("../Online_Courses/src/assets/course_icon/");
 
         //create directory
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }
 
-        //create file code name
-        String fileCode = RandomStringUtils.randomAlphanumeric(16)+".jpg";
+        Path filePath = uploadPath.resolve(fileName);
+        multipartFile.transferTo(filePath);
 
-        //copy input stream to save directory with code name instead of original file name
-        try (InputStream inputStream = multipartFile.getInputStream()) {
-            Path filePath = uploadPath.resolve(fileCode);
-            Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException ioe) {
-            throw new IOException("Could not save file");
-        }
-
-        return fileCode;
+        return fileName;
     }
+
 }

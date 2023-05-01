@@ -12,7 +12,10 @@ import pl.courses.online_courses_backend.mapper.CoursesMapper;
 import pl.courses.online_courses_backend.model.CoursesDTO;
 import pl.courses.online_courses_backend.repository.CoursesRepository;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +36,7 @@ public class CoursesService extends AbstractService<CoursesEntity, CoursesDTO> {
         return coursesMapper;
     }
 
-    public Long howManyCoursesIsInDatabase(){
+    public Long howManyCoursesIsInDatabase() {
         return coursesRepository.count();
     }
 
@@ -47,7 +50,19 @@ public class CoursesService extends AbstractService<CoursesEntity, CoursesDTO> {
 
     }
 
+    public String generateRandomImageName(int length) {
+        int leftLimit = 97; // letter 'a'
+        int rightLimit = 122; // letter 'z'
+        int targetStringLength = length;
+        Random random = new Random();
 
+        String generatedString = random.ints(leftLimit, rightLimit + 1)
+                .limit(targetStringLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+
+        return generatedString+".jpg";
+    }
 
 
 }
