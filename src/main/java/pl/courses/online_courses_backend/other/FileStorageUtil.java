@@ -6,6 +6,6 @@ import java.io.IOException;
 
 public interface FileStorageUtil {
 
-     String saveFile(MultipartFile multipartFile) throws IOException;
+     void saveFile(MultipartFile multipartFile) throws IOException;
 
 }
