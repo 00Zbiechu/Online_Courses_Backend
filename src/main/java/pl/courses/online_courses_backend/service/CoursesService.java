@@ -13,6 +13,10 @@ import pl.courses.online_courses_backend.mapper.CoursesMapper;
 import pl.courses.online_courses_backend.model.CoursesDTO;
 import pl.courses.online_courses_backend.other.FileStorageUtil;
 import pl.courses.online_courses_backend.repository.CoursesRepository;
+import pl.courses.online_courses_backend.search.CourseSpecification;
+import pl.courses.online_courses_backend.search.FoundCourses;
+import pl.courses.online_courses_backend.search.SearchCriteria;
+import pl.courses.online_courses_backend.search.SearchOperations;
 
 import java.io.IOException;
 import java.util.List;
@@ -28,6 +32,8 @@ public class CoursesService extends AbstractService<CoursesEntity, CoursesDTO> {
     private final CoursesMapper coursesMapper;
 
     private final FileStorageUtil fileStorageUtil;
+
+    private final CourseSpecification courseSpecification;
 
 
     @Override
@@ -85,4 +91,19 @@ public class CoursesService extends AbstractService<CoursesEntity, CoursesDTO> {
     }
 
 
+    public FoundCourses searchForCourses(CoursesDTO coursesDTO) {
+
+        courseSpecification.clear();
+
+        courseSpecification.add(new SearchCriteria("title", coursesDTO.getTitle(), SearchOperations.MATCH));
+        courseSpecification.add(new SearchCriteria("startData", coursesDTO.getStartData(), SearchOperations.EQUAL));
+        courseSpecification.add(new SearchCriteria("endData", coursesDTO.getEndData(), SearchOperations.EQUAL));
+        courseSpecification.add(new SearchCriteria("topic", coursesDTO.getTopic(), SearchOperations.MATCH));
+
+        List<CoursesDTO> list = coursesRepository.findAll(courseSpecification).stream()
+                .map(coursesMapper::toDTO).toList();
+
+        return FoundCourses.builder().foundCoursesList(list).build();
+
+    }
 }

@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
 
     private String buildErrorMessage(ObjectError objectError) {
 
-        return String.format("Field %s has error: %s", objectError.getObjectName(), objectError.getDefaultMessage());
+        return String.format("Field in object %s has error: %s", objectError.getObjectName(), objectError.getDefaultMessage());
 
     }
 

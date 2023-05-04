@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.courses.online_courses_backend.model.CoursesDTO;
+import pl.courses.online_courses_backend.search.FoundCourses;
 import pl.courses.online_courses_backend.service.CoursesService;
 
 @RestController
@@ -37,6 +38,14 @@ public class CoursesController extends BaseController<CoursesDTO, CoursesService
 
         PageRequest pageRequest = PageRequest.of(page, size);
         return new ResponseEntity<>(coursesService.findCoursesPage(pageRequest), HttpStatus.OK);
+    }
+
+
+    @GetMapping("/search-for-courses")
+    public ResponseEntity<FoundCourses> findCourseWithCriteria(@RequestBody CoursesDTO coursesDTO){
+
+        return new ResponseEntity<>(coursesService.searchForCourses(coursesDTO),HttpStatus.OK);
+
     }
 
     @PostMapping(value = "/add-course")
