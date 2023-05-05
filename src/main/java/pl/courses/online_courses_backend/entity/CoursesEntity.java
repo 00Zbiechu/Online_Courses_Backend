@@ -25,10 +25,10 @@ public class CoursesEntity extends BaseEntity {
     private String title;
 
     @Column(nullable = false)
-    private LocalDate startData;
+    private LocalDate startDate;
 
     @Column(nullable = false)
-    private LocalDate endData;
+    private LocalDate endDate;
 
     @Column(length = 30, nullable = false)
     private String topic;

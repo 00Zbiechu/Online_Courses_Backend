@@ -19,6 +19,7 @@ import pl.courses.online_courses_backend.search.SearchCriteria;
 import pl.courses.online_courses_backend.search.SearchOperations;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
 
@@ -91,13 +92,20 @@ public class CoursesService extends AbstractService<CoursesEntity, CoursesDTO> {
     }
 
 
-    public FoundCourses searchForCourses(CoursesDTO coursesDTO) {
+    public FoundCourses searchForCourses(String title, LocalDate startDate, LocalDate endDate, String topic) {
+
+        CoursesDTO coursesDTO = CoursesDTO.builder()
+                        .title(title)
+                                .startDate(startDate)
+                                        .endDate(endDate)
+                                                .topic(topic)
+                                                        .build();
 
         courseSpecification.clear();
 
         courseSpecification.add(new SearchCriteria("title", coursesDTO.getTitle(), SearchOperations.MATCH));
-        courseSpecification.add(new SearchCriteria("startData", coursesDTO.getStartData(), SearchOperations.EQUAL));
-        courseSpecification.add(new SearchCriteria("endData", coursesDTO.getEndData(), SearchOperations.EQUAL));
+        courseSpecification.add(new SearchCriteria("startData", coursesDTO.getStartDate(), SearchOperations.EQUAL));
+        courseSpecification.add(new SearchCriteria("endData", coursesDTO.getEndDate(), SearchOperations.EQUAL));
         courseSpecification.add(new SearchCriteria("topic", coursesDTO.getTopic(), SearchOperations.MATCH));
 
         List<CoursesDTO> list = coursesRepository.findAll(courseSpecification).stream()

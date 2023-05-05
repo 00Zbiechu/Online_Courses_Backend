@@ -21,11 +21,11 @@ public class CoursesDTO {
 
     @NotNull
     @FutureOrPresent
-    private LocalDate startData;
+    private LocalDate startDate;
 
     @NotNull
     @FutureOrPresent
-    private LocalDate endData;
+    private LocalDate endDate;
 
     @NotEmpty
     @NotBlank
@@ -44,7 +44,6 @@ public class CoursesDTO {
 
     @NotEmpty
     @NotBlank
-    @Size(min = 3, max = 20)
     private String image;
 
 }

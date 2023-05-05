@@ -18,7 +18,7 @@ public abstract class BaseController<D, S extends AbstractService> {
     }
 
     @PostMapping
-    public ResponseEntity<D> create(@Valid @RequestBody D dto) {
+    public ResponseEntity<D> create(@RequestBody D dto) {
         return new ResponseEntity<>((D) getService().create(dto), HttpStatus.CREATED);
     }
 

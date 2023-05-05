@@ -1,6 +1,7 @@
 package pl.courses.online_courses_backend.controller;
 
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,6 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.courses.online_courses_backend.model.CoursesDTO;
 import pl.courses.online_courses_backend.search.FoundCourses;
 import pl.courses.online_courses_backend.service.CoursesService;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/courses")
@@ -42,14 +45,17 @@ public class CoursesController extends BaseController<CoursesDTO, CoursesService
 
 
     @GetMapping("/search-for-courses")
-    public ResponseEntity<FoundCourses> findCourseWithCriteria(@RequestBody CoursesDTO coursesDTO){
+    public ResponseEntity<FoundCourses> findCourseWithCriteria(@RequestParam(value = "title") String title,
+                                                               @RequestParam(value = "startDate") LocalDate startDate,
+                                                               @RequestParam(value = "endDate") LocalDate endDate,
+                                                               @RequestParam(value = "topic") String topic){
 
-        return new ResponseEntity<>(coursesService.searchForCourses(coursesDTO),HttpStatus.OK);
+        return new ResponseEntity<>(coursesService.searchForCourses(title,startDate,endDate,topic),HttpStatus.OK);
 
     }
 
     @PostMapping(value = "/add-course")
-    public ResponseEntity<CoursesDTO> addCourse(@RequestBody CoursesDTO course) {
+    public ResponseEntity<CoursesDTO> addCourse(@Valid @RequestBody CoursesDTO course) {
 
         return new ResponseEntity<>(coursesService.addCourseWithRandomImageName(course), HttpStatus.CREATED);
 
