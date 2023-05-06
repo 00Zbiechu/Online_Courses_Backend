@@ -92,7 +92,7 @@ public class CoursesService extends AbstractService<CoursesEntity, CoursesDTO> {
     }
 
 
-    public FoundCourses searchForCourses(String title, LocalDate startDate, LocalDate endDate, String topic) {
+    public CoursesDTO searchForCourses(String title, LocalDate startDate, LocalDate endDate, String topic) {
 
         CoursesDTO coursesDTO = CoursesDTO.builder()
                         .title(title)
@@ -104,14 +104,14 @@ public class CoursesService extends AbstractService<CoursesEntity, CoursesDTO> {
         courseSpecification.clear();
 
         courseSpecification.add(new SearchCriteria("title", coursesDTO.getTitle(), SearchOperations.MATCH));
-        courseSpecification.add(new SearchCriteria("startData", coursesDTO.getStartDate(), SearchOperations.EQUAL));
-        courseSpecification.add(new SearchCriteria("endData", coursesDTO.getEndDate(), SearchOperations.EQUAL));
+        courseSpecification.add(new SearchCriteria("startDate", coursesDTO.getStartDate(), SearchOperations.EQUAL));
+        courseSpecification.add(new SearchCriteria("endDate", coursesDTO.getEndDate(), SearchOperations.EQUAL));
         courseSpecification.add(new SearchCriteria("topic", coursesDTO.getTopic(), SearchOperations.MATCH));
 
         List<CoursesDTO> list = coursesRepository.findAll(courseSpecification).stream()
                 .map(coursesMapper::toDTO).toList();
 
-        return FoundCourses.builder().foundCoursesList(list).build();
+        return list.get(0);
 
     }
 }

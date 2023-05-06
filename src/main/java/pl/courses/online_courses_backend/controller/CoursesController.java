@@ -45,7 +45,7 @@ public class CoursesController extends BaseController<CoursesDTO, CoursesService
 
 
     @GetMapping("/search-for-courses")
-    public ResponseEntity<FoundCourses> findCourseWithCriteria(@RequestParam(value = "title") String title,
+    public ResponseEntity<CoursesDTO> findCourseWithCriteria(@RequestParam(value = "title") String title,
                                                                @RequestParam(value = "startDate") LocalDate startDate,
                                                                @RequestParam(value = "endDate") LocalDate endDate,
                                                                @RequestParam(value = "topic") String topic){
