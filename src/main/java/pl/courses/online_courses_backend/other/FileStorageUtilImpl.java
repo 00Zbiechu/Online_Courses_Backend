@@ -16,7 +16,7 @@ public class FileStorageUtilImpl implements FileStorageUtil{
 
         String fileName = multipartFile.getOriginalFilename();
         //Save directory
-        Path uploadPath = Paths.get("../Online_Courses/src/assets/course_icon/");
+        Path uploadPath = Paths.get("../Online_Courses/src/assets/course_icon");
 
         //create directory
         if (!Files.exists(uploadPath)) {

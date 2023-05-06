@@ -92,14 +92,14 @@ public class CoursesService extends AbstractService<CoursesEntity, CoursesDTO> {
     }
 
 
-    public CoursesDTO searchForCourses(String title, LocalDate startDate, LocalDate endDate, String topic) {
+    public FoundCourses searchForCourses(String title, LocalDate startDate, LocalDate endDate, String topic) {
 
         CoursesDTO coursesDTO = CoursesDTO.builder()
-                        .title(title)
-                                .startDate(startDate)
-                                        .endDate(endDate)
-                                                .topic(topic)
-                                                        .build();
+                .title(title)
+                .startDate(startDate)
+                .endDate(endDate)
+                .topic(topic)
+                .build();
 
         courseSpecification.clear();
 
@@ -111,7 +111,7 @@ public class CoursesService extends AbstractService<CoursesEntity, CoursesDTO> {
         List<CoursesDTO> list = coursesRepository.findAll(courseSpecification).stream()
                 .map(coursesMapper::toDTO).toList();
 
-        return list.get(0);
+        return FoundCourses.builder().foundCoursesList(list).build();
 
     }
 }

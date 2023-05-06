@@ -19,7 +19,11 @@ public class CourseSpecification implements Specification<CoursesEntity> {
     private final List<SearchCriteria> searchCriteria;
 
     public void add(SearchCriteria criteria) {
-        searchCriteria.add(criteria);
+
+        if (criteria.getValue() != null && !criteria.getValue().toString().isEmpty()) {
+            searchCriteria.add(criteria);
+        }
+
     }
 
     public void clear() {

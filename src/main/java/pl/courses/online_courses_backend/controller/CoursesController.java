@@ -14,6 +14,7 @@ import pl.courses.online_courses_backend.search.FoundCourses;
 import pl.courses.online_courses_backend.service.CoursesService;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/courses")
@@ -45,12 +46,12 @@ public class CoursesController extends BaseController<CoursesDTO, CoursesService
 
 
     @GetMapping("/search-for-courses")
-    public ResponseEntity<CoursesDTO> findCourseWithCriteria(@RequestParam(value = "title") String title,
-                                                               @RequestParam(value = "startDate") LocalDate startDate,
-                                                               @RequestParam(value = "endDate") LocalDate endDate,
-                                                               @RequestParam(value = "topic") String topic){
+    public ResponseEntity<FoundCourses> findCourseWithCriteria(@RequestParam(value = "title", required = false) String title,
+                                                               @RequestParam(value = "startDate", required = false) LocalDate startDate,
+                                                               @RequestParam(value = "endDate", required = false) LocalDate endDate,
+                                                               @RequestParam(value = "topic", required = false) String topic) {
 
-        return new ResponseEntity<>(coursesService.searchForCourses(title,startDate,endDate,topic),HttpStatus.OK);
+        return new ResponseEntity<>(coursesService.searchForCourses(title, startDate, endDate, topic), HttpStatus.OK);
 
     }
 
