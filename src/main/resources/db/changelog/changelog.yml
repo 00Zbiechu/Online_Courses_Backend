@@ -23,3 +23,9 @@ databaseChangeLog:
   - include:
       file: ./changes/2023-05-05-changes/modify_table_courses_change_column_name_form_data_to_date.yml
       relativeToChangelogFile: true
+  - include:
+      file: ./changes/2023-05-07-changes/modify_table_users_add_role.yml
+      relativeToChangelogFile: true
+  - include:
+      file: ./changes/2023-05-07-changes/modify_table_users_change_column_password_length.yml
+      relativeToChangelogFile: true

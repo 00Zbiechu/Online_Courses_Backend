@@ -1,9 +1,10 @@
 package pl.courses.online_courses_backend.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import pl.courses.online_courses_backend.authentication.AuthenticationRequest;
+import pl.courses.online_courses_backend.authentication.AuthenticationResponse;
 import pl.courses.online_courses_backend.model.UsersDTO;
 import pl.courses.online_courses_backend.service.UsersService;
 
@@ -19,4 +20,16 @@ public class UsersController extends BaseController<UsersDTO, UsersService> {
     protected UsersService getService() {
         return usersService;
     }
+
+
+    @PostMapping("/register")
+    public ResponseEntity<AuthenticationResponse> register(@RequestBody UsersDTO usersDTO) {
+        return ResponseEntity.ok(usersService.register(usersDTO));
+    }
+
+    @PostMapping("/authenticate")
+    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest authenticationRequest) {
+        return ResponseEntity.ok(usersService.authenticate(authenticationRequest));
+    }
+
 }
