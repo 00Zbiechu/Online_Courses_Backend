@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.courses.online_courses_backend.model.CoursesDTO;
@@ -14,7 +15,6 @@ import pl.courses.online_courses_backend.search.FoundCourses;
 import pl.courses.online_courses_backend.service.CoursesService;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/courses")
@@ -61,6 +61,7 @@ public class CoursesController extends BaseController<CoursesDTO, CoursesService
         return new ResponseEntity<>(coursesService.addCourseWithRandomImageName(course), HttpStatus.CREATED);
 
     }
+
 
     @PostMapping(value = "/upload-file")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile multipartFile) {
