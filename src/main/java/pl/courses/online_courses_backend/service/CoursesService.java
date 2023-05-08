@@ -1,9 +1,7 @@
 package pl.courses.online_courses_backend.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -113,5 +111,14 @@ public class CoursesService extends AbstractService<CoursesEntity, CoursesDTO> {
 
         return FoundCourses.builder().foundCoursesList(list).build();
 
+    }
+
+    public PageRequest buildPageRequestForCoursePage(Integer page, Integer size, String sort, String order){
+
+        if(order.equals("ASC")){
+            return PageRequest.of(page, size, Sort.by(sort).ascending());
+        }
+
+        return PageRequest.of(page, size, Sort.by(sort).descending());
     }
 }

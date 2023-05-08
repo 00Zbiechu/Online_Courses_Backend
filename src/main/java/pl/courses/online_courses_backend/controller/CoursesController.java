@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +15,6 @@ import pl.courses.online_courses_backend.search.FoundCourses;
 import pl.courses.online_courses_backend.service.CoursesService;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/courses")
@@ -37,10 +37,14 @@ public class CoursesController extends BaseController<CoursesDTO, CoursesService
     }
 
     @GetMapping("/get-course-page")
-    public ResponseEntity<Page<CoursesDTO>> findCoursesPage(@RequestParam(name = "page") int page,
-                                                            @RequestParam(name = "size") int size) {
+    public ResponseEntity<Page<CoursesDTO>> findCoursesPage(@RequestParam(name = "page") Integer page,
+                                                            @RequestParam(name = "size") Integer size,
+                                                            @RequestParam(name = "sort") String sort,
+                                                            @RequestParam(name = "order") String order) {
 
-        PageRequest pageRequest = PageRequest.of(page, size);
+
+        PageRequest pageRequest = coursesService.buildPageRequestForCoursePage(page,size,sort,order);
+
         return new ResponseEntity<>(coursesService.findCoursesPage(pageRequest), HttpStatus.OK);
     }
 
