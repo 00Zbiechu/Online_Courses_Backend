@@ -1,4 +1,4 @@
-package pl.courses.online_courses_backend.other;
+package pl.courses.online_courses_backend.util;
 
 import org.springframework.web.multipart.MultipartFile;
 

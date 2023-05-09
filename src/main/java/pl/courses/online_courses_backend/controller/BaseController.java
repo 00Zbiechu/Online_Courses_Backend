@@ -4,11 +4,11 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.courses.online_courses_backend.service.AbstractService;
+import pl.courses.online_courses_backend.service.BaseService;
 
 import java.util.List;
 
-public abstract class BaseController<D, S extends AbstractService> {
+public abstract class BaseController<D, S extends BaseService> {
 
     protected abstract S getService();
 

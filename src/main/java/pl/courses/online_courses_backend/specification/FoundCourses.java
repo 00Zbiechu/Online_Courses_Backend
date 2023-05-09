@@ -1,4 +1,4 @@
-package pl.courses.online_courses_backend.search;
+package pl.courses.online_courses_backend.specification;
 
 import lombok.*;
 import pl.courses.online_courses_backend.model.CoursesDTO;

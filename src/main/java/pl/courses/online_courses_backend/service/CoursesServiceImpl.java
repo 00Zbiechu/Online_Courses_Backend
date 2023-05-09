@@ -9,12 +9,12 @@ import pl.courses.online_courses_backend.entity.CoursesEntity;
 import pl.courses.online_courses_backend.mapper.BaseMapper;
 import pl.courses.online_courses_backend.mapper.CoursesMapper;
 import pl.courses.online_courses_backend.model.CoursesDTO;
-import pl.courses.online_courses_backend.other.FileStorageUtil;
+import pl.courses.online_courses_backend.util.FileStorageUtil;
 import pl.courses.online_courses_backend.repository.CoursesRepository;
-import pl.courses.online_courses_backend.search.CourseSpecification;
-import pl.courses.online_courses_backend.search.FoundCourses;
-import pl.courses.online_courses_backend.search.SearchCriteria;
-import pl.courses.online_courses_backend.search.SearchOperations;
+import pl.courses.online_courses_backend.specification.CourseSpecification;
+import pl.courses.online_courses_backend.specification.FoundCourses;
+import pl.courses.online_courses_backend.specification.SearchCriteria;
+import pl.courses.online_courses_backend.specification.SearchOperations;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -23,7 +23,7 @@ import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
-public class CoursesService extends AbstractService<CoursesEntity, CoursesDTO> {
+public class CoursesServiceImpl extends AbstractService<CoursesEntity, CoursesDTO> implements CourseService {
 
 
     private final CoursesRepository coursesRepository;
@@ -45,10 +45,12 @@ public class CoursesService extends AbstractService<CoursesEntity, CoursesDTO> {
         return coursesMapper;
     }
 
+    @Override
     public Long howManyCoursesIsInDatabase() {
         return coursesRepository.count();
     }
 
+    @Override
     public Page<CoursesDTO> findCoursesPage(Pageable pageable) {
 
         List<CoursesDTO> list = coursesRepository.findCoursesPage(pageable).stream()
@@ -59,10 +61,12 @@ public class CoursesService extends AbstractService<CoursesEntity, CoursesDTO> {
 
     }
 
+    @Override
     public CoursesDTO addCourseWithRandomImageName(CoursesDTO coursesDTO) {
         coursesDTO.setImage(generateRandomImageName());
         return create(coursesDTO);
     }
+
 
     private String generateRandomImageName() {
         int leftLimit = 97; // letter 'a'
@@ -77,6 +81,7 @@ public class CoursesService extends AbstractService<CoursesEntity, CoursesDTO> {
         return generatedString + ".jpg";
     }
 
+    @Override
     public String uploadImageCourseImage(MultipartFile multipartFile) {
 
         try {
@@ -89,7 +94,7 @@ public class CoursesService extends AbstractService<CoursesEntity, CoursesDTO> {
 
     }
 
-
+    @Override
     public FoundCourses searchForCourses(String title, LocalDate startDate, LocalDate endDate, String topic) {
 
         CoursesDTO coursesDTO = CoursesDTO.builder()
@@ -113,9 +118,10 @@ public class CoursesService extends AbstractService<CoursesEntity, CoursesDTO> {
 
     }
 
-    public PageRequest buildPageRequestForCoursePage(Integer page, Integer size, String sort, String order){
+    @Override
+    public PageRequest buildPageRequestForCoursePage(Integer page, Integer size, String sort, String order) {
 
-        if(order.equals("ASC")){
+        if (order.equals("ASC")) {
             return PageRequest.of(page, size, Sort.by(sort).ascending());
         }
 
