@@ -20,7 +20,8 @@ public interface CoursesRepository extends JpaRepository<CoursesEntity, Long>, J
             "(c.title, c.startDate, c.endDate, c.topic, c.description, c.image) FROM CoursesEntity c")
     Page<CourseForList> findCoursesPage(Pageable pageable);
 
-    @Query("SELECT new pl.courses.online_courses_backend.projection.CourseForCalendar(c.title) FROM CoursesEntity c")
+    @Query("SELECT new pl.courses.online_courses_backend.projection.CourseForCalendar(c.title, c.startDate, c.endDate) " +
+            "FROM CoursesEntity c")
     List<CourseForCalendar> getCourseDataForCalendar();
 
     @Query("SELECT new pl.courses.online_courses_backend.projection.CourseForEdit" +

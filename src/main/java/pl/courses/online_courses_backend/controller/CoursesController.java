@@ -75,14 +75,14 @@ public class CoursesController extends BaseController<CoursesDTO, CourseService>
     }
 
 
-    @GetMapping(value = "get-course-data-for-calendar")
+    @GetMapping(value = "/get-course-data-for-calendar")
     public ResponseEntity<CoursesForCalendar> getCourseDataForCalendar() {
 
         return new ResponseEntity<>(courseService.getCourseDataForCalendar(), HttpStatus.OK);
 
     }
 
-    @GetMapping(value = "get-course-data-for-edit")
+    @GetMapping(value = "/get-course-data-for-edit")
     public ResponseEntity<CoursesForEdit> getCourseDataForEdit() {
 
         return new ResponseEntity<>(courseService.getCourseDataForEdit(), HttpStatus.OK);
