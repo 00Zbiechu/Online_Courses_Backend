@@ -10,8 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.courses.online_courses_backend.model.CoursesDTO;
-import pl.courses.online_courses_backend.specification.FoundCourses;
 import pl.courses.online_courses_backend.service.CourseService;
+import pl.courses.online_courses_backend.specification.FoundCourses;
 
 import java.time.LocalDate;
 
@@ -19,7 +19,7 @@ import java.time.LocalDate;
 @RequestMapping("/api/courses")
 @CrossOrigin(origins = "http://localhost:4200")
 @RequiredArgsConstructor
-public class CoursesController extends BaseController<CoursesDTO, CourseService> {
+public class CoursesControllerImpl extends BaseController<CoursesDTO, CourseService> implements CourseController {
 
     private final CourseService courseService;
 
@@ -30,11 +30,13 @@ public class CoursesController extends BaseController<CoursesDTO, CourseService>
 
 
     @GetMapping("/how-many-courses")
+    @Override
     public ResponseEntity<Long> howManyCoursesIsInDatabase() {
         return new ResponseEntity<>(courseService.howManyCoursesIsInDatabase(), HttpStatus.OK);
     }
 
     @GetMapping("/get-course-page")
+    @Override
     public ResponseEntity<Page<CoursesDTO>> findCoursesPage(@RequestParam(name = "page") Integer page,
                                                             @RequestParam(name = "size") Integer size,
                                                             @RequestParam(name = "sort") String sort,
@@ -48,6 +50,7 @@ public class CoursesController extends BaseController<CoursesDTO, CourseService>
 
 
     @GetMapping("/search-for-courses")
+    @Override
     public ResponseEntity<FoundCourses> findCourseWithCriteria(@RequestParam(value = "title", required = false) String title,
                                                                @RequestParam(value = "startDate", required = false) LocalDate startDate,
                                                                @RequestParam(value = "endDate", required = false) LocalDate endDate,
@@ -58,6 +61,7 @@ public class CoursesController extends BaseController<CoursesDTO, CourseService>
     }
 
     @PostMapping(value = "/add-course")
+    @Override
     public ResponseEntity<CoursesDTO> addCourse(@Valid @RequestBody CoursesDTO course) {
 
         return new ResponseEntity<>(courseService.addCourseWithRandomImageName(course), HttpStatus.CREATED);
@@ -65,6 +69,7 @@ public class CoursesController extends BaseController<CoursesDTO, CourseService>
     }
 
     @PostMapping(value = "/upload-file")
+    @Override
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile multipartFile) {
 
         return new ResponseEntity<>(courseService.uploadImageCourseImage(multipartFile), HttpStatus.CREATED);
