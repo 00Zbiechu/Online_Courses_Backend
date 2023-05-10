@@ -12,8 +12,6 @@ import java.time.LocalDate;
 @Builder
 public class CoursesDTO {
 
-//    private Long id;
-
     @NotEmpty
     @NotBlank
     @Size(min = 3, max = 30)

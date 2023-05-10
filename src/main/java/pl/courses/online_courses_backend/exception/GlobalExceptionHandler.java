@@ -5,6 +5,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import pl.courses.online_courses_backend.exception.wrapper.ErrorsDTO;
 
 import java.util.List;
 

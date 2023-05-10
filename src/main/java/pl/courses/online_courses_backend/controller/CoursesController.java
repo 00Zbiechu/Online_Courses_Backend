@@ -10,6 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.courses.online_courses_backend.model.CoursesDTO;
+import pl.courses.online_courses_backend.projection.CourseForList;
+import pl.courses.online_courses_backend.projection.wrapper.CoursesForCalendar;
+import pl.courses.online_courses_backend.projection.wrapper.CoursesForEdit;
 import pl.courses.online_courses_backend.service.CourseService;
 import pl.courses.online_courses_backend.specification.FoundCourses;
 
@@ -19,7 +22,7 @@ import java.time.LocalDate;
 @RequestMapping("/api/courses")
 @CrossOrigin(origins = "http://localhost:4200")
 @RequiredArgsConstructor
-public class CoursesControllerImpl extends BaseController<CoursesDTO, CourseService> implements CourseController {
+public class CoursesController extends BaseController<CoursesDTO, CourseService> {
 
     private final CourseService courseService;
 
@@ -30,17 +33,15 @@ public class CoursesControllerImpl extends BaseController<CoursesDTO, CourseServ
 
 
     @GetMapping("/how-many-courses")
-    @Override
     public ResponseEntity<Long> howManyCoursesIsInDatabase() {
         return new ResponseEntity<>(courseService.howManyCoursesIsInDatabase(), HttpStatus.OK);
     }
 
     @GetMapping("/get-course-page")
-    @Override
-    public ResponseEntity<Page<CoursesDTO>> findCoursesPage(@RequestParam(name = "page") Integer page,
-                                                            @RequestParam(name = "size") Integer size,
-                                                            @RequestParam(name = "sort") String sort,
-                                                            @RequestParam(name = "order") String order) {
+    public ResponseEntity<Page<CourseForList>> findCoursesPage(@RequestParam(name = "page") Integer page,
+                                                               @RequestParam(name = "size") Integer size,
+                                                               @RequestParam(name = "sort") String sort,
+                                                               @RequestParam(name = "order") String order) {
 
 
         PageRequest pageRequest = courseService.buildPageRequestForCoursePage(page, size, sort, order);
@@ -50,7 +51,6 @@ public class CoursesControllerImpl extends BaseController<CoursesDTO, CourseServ
 
 
     @GetMapping("/search-for-courses")
-    @Override
     public ResponseEntity<FoundCourses> findCourseWithCriteria(@RequestParam(value = "title", required = false) String title,
                                                                @RequestParam(value = "startDate", required = false) LocalDate startDate,
                                                                @RequestParam(value = "endDate", required = false) LocalDate endDate,
@@ -61,7 +61,6 @@ public class CoursesControllerImpl extends BaseController<CoursesDTO, CourseServ
     }
 
     @PostMapping(value = "/add-course")
-    @Override
     public ResponseEntity<CoursesDTO> addCourse(@Valid @RequestBody CoursesDTO course) {
 
         return new ResponseEntity<>(courseService.addCourseWithRandomImageName(course), HttpStatus.CREATED);
@@ -69,10 +68,24 @@ public class CoursesControllerImpl extends BaseController<CoursesDTO, CourseServ
     }
 
     @PostMapping(value = "/upload-file")
-    @Override
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile multipartFile) {
 
         return new ResponseEntity<>(courseService.uploadImageCourseImage(multipartFile), HttpStatus.CREATED);
+
+    }
+
+
+    @GetMapping(value = "get-course-data-for-calendar")
+    public ResponseEntity<CoursesForCalendar> getCourseDataForCalendar() {
+
+        return new ResponseEntity<>(courseService.getCourseDataForCalendar(), HttpStatus.OK);
+
+    }
+
+    @GetMapping(value = "get-course-data-for-edit")
+    public ResponseEntity<CoursesForEdit> getCourseDataForEdit() {
+
+        return new ResponseEntity<>(courseService.getCourseDataForEdit(), HttpStatus.OK);
 
     }
 

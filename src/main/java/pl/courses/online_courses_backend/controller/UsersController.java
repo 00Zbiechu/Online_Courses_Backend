@@ -11,7 +11,7 @@ import pl.courses.online_courses_backend.service.UserService;
 @RequestMapping("/api/users")
 @CrossOrigin(origins = "http://localhost:4200")
 @RequiredArgsConstructor
-public class UsersControllerImpl extends BaseController<UsersDTO, UserService> implements UserController {
+public class UsersController extends BaseController<UsersDTO, UserService> {
 
     private final UserService userService;
 
