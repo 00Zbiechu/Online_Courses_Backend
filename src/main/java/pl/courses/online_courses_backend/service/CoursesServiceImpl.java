@@ -2,8 +2,9 @@ package pl.courses.online_courses_backend.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,12 +12,15 @@ import pl.courses.online_courses_backend.entity.CoursesEntity;
 import pl.courses.online_courses_backend.mapper.BaseMapper;
 import pl.courses.online_courses_backend.mapper.CoursesMapper;
 import pl.courses.online_courses_backend.model.CoursesDTO;
-import pl.courses.online_courses_backend.other.FileStorageUtil;
+import pl.courses.online_courses_backend.projection.CourseForList;
+import pl.courses.online_courses_backend.projection.wrapper.CoursesForCalendar;
+import pl.courses.online_courses_backend.projection.wrapper.CoursesForEdit;
 import pl.courses.online_courses_backend.repository.CoursesRepository;
-import pl.courses.online_courses_backend.search.CourseSpecification;
-import pl.courses.online_courses_backend.search.FoundCourses;
-import pl.courses.online_courses_backend.search.SearchCriteria;
-import pl.courses.online_courses_backend.search.SearchOperations;
+import pl.courses.online_courses_backend.specification.CourseSpecification;
+import pl.courses.online_courses_backend.specification.FoundCourses;
+import pl.courses.online_courses_backend.specification.SearchCriteria;
+import pl.courses.online_courses_backend.specification.SearchOperations;
+import pl.courses.online_courses_backend.util.FileStorageUtil;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -25,7 +29,7 @@ import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
-public class CoursesService extends AbstractService<CoursesEntity, CoursesDTO> {
+public class CoursesServiceImpl extends AbstractService<CoursesEntity, CoursesDTO> implements CourseService {
 
 
     private final CoursesRepository coursesRepository;
@@ -47,24 +51,24 @@ public class CoursesService extends AbstractService<CoursesEntity, CoursesDTO> {
         return coursesMapper;
     }
 
+    @Override
     public Long howManyCoursesIsInDatabase() {
         return coursesRepository.count();
     }
 
-    public Page<CoursesDTO> findCoursesPage(Pageable pageable) {
+    @Override
+    public Page<CourseForList> findCoursesPage(Pageable pageable) {
 
-        List<CoursesDTO> list = coursesRepository.findCoursesPage(pageable).stream()
-                .map(coursesMapper::toDTO)
-                .toList();
-
-        return new PageImpl<>(list);
+        return coursesRepository.findCoursesPage(pageable);
 
     }
 
+    @Override
     public CoursesDTO addCourseWithRandomImageName(CoursesDTO coursesDTO) {
         coursesDTO.setImage(generateRandomImageName());
         return create(coursesDTO);
     }
+
 
     private String generateRandomImageName() {
         int leftLimit = 97; // letter 'a'
@@ -79,6 +83,7 @@ public class CoursesService extends AbstractService<CoursesEntity, CoursesDTO> {
         return generatedString + ".jpg";
     }
 
+    @Override
     public String uploadImageCourseImage(MultipartFile multipartFile) {
 
         try {
@@ -91,7 +96,7 @@ public class CoursesService extends AbstractService<CoursesEntity, CoursesDTO> {
 
     }
 
-
+    @Override
     public FoundCourses searchForCourses(String title, LocalDate startDate, LocalDate endDate, String topic) {
 
         CoursesDTO coursesDTO = CoursesDTO.builder()
@@ -114,4 +119,29 @@ public class CoursesService extends AbstractService<CoursesEntity, CoursesDTO> {
         return FoundCourses.builder().foundCoursesList(list).build();
 
     }
+
+    @Override
+    public PageRequest buildPageRequestForCoursePage(Integer page, Integer size, String sort, String order) {
+
+        if (order.equals("ASC")) {
+            return PageRequest.of(page, size, Sort.by(sort).ascending());
+        }
+
+        return PageRequest.of(page, size, Sort.by(sort).descending());
+    }
+
+    @Override
+    public CoursesForCalendar getCourseDataForCalendar() {
+        return CoursesForCalendar.builder()
+                .courseForCalendarList(coursesRepository.getCourseDataForCalendar())
+                .build();
+    }
+
+    @Override
+    public CoursesForEdit getCourseDataForEdit() {
+        return CoursesForEdit.builder()
+                .courseForEditList(coursesRepository.getCourseDataForEdit())
+                .build();
+    }
+
 }

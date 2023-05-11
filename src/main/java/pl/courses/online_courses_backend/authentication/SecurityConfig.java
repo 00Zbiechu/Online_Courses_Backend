@@ -28,13 +28,21 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers
                         (
+                                "/api/users/register",
+                                "/api/users/authenticate",
                                 "/api/courses/how-many-courses",
                                 "/api/courses/get-course-page",
-                                "/api/courses/search-for-courses",
-                                "/api/users/register",
-                                "/api/users/authenticate"
+                                "/api/courses/search-for-courses"
                         )
                 .permitAll()
+                .requestMatchers
+                        (
+                                "/api/courses/add-course",
+                                "/api/courses/upload-file",
+                                "/api/courses/get-course-data-for-calendar",
+                                "/api/courses/get-course-data-for-edit"
+                        )
+                .hasRole("USER")
                 .anyRequest()
                 .authenticated()
                 .and()

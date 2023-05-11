@@ -7,7 +7,7 @@ import pl.courses.online_courses_backend.mapper.BaseMapper;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class AbstractService<E extends BaseEntity, D> implements BaseService<D>{
+public abstract class AbstractService<E extends BaseEntity, D> {
 
     protected abstract JpaRepository<E, Long> getRepository();
 

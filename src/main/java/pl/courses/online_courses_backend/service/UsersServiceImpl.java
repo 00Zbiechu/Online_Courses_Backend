@@ -18,7 +18,7 @@ import pl.courses.online_courses_backend.repository.UsersRepository;
 
 @Service
 @RequiredArgsConstructor
-public class UsersService extends AbstractService<UsersEntity, UsersDTO> {
+public class UsersServiceImpl extends AbstractService<UsersEntity, UsersDTO> implements UserService {
 
     private final UsersRepository usersRepository;
 
@@ -40,7 +40,7 @@ public class UsersService extends AbstractService<UsersEntity, UsersDTO> {
         return usersMapper;
     }
 
-
+    @Override
     public AuthenticationResponse register(UsersDTO usersDTO) {
         usersDTO.setPassword(passwordEncoder.encode(usersDTO.getPassword()));
         usersDTO.setRole(Role.USER);
@@ -51,6 +51,7 @@ public class UsersService extends AbstractService<UsersEntity, UsersDTO> {
                 .token(jwtToken).build();
     }
 
+    @Override
     public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
