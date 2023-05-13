@@ -1,5 +1,7 @@
 package pl.courses.online_courses_backend.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -7,6 +9,8 @@ import pl.courses.online_courses_backend.model.AuthenticationRequestDTO;
 import pl.courses.online_courses_backend.model.AuthenticationResponseDTO;
 import pl.courses.online_courses_backend.model.UsersDTO;
 import pl.courses.online_courses_backend.service.UserService;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/users")
@@ -32,4 +36,9 @@ public class UsersController extends BaseController<UsersDTO, UserService> {
         return ResponseEntity.ok(userService.authenticate(authenticationRequestDTO));
     }
 
+
+    @PostMapping("/refresh-token")
+    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        userService.refreshToken(request, response);
+    }
 }
