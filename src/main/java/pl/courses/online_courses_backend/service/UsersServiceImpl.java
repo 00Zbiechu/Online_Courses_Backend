@@ -11,12 +11,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.courses.online_courses_backend.authentication.JwtService;
 import pl.courses.online_courses_backend.authentication.Role;
+import pl.courses.online_courses_backend.authentication.TokenType;
+import pl.courses.online_courses_backend.entity.TokenEntity;
 import pl.courses.online_courses_backend.entity.UsersEntity;
 import pl.courses.online_courses_backend.mapper.BaseMapper;
 import pl.courses.online_courses_backend.mapper.UsersMapper;
 import pl.courses.online_courses_backend.model.AuthenticationRequestDTO;
 import pl.courses.online_courses_backend.model.AuthenticationResponseDTO;
 import pl.courses.online_courses_backend.model.UsersDTO;
+import pl.courses.online_courses_backend.repository.TokenRepository;
 import pl.courses.online_courses_backend.repository.UsersRepository;
 
 import java.io.IOException;
@@ -26,6 +29,8 @@ import java.io.IOException;
 public class UsersServiceImpl extends AbstractService<UsersEntity, UsersDTO> implements UserService {
 
     private final UsersRepository usersRepository;
+
+    private final TokenRepository tokenRepository;
 
     private final UsersMapper usersMapper;
 
@@ -45,19 +50,38 @@ public class UsersServiceImpl extends AbstractService<UsersEntity, UsersDTO> imp
         return usersMapper;
     }
 
+
+    private void saveUserToken(UsersEntity user, String jwtToken) {
+        var token = TokenEntity.builder()
+                .user(user)
+                .token(jwtToken)
+                .tokenType(TokenType.BEARER)
+                .revoked(false)
+                .expired(false)
+                .build();
+
+        tokenRepository.save(token);
+    }
+
     @Override
     public AuthenticationResponseDTO register(UsersDTO usersDTO) {
         usersDTO.setPassword(passwordEncoder.encode(usersDTO.getPassword()));
         usersDTO.setRole(Role.USER);
         UsersEntity user = usersMapper.toEntity(usersDTO);
-        usersRepository.save(user);
+
+        var savedUser = usersRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
+
         var refreshToken = jwtService.generateRefreshToken(user);
+
+        saveUserToken(savedUser, jwtToken);
+
         return AuthenticationResponseDTO.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
                 .build();
     }
+
 
     @Override
     public AuthenticationResponseDTO authenticate(AuthenticationRequestDTO authenticationRequestDTO) {
@@ -70,7 +94,9 @@ public class UsersServiceImpl extends AbstractService<UsersEntity, UsersDTO> imp
         var user = usersRepository.findByUsername(authenticationRequestDTO.getUsername())
                 .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
+        saveUserToken(user, jwtToken);
         var refreshToken = jwtService.generateRefreshToken(user);
+
         return AuthenticationResponseDTO.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)

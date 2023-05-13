@@ -4,12 +4,10 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import pl.courses.online_courses_backend.authentication.Role;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -41,6 +39,10 @@ public class UsersEntity extends BaseEntity implements UserDetails {
 
     @ManyToMany(mappedBy = "users")
     Set<CoursesEntity> courses;
+
+
+    @OneToMany(mappedBy = "user")
+    private Set<TokenEntity> tokens;
 
 
     @Override

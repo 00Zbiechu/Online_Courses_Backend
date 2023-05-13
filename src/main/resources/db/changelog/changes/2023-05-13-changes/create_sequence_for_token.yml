@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_sequence_token_id_seq
+      author: mzbiewski
+      changes:
+        -  createSequence:
+             sequenceName: token_id_seq
+             startValue: 1

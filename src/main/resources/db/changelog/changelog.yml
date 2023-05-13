@@ -29,3 +29,12 @@ databaseChangeLog:
   - include:
       file: ./changes/2023-05-07-changes/modify_table_users_change_column_password_length.yml
       relativeToChangelogFile: true
+  - include:
+      file: ./changes/2023-05-13-changes/create_table_token.yml
+      relativeToChangelogFile: true
+  - include:
+      file: ./changes/2023-05-13-changes/create_sequence_for_token.yml
+      relativeToChangelogFile: true
+  - include:
+      file: ./changes/2023-05-14-changes/add_foreign_key_to_token.yml
+      relativeToChangelogFile: true
