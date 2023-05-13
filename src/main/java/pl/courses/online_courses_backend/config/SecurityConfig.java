@@ -1,18 +1,21 @@
-package pl.courses.online_courses_backend.authentication;
+package pl.courses.online_courses_backend.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import pl.courses.online_courses_backend.authentication.JwtAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
@@ -26,10 +29,13 @@ public class SecurityConfig {
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/users/register", "/api/users/authenticate", "/api/courses/how-many-courses", "/api/courses/get-course-page", "/api/courses/search-for-courses")
-                .permitAll()
-                .requestMatchers("/api/courses/add-course", "/api/courses/upload-file", "/api/courses/get-course-data-for-calendar", "/api/courses/get-course-data-for-edit")
-                .hasRole(String.valueOf(Role.USER))
+                .requestMatchers(
+                        "/api/users/register",
+                        "/api/users/authenticate",
+                        "/api/courses/how-many-courses",
+                        "/api/courses/get-course-page",
+                        "/api/courses/search-for-courses"
+                ).permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
