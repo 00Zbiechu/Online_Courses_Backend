@@ -3,8 +3,8 @@ package pl.courses.online_courses_backend.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.courses.online_courses_backend.authentication.AuthenticationRequest;
-import pl.courses.online_courses_backend.authentication.AuthenticationResponse;
+import pl.courses.online_courses_backend.model.AuthenticationRequestDTO;
+import pl.courses.online_courses_backend.model.AuthenticationResponseDTO;
 import pl.courses.online_courses_backend.model.UsersDTO;
 import pl.courses.online_courses_backend.service.UserService;
 
@@ -23,13 +23,13 @@ public class UsersController extends BaseController<UsersDTO, UserService> {
 
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody UsersDTO usersDTO) {
+    public ResponseEntity<AuthenticationResponseDTO> register(@RequestBody UsersDTO usersDTO) {
         return ResponseEntity.ok(userService.register(usersDTO));
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest authenticationRequest) {
-        return ResponseEntity.ok(userService.authenticate(authenticationRequest));
+    public ResponseEntity<AuthenticationResponseDTO> authenticate(@RequestBody AuthenticationRequestDTO authenticationRequestDTO) {
+        return ResponseEntity.ok(userService.authenticate(authenticationRequestDTO));
     }
 
 }

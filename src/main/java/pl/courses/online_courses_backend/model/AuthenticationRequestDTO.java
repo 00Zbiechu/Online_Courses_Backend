@@ -1,4 +1,4 @@
-package pl.courses.online_courses_backend.authentication;
+package pl.courses.online_courses_backend.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationResponse {
+public class AuthenticationRequestDTO {
 
-    private String token;
+    private String username;
+
+    private String password;
 
 }

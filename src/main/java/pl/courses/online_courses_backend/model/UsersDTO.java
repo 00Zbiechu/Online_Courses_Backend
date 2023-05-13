@@ -1,6 +1,8 @@
 package pl.courses.online_courses_backend.model;
 
 
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.*;
 import pl.courses.online_courses_backend.authentication.Role;
 
@@ -18,6 +20,7 @@ public class UsersDTO {
 
     private String password;
 
+    @Enumerated(EnumType.STRING)
     private Role role;
 
 

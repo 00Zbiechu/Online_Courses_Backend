@@ -22,27 +22,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http
+        return http
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers
-                        (
-                                "/api/users/register",
-                                "/api/users/authenticate",
-                                "/api/courses/how-many-courses",
-                                "/api/courses/get-course-page",
-                                "/api/courses/search-for-courses"
-                        )
+                .requestMatchers("/api/users/register", "/api/users/authenticate", "/api/courses/how-many-courses", "/api/courses/get-course-page", "/api/courses/search-for-courses")
                 .permitAll()
-                .requestMatchers
-                        (
-                                "/api/courses/add-course",
-                                "/api/courses/upload-file",
-                                "/api/courses/get-course-data-for-calendar",
-                                "/api/courses/get-course-data-for-edit"
-                        )
-                .hasRole("USER")
+                .requestMatchers("/api/courses/add-course", "/api/courses/upload-file", "/api/courses/get-course-data-for-calendar", "/api/courses/get-course-data-for-edit")
+                .hasRole(String.valueOf(Role.USER))
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -50,10 +37,9 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
 
-
-        return http.build();
     }
 
 }

@@ -6,8 +6,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.courses.online_courses_backend.authentication.AuthenticationRequest;
-import pl.courses.online_courses_backend.authentication.AuthenticationResponse;
+import pl.courses.online_courses_backend.model.AuthenticationRequestDTO;
+import pl.courses.online_courses_backend.model.AuthenticationResponseDTO;
 import pl.courses.online_courses_backend.authentication.JwtService;
 import pl.courses.online_courses_backend.authentication.Role;
 import pl.courses.online_courses_backend.entity.UsersEntity;
@@ -41,28 +41,28 @@ public class UsersServiceImpl extends AbstractService<UsersEntity, UsersDTO> imp
     }
 
     @Override
-    public AuthenticationResponse register(UsersDTO usersDTO) {
+    public AuthenticationResponseDTO register(UsersDTO usersDTO) {
         usersDTO.setPassword(passwordEncoder.encode(usersDTO.getPassword()));
         usersDTO.setRole(Role.USER);
         UsersEntity user = usersMapper.toEntity(usersDTO);
         usersRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
+        return AuthenticationResponseDTO.builder()
                 .token(jwtToken).build();
     }
 
     @Override
-    public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
+    public AuthenticationResponseDTO authenticate(AuthenticationRequestDTO authenticationRequestDTO) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        authenticationRequest.getUsername(),
-                        authenticationRequest.getPassword()
+                        authenticationRequestDTO.getUsername(),
+                        authenticationRequestDTO.getPassword()
                 )
         );
-        var user = usersRepository.findByUsername(authenticationRequest.getUsername())
+        var user = usersRepository.findByUsername(authenticationRequestDTO.getUsername())
                 .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
+        return AuthenticationResponseDTO.builder()
                 .token(jwtToken).build();
 
     }

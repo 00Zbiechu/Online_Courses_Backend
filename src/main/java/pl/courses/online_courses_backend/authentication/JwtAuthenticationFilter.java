@@ -1,5 +1,6 @@
 package pl.courses.online_courses_backend.authentication;
 
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
