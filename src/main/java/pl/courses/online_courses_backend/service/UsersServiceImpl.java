@@ -51,18 +51,6 @@ public class UsersServiceImpl extends AbstractService<UsersEntity, UsersDTO> imp
     }
 
 
-    private void saveUserToken(UsersEntity user, String jwtToken) {
-        var token = TokenEntity.builder()
-                .user(user)
-                .token(jwtToken)
-                .tokenType(TokenType.BEARER)
-                .revoked(false)
-                .expired(false)
-                .build();
-
-        tokenRepository.save(token);
-    }
-
     @Override
     public AuthenticationResponseDTO register(UsersDTO usersDTO) {
         usersDTO.setPassword(passwordEncoder.encode(usersDTO.getPassword()));
@@ -73,7 +61,6 @@ public class UsersServiceImpl extends AbstractService<UsersEntity, UsersDTO> imp
         var jwtToken = jwtService.generateToken(user);
 
         var refreshToken = jwtService.generateRefreshToken(user);
-
         saveUserToken(savedUser, jwtToken);
 
         return AuthenticationResponseDTO.builder()
@@ -94,6 +81,7 @@ public class UsersServiceImpl extends AbstractService<UsersEntity, UsersDTO> imp
         var user = usersRepository.findByUsername(authenticationRequestDTO.getUsername())
                 .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
+        revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
         var refreshToken = jwtService.generateRefreshToken(user);
 
@@ -127,6 +115,8 @@ public class UsersServiceImpl extends AbstractService<UsersEntity, UsersDTO> imp
             if (jwtService.isTokenValid(refreshToken, userDetails)) {
 
                 var accessToken = jwtService.generateToken(userDetails);
+                revokeAllUserTokens(userDetails);
+                saveUserToken(userDetails, accessToken);
                 var authResponse = AuthenticationResponseDTO.builder()
                         .accessToken(accessToken)
                         .refreshToken(refreshToken)
@@ -137,5 +127,33 @@ public class UsersServiceImpl extends AbstractService<UsersEntity, UsersDTO> imp
             }
 
         }
+    }
+
+
+    private void saveUserToken(UsersEntity user, String jwtToken) {
+        var token = TokenEntity.builder()
+                .user(user)
+                .token(jwtToken)
+                .tokenType(TokenType.BEARER)
+                .revoked(false)
+                .expired(false)
+                .build();
+
+        tokenRepository.save(token);
+    }
+
+
+    private void revokeAllUserTokens(UsersEntity usersEntity) {
+        var validToken = tokenRepository.findAllValidTokensByUser(usersEntity.getId());
+        if (validToken.isEmpty()) {
+            return;
+        }
+        validToken.forEach(t -> {
+            t.setExpired(true);
+            t.setRevoked(true);
+        });
+        tokenRepository.saveAll(validToken);
+
+
     }
 }
