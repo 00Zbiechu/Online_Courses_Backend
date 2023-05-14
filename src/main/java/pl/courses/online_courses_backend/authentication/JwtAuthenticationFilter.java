@@ -26,11 +26,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
     private final TokenRepository tokenRepository;
 
+    String[] excludedEndpoints = {
+            "/api/users/register",
+            "/api/users/authenticate",
+            "/api/courses/how-many-courses",
+            "/api/courses/get-course-page",
+            "/api/courses/search-for-courses"
+    };
+
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain)
             throws ServletException, IOException {
+
+
+        for (String endpoint : excludedEndpoints) {
+            String uri = request.getRequestURI();
+            if (uri.contains(endpoint)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+        }
 
         final String authHeader = request.getHeader("Authorization");
         final String jwtToken;

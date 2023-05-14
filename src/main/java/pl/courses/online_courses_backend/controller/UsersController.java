@@ -2,6 +2,7 @@ package pl.courses.online_courses_backend.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,12 +28,13 @@ public class UsersController extends BaseController<UsersDTO, UserService> {
 
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponseDTO> register(@RequestBody UsersDTO usersDTO) {
+    public ResponseEntity<AuthenticationResponseDTO> register(@Valid @RequestBody UsersDTO usersDTO) {
         return ResponseEntity.ok(userService.register(usersDTO));
     }
 
+
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponseDTO> authenticate(@RequestBody AuthenticationRequestDTO authenticationRequestDTO) {
+    public ResponseEntity<AuthenticationResponseDTO> authenticate(@Valid @RequestBody AuthenticationRequestDTO authenticationRequestDTO) {
         return ResponseEntity.ok(userService.authenticate(authenticationRequestDTO));
     }
 

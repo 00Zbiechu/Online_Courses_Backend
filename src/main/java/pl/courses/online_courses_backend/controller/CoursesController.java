@@ -22,17 +22,16 @@ import java.time.LocalDate;
 @RestController
 @RequestMapping("/api/courses")
 @CrossOrigin(origins = "http://localhost:4200")
-@PreAuthorize("hasRole('USER')")
 @RequiredArgsConstructor
 public class CoursesController extends BaseController<CoursesDTO, CourseService> {
 
     private final CourseService courseService;
 
+
     @Override
     protected CourseService getService() {
         return courseService;
     }
-
 
     @GetMapping("/how-many-courses")
     public ResponseEntity<Long> howManyCoursesIsInDatabase() {
@@ -51,7 +50,6 @@ public class CoursesController extends BaseController<CoursesDTO, CourseService>
         return new ResponseEntity<>(courseService.findCoursesPage(pageRequest), HttpStatus.OK);
     }
 
-
     @GetMapping("/search-for-courses")
     public ResponseEntity<FoundCourses> findCourseWithCriteria(@RequestParam(value = "title", required = false) String title,
                                                                @RequestParam(value = "startDate", required = false) LocalDate startDate,
@@ -69,7 +67,6 @@ public class CoursesController extends BaseController<CoursesDTO, CourseService>
 
     }
 
-
     @PostMapping(value = "/upload-file")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile multipartFile) {
 
@@ -77,13 +74,13 @@ public class CoursesController extends BaseController<CoursesDTO, CourseService>
 
     }
 
-
     @GetMapping(value = "/get-course-data-for-calendar")
     public ResponseEntity<CoursesForCalendar> getCourseDataForCalendar() {
 
         return new ResponseEntity<>(courseService.getCourseDataForCalendar(), HttpStatus.OK);
 
     }
+
 
     @GetMapping(value = "/get-course-data-for-edit")
     public ResponseEntity<CoursesForEdit> getCourseDataForEdit() {
