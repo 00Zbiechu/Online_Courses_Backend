@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/courses/search-for-courses").permitAll()
                 .requestMatchers("/api/users/register").permitAll()
                 .requestMatchers("/api/users/authenticate").permitAll()
+                .requestMatchers("/api/users/logout").permitAll()
 
                 .requestMatchers("/api/courses/get-course-data-for-calendar").hasRole(USER.name())
                 .requestMatchers("/api/courses/get-course-data-for-edit").hasRole(USER.name())

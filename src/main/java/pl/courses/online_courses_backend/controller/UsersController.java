@@ -1,5 +1,6 @@
 package pl.courses.online_courses_backend.controller;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -42,5 +43,10 @@ public class UsersController extends BaseController<UsersDTO, UserService> {
     @PostMapping("/refresh-token")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         userService.refreshToken(request, response);
+    }
+
+    @PostMapping("/logout")
+    public void logout(HttpServletRequest request) throws ServletException {
+        request.logout();
     }
 }
