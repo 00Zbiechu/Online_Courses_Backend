@@ -1,8 +1,5 @@
 package pl.courses.online_courses_backend.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,8 +18,6 @@ import pl.courses.online_courses_backend.model.AuthenticationResponseDTO;
 import pl.courses.online_courses_backend.model.UsersDTO;
 import pl.courses.online_courses_backend.repository.TokenRepository;
 import pl.courses.online_courses_backend.repository.UsersRepository;
-
-import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
@@ -92,41 +87,35 @@ public class UsersServiceImpl extends AbstractService<UsersEntity, UsersDTO> imp
 
     }
 
+
     @Override
-    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        final String authHeader = request.getHeader("Authorization");
-        final String refreshToken;
+    public AuthenticationResponseDTO refreshToken(AuthenticationResponseDTO authenticationResponseDTO) {
+
         final String username;
 
-
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return;
-        }
-
-
-        refreshToken = authHeader.substring(7);
-        username = jwtService.extractUsername(refreshToken);
+        username = jwtService.extractUsername(authenticationResponseDTO.getRefreshToken());
 
 
         if (username != null) {
 
             var userDetails = this.usersRepository.findByUsername(username).orElseThrow();
 
-            if (jwtService.isTokenValid(refreshToken, userDetails)) {
 
-                var accessToken = jwtService.generateToken(userDetails);
-                revokeAllUserTokens(userDetails);
-                saveUserToken(userDetails, accessToken);
-                var authResponse = AuthenticationResponseDTO.builder()
-                        .accessToken(accessToken)
-                        .refreshToken(refreshToken)
-                        .build();
+            var newAccessToken = jwtService.generateToken(userDetails);
+            var newRefreshToken = jwtService.generateRefreshToken(userDetails);
 
-                new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
+            revokeAllUserTokens(userDetails);
+            saveUserToken(userDetails, newAccessToken);
 
-            }
+            return AuthenticationResponseDTO.builder()
+                    .accessToken(newAccessToken)
+                    .refreshToken(newRefreshToken)
+                    .build();
+
 
         }
+
+        return null;
     }
 
 
