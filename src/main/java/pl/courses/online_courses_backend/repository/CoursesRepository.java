@@ -7,8 +7,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import pl.courses.online_courses_backend.entity.CoursesEntity;
-import pl.courses.online_courses_backend.projection.CourseForCalendar;
-import pl.courses.online_courses_backend.projection.CourseForEdit;
+import pl.courses.online_courses_backend.projection.CourseForAdmin;
 import pl.courses.online_courses_backend.projection.CourseForList;
 
 import java.util.List;
@@ -20,12 +19,8 @@ public interface CoursesRepository extends JpaRepository<CoursesEntity, Long>, J
             "(c.title, c.startDate, c.endDate, c.topic, c.description, c.image) FROM CoursesEntity c")
     Page<CourseForList> findCoursesPage(Pageable pageable);
 
-    @Query("SELECT new pl.courses.online_courses_backend.projection.CourseForCalendar(c.title, c.startDate, c.endDate) " +
-            "FROM CoursesEntity c")
-    List<CourseForCalendar> getCourseDataForCalendar();
-
-    @Query("SELECT new pl.courses.online_courses_backend.projection.CourseForEdit" +
+    @Query("SELECT new pl.courses.online_courses_backend.projection.CourseForAdmin" +
             "(c.title, c.startDate, c.endDate, c.topic) FROM CoursesEntity c")
-    List<CourseForEdit> getCourseDataForEdit();
+    List<CourseForAdmin> getCourseDataForAdmin();
 
 }

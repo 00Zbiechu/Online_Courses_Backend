@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import pl.courses.online_courses_backend.repository.TokenRepository;
+import pl.courses.online_courses_backend.service.JwtService;
 
 import java.io.IOException;
 

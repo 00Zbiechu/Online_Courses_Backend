@@ -1,4 +1,4 @@
-package pl.courses.online_courses_backend.authentication;
+package pl.courses.online_courses_backend.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

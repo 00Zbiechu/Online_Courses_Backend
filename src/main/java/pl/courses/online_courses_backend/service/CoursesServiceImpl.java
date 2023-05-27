@@ -13,8 +13,7 @@ import pl.courses.online_courses_backend.mapper.BaseMapper;
 import pl.courses.online_courses_backend.mapper.CoursesMapper;
 import pl.courses.online_courses_backend.model.CoursesDTO;
 import pl.courses.online_courses_backend.projection.CourseForList;
-import pl.courses.online_courses_backend.projection.wrapper.CoursesForCalendar;
-import pl.courses.online_courses_backend.projection.wrapper.CoursesForEdit;
+import pl.courses.online_courses_backend.projection.wrapper.CoursesForAdmin;
 import pl.courses.online_courses_backend.repository.CoursesRepository;
 import pl.courses.online_courses_backend.specification.CourseSpecification;
 import pl.courses.online_courses_backend.specification.FoundCourses;
@@ -131,16 +130,9 @@ public class CoursesServiceImpl extends AbstractService<CoursesEntity, CoursesDT
     }
 
     @Override
-    public CoursesForCalendar getCourseDataForCalendar() {
-        return CoursesForCalendar.builder()
-                .courseForCalendarList(coursesRepository.getCourseDataForCalendar())
-                .build();
-    }
-
-    @Override
-    public CoursesForEdit getCourseDataForEdit() {
-        return CoursesForEdit.builder()
-                .courseForEditList(coursesRepository.getCourseDataForEdit())
+    public CoursesForAdmin getCourseDataForAdmin() {
+        return CoursesForAdmin.builder()
+                .courseForAdminList(coursesRepository.getCourseDataForAdmin())
                 .build();
     }
 

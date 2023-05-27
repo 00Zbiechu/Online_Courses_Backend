@@ -7,13 +7,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.courses.online_courses_backend.model.CoursesDTO;
 import pl.courses.online_courses_backend.projection.CourseForList;
-import pl.courses.online_courses_backend.projection.wrapper.CoursesForCalendar;
-import pl.courses.online_courses_backend.projection.wrapper.CoursesForEdit;
+import pl.courses.online_courses_backend.projection.wrapper.CoursesForAdmin;
 import pl.courses.online_courses_backend.service.CourseService;
 import pl.courses.online_courses_backend.specification.FoundCourses;
 
@@ -74,18 +72,10 @@ public class CoursesController extends BaseController<CoursesDTO, CourseService>
 
     }
 
-    @GetMapping(value = "/get-course-data-for-calendar")
-    public ResponseEntity<CoursesForCalendar> getCourseDataForCalendar() {
+    @GetMapping(value = "/get-course-data-for-admin")
+    public ResponseEntity<CoursesForAdmin> getCourseDataForCalendar() {
 
-        return new ResponseEntity<>(courseService.getCourseDataForCalendar(), HttpStatus.OK);
-
-    }
-
-
-    @GetMapping(value = "/get-course-data-for-edit")
-    public ResponseEntity<CoursesForEdit> getCourseDataForEdit() {
-
-        return new ResponseEntity<>(courseService.getCourseDataForEdit(), HttpStatus.OK);
+        return new ResponseEntity<>(courseService.getCourseDataForAdmin(), HttpStatus.OK);
 
     }
 

@@ -5,10 +5,14 @@ import lombok.Value;
 import java.time.LocalDate;
 
 @Value
-public class CourseForCalendar {
+public class CourseForAdmin {
 
     String title;
+
     LocalDate startDate;
+
     LocalDate endDate;
+
+    String topic;
 
 }

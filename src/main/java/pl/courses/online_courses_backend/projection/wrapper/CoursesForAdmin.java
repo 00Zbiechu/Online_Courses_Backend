@@ -1,7 +1,7 @@
 package pl.courses.online_courses_backend.projection.wrapper;
 
 import lombok.*;
-import pl.courses.online_courses_backend.projection.CourseForCalendar;
+import pl.courses.online_courses_backend.projection.CourseForAdmin;
 
 import java.util.List;
 
@@ -10,8 +10,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CoursesForCalendar {
+public class CoursesForAdmin {
 
-    List<CourseForCalendar> courseForCalendarList;
+    List<CourseForAdmin> courseForAdminList;
 
 }
