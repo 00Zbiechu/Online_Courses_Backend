@@ -33,7 +33,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/api/courses/how-many-courses",
             "/api/courses/get-course-page",
             "/api/courses/search-for-courses",
-            "/api/users/refresh-token"
+            "/api/users/refresh-token",
+            "/api/users/logout"
     };
 
     @Override

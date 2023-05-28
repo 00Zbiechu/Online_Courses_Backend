@@ -15,6 +15,7 @@ import pl.courses.online_courses_backend.mapper.UsersMapper;
 import pl.courses.online_courses_backend.model.AuthenticationRequestDTO;
 import pl.courses.online_courses_backend.model.AuthenticationResponseDTO;
 import pl.courses.online_courses_backend.model.UsersDTO;
+import pl.courses.online_courses_backend.projection.UsernameAndEmailForEachToken;
 import pl.courses.online_courses_backend.repository.TokenRepository;
 import pl.courses.online_courses_backend.repository.UsersRepository;
 
@@ -115,6 +116,11 @@ public class UsersServiceImpl extends AbstractService<UsersEntity, UsersDTO> imp
         }
 
         return null;
+    }
+
+    @Override
+    public UsernameAndEmailForEachToken findUsersEntitiesByAccessToken(String accessToken) {
+        return usersRepository.findUsersEntitiesByAccessToken(accessToken).orElseThrow();
     }
 
 

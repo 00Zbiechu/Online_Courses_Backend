@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.courses.online_courses_backend.model.AuthenticationRequestDTO;
 import pl.courses.online_courses_backend.model.AuthenticationResponseDTO;
 import pl.courses.online_courses_backend.model.UsersDTO;
+import pl.courses.online_courses_backend.projection.UsernameAndEmailForEachToken;
 import pl.courses.online_courses_backend.service.UserService;
 
 @RestController
@@ -22,6 +23,11 @@ public class UsersController extends BaseController<UsersDTO, UserService> {
     @Override
     protected UserService getService() {
         return userService;
+    }
+
+    @GetMapping("/get-username-and-email-by-token")
+    public ResponseEntity<UsernameAndEmailForEachToken> getUsernameAndEmailByToken(@RequestParam String accessToken) {
+        return ResponseEntity.ok(userService.findUsersEntitiesByAccessToken(accessToken));
     }
 
 

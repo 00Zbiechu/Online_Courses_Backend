@@ -42,11 +42,12 @@ public class SecurityConfig {
                 .requestMatchers("/api/users/register").permitAll()
                 .requestMatchers("/api/users/authenticate").permitAll()
                 .requestMatchers("/api/users/refresh-token").permitAll()
+                .requestMatchers("/api/users/logout").permitAll()
 
                 .requestMatchers("/api/courses/get-course-data-for-admin").hasRole(USER.name())
                 .requestMatchers("/api/courses/add-course").hasRole(USER.name())
                 .requestMatchers("/api/courses/upload-file").hasRole(USER.name())
-                .requestMatchers("/api/users/logout").hasRole(USER.name())
+                .requestMatchers("/api/users/get-username-and-email-by-token**").hasRole(USER.name())
 
                 .anyRequest()
                 .authenticated()
