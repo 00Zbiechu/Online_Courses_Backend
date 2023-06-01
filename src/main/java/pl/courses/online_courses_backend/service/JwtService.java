@@ -27,6 +27,8 @@ public class JwtService {
     @Value("${jwt.refresh.expiration}")
     private long refreshExpiration;
 
+    private final String EMAIL_CLAIMS_NAME = "email";
+
     public String extractUsername(String token) {
 
         return extractClaim(token, Claims::getSubject);
