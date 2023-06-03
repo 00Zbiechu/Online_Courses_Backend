@@ -13,6 +13,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import pl.courses.online_courses_backend.authentication.JwtAuthenticationFilter;
 
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 import static pl.courses.online_courses_backend.authentication.Role.USER;
 
 @Configuration
@@ -36,9 +37,10 @@ public class SecurityConfig {
                 .disable()
                 .authorizeHttpRequests()
 
-                .requestMatchers("/api/courses/get-course-page**").permitAll()
+                .requestMatchers(antMatcher("/api/courses/get-course-page**")).permitAll()
                 .requestMatchers("/api/courses/how-many-courses").permitAll()
-                .requestMatchers("/api/courses/search-for-courses").permitAll()
+                .requestMatchers(antMatcher("/api/courses/search-for-courses**")).permitAll()
+
                 .requestMatchers("/api/users/register").permitAll()
                 .requestMatchers("/api/users/authenticate").permitAll()
                 .requestMatchers("/api/users/refresh-token").permitAll()
@@ -47,7 +49,6 @@ public class SecurityConfig {
                 .requestMatchers("/api/courses/get-course-data-for-admin").hasRole(USER.name())
                 .requestMatchers("/api/courses/add-course").hasRole(USER.name())
                 .requestMatchers("/api/courses/upload-file").hasRole(USER.name())
-                .requestMatchers("/api/users/get-username-and-email-by-token**").hasRole(USER.name())
 
                 .anyRequest()
                 .authenticated()

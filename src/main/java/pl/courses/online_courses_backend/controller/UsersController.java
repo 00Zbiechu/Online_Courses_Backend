@@ -38,7 +38,7 @@ public class UsersController extends BaseController<UsersDTO, UserService> {
 
 
     @PostMapping("/refresh-token")
-    public ResponseEntity<AuthenticationResponseDTO> refreshToken(@RequestBody AuthenticationResponseDTO authenticationResponseDTO) {
+    public ResponseEntity<AuthenticationResponseDTO> refreshToken(@Valid @RequestBody AuthenticationResponseDTO authenticationResponseDTO) {
         return ResponseEntity.ok(userService.refreshToken(authenticationResponseDTO));
     }
 
