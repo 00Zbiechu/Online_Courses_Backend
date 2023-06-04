@@ -1,22 +1,26 @@
 package pl.courses.online_courses_backend.projection;
 
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDate;
 
-@Value
-public class CourseForList {
+public interface CourseForList {
 
-    String title;
+    String getTitle();
 
-    LocalDate startDate;
+    @Value("#{target.start_date}")
+    LocalDate getStartDate();
 
-    LocalDate endDate;
+    @Value("#{target.end_date}")
+    LocalDate getEndDate();
 
-    String topic;
+    String getTopic();
 
-    String description;
+    String getDescription();
 
-    String image;
+    String getImage();
+    
+
+    String getUsername();
 
 }
