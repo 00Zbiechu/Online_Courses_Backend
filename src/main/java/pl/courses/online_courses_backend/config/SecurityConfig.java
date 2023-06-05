@@ -46,7 +46,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/users/refresh-token").permitAll()
                 .requestMatchers("/api/users/logout").permitAll()
 
-                .requestMatchers("/api/courses/get-course-data-for-admin").hasRole(USER.name())
+                .requestMatchers("/api/courses/get-course-data-for-admin**").hasRole(USER.name())
                 .requestMatchers("/api/courses/add-course").hasRole(USER.name())
                 .requestMatchers("/api/courses/upload-file").hasRole(USER.name())
 

@@ -21,8 +21,9 @@ public interface CoursesRepository extends JpaRepository<CoursesEntity, Long>, J
             "INNER JOIN users u ON cu.users_id = u.id", nativeQuery = true)
     Page<CourseForList> findCoursesPage(Pageable pageable);
 
-    @Query("SELECT new pl.courses.online_courses_backend.projection.CourseForAdmin" +
-            "(c.title, c.startDate, c.endDate, c.topic) FROM CoursesEntity c")
-    List<CourseForAdmin> getCourseDataForAdmin();
+    @Query(value = "SELECT c.title, c.start_date, c.end_date, c.topic " +
+            "FROM courses c INNER JOIN courses_users cu ON c.id = cu.courses_id " +
+            "INNER JOIN users u ON cu.users_id = u.id where u.username = :username", nativeQuery = true)
+    List<CourseForAdmin> getCourseDataForAdmin(String username);
 
 }

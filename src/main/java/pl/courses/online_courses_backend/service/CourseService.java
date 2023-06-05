@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
+import pl.courses.online_courses_backend.model.AddCoursesDTO;
 import pl.courses.online_courses_backend.model.CoursesDTO;
 import pl.courses.online_courses_backend.projection.CourseForList;
 import pl.courses.online_courses_backend.projection.wrapper.CoursesForAdmin;
@@ -17,7 +18,7 @@ public interface CourseService extends BaseService<CoursesDTO> {
 
     Page<CourseForList> findCoursesPage(Pageable pageable);
 
-    CoursesDTO addCourseWithRandomImageName(CoursesDTO coursesDTO);
+    CoursesDTO addCourseWithRandomImageName(AddCoursesDTO addCoursesDTO);
 
     String uploadImageCourseImage(MultipartFile multipartFile);
 
@@ -25,7 +26,7 @@ public interface CourseService extends BaseService<CoursesDTO> {
 
     PageRequest buildPageRequestForCoursePage(Integer page, Integer size, String sort, String order);
 
-    CoursesForAdmin getCourseDataForAdmin();
+    CoursesForAdmin getCourseDataForAdmin(String username);
 
 
 

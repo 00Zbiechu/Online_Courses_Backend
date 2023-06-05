@@ -19,7 +19,6 @@ public interface CourseForList {
     String getDescription();
 
     String getImage();
-    
 
     String getUsername();
 

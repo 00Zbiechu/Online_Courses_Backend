@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import pl.courses.online_courses_backend.model.AddCoursesDTO;
 import pl.courses.online_courses_backend.model.CoursesDTO;
 import pl.courses.online_courses_backend.projection.CourseForList;
 import pl.courses.online_courses_backend.projection.wrapper.CoursesForAdmin;
@@ -59,9 +60,9 @@ public class CoursesController extends BaseController<CoursesDTO, CourseService>
     }
 
     @PostMapping(value = "/add-course")
-    public ResponseEntity<CoursesDTO> addCourse(@Valid @RequestBody CoursesDTO course) {
+    public ResponseEntity<CoursesDTO> addCourse(@Valid @RequestBody AddCoursesDTO addCoursesDTO) {
 
-        return new ResponseEntity<>(courseService.addCourseWithRandomImageName(course), HttpStatus.CREATED);
+        return new ResponseEntity<>(courseService.addCourseWithRandomImageName(addCoursesDTO), HttpStatus.CREATED);
 
     }
 
@@ -73,9 +74,9 @@ public class CoursesController extends BaseController<CoursesDTO, CourseService>
     }
 
     @GetMapping(value = "/get-course-data-for-admin")
-    public ResponseEntity<CoursesForAdmin> getCourseDataForCalendar() {
+    public ResponseEntity<CoursesForAdmin> getCourseDataForCalendar(@RequestParam("username") String username) {
 
-        return new ResponseEntity<>(courseService.getCourseDataForAdmin(), HttpStatus.OK);
+        return new ResponseEntity<>(courseService.getCourseDataForAdmin(username), HttpStatus.OK);
 
     }
 

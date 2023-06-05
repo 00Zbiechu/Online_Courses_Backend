@@ -45,8 +45,8 @@ public class CoursesEntity extends BaseEntity {
     @ManyToMany
     @JoinTable(
             name = "COURSES_USERS",
-            joinColumns = @JoinColumn(name = "course_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
+            joinColumns = @JoinColumn(name = "courses_id"),
+            inverseJoinColumns = @JoinColumn(name = "users_id")
     )
     Set<UsersEntity> users;
 

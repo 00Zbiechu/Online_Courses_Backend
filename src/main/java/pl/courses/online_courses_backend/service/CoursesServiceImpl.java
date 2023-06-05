@@ -9,12 +9,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.courses.online_courses_backend.entity.CoursesEntity;
+import pl.courses.online_courses_backend.entity.UsersEntity;
 import pl.courses.online_courses_backend.mapper.BaseMapper;
 import pl.courses.online_courses_backend.mapper.CoursesMapper;
+import pl.courses.online_courses_backend.model.AddCoursesDTO;
 import pl.courses.online_courses_backend.model.CoursesDTO;
 import pl.courses.online_courses_backend.projection.CourseForList;
 import pl.courses.online_courses_backend.projection.wrapper.CoursesForAdmin;
 import pl.courses.online_courses_backend.repository.CoursesRepository;
+import pl.courses.online_courses_backend.repository.UsersRepository;
 import pl.courses.online_courses_backend.specification.CourseSpecification;
 import pl.courses.online_courses_backend.specification.FoundCourses;
 import pl.courses.online_courses_backend.specification.SearchCriteria;
@@ -25,11 +28,13 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class CoursesServiceImpl extends AbstractService<CoursesEntity, CoursesDTO> implements CourseService {
 
+    private final UsersRepository usersRepository;
 
     private final CoursesRepository coursesRepository;
 
@@ -63,9 +68,20 @@ public class CoursesServiceImpl extends AbstractService<CoursesEntity, CoursesDT
     }
 
     @Override
-    public CoursesDTO addCourseWithRandomImageName(CoursesDTO coursesDTO) {
-        coursesDTO.setImage(generateRandomImageName());
-        return create(coursesDTO);
+    public CoursesDTO addCourseWithRandomImageName(AddCoursesDTO addCoursesDTO) {
+        addCoursesDTO.setImage(generateRandomImageName());
+
+        UsersEntity usersEntity = usersRepository.findByUsername(addCoursesDTO.getUsername()).orElseThrow();
+
+        CoursesDTO coursesDTO = CoursesMapper.INSTANCE.toCoursesDTOFromAddCoursesDTO(addCoursesDTO);
+
+        CoursesEntity coursesEntity = CoursesMapper.INSTANCE.toEntity(coursesDTO);
+
+        coursesEntity.setUsers((Set.of(usersEntity)));
+
+        coursesRepository.save(coursesEntity);
+
+        return coursesDTO;
     }
 
 
@@ -130,9 +146,9 @@ public class CoursesServiceImpl extends AbstractService<CoursesEntity, CoursesDT
     }
 
     @Override
-    public CoursesForAdmin getCourseDataForAdmin() {
+    public CoursesForAdmin getCourseDataForAdmin(String username) {
         return CoursesForAdmin.builder()
-                .courseForAdminList(coursesRepository.getCourseDataForAdmin())
+                .courseForAdminList(coursesRepository.getCourseDataForAdmin(username))
                 .build();
     }
 
