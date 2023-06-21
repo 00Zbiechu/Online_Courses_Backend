@@ -123,6 +123,11 @@ public class CoursesServiceImpl extends AbstractService<CoursesEntity, CoursesDT
         List<FoundCourse> list = coursesRepository.findAll(courseSpecification).stream()
                 .map(coursesMapper::toFoundCourse).toList();
 
+        for (FoundCourse course : list) {
+            String userUsername = usersRepository.findUsernameByCourseTitle(course.getTitle()).orElseThrow();
+            course.setUsername(userUsername);
+        }
+
 
         return FoundCourses.builder().foundCoursesList(list).build();
 
