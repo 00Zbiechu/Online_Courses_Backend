@@ -1,13 +1,11 @@
 package pl.courses.online_courses_backend.specification;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import pl.courses.online_courses_backend.entity.CoursesEntity;
+import pl.courses.online_courses_backend.entity.UsersEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,28 +34,18 @@ public class CourseSpecification implements Specification<CoursesEntity> {
         List<Predicate> predicates = new ArrayList<>();
 
         for (SearchCriteria criteria : searchCriteria) {
-            if (criteria.getOperation().equals(SearchOperations.MATCH)) {
-                predicates.add(
-                        builder.like(
-                                builder.lower(root.get(criteria.getKey()))
-                                , "%" + criteria.getValue().toString().toLowerCase() + "%")
-                );
+            if (criteria.getKey().contains(".")) {
+                String[] joinKeys = criteria.getKey().split("\\.");
+                Join<CoursesEntity, UsersEntity> join = root.join(joinKeys[0]);
+                predicates.add(builder.like(builder.lower(join.get(joinKeys[1])), "%" + criteria.getValue().toString().toLowerCase() + "%"));
+            } else if (criteria.getOperation().equals(SearchOperations.MATCH)) {
+                predicates.add(builder.like(builder.lower(root.get(criteria.getKey())), "%" + criteria.getValue().toString().toLowerCase() + "%"));
             } else if (criteria.getOperation().equals(SearchOperations.MATCH_END)) {
-                predicates.add(
-                        builder.like(
-                                builder.lower(root.get(criteria.getKey())),
-                                criteria.getValue().toString().toLowerCase() + "%")
-                );
+                predicates.add(builder.like(builder.lower(root.get(criteria.getKey())), criteria.getValue().toString().toLowerCase() + "%"));
             } else if (criteria.getOperation().equals(SearchOperations.MATCH_START)) {
-                predicates.add
-                        (builder.like(
-                                builder.lower(root.get(criteria.getKey())),
-                                "%" + criteria.getValue().toString().toLowerCase())
-                        );
+                predicates.add(builder.like(builder.lower(root.get(criteria.getKey())), "%" + criteria.getValue().toString().toLowerCase()));
             } else if (criteria.getOperation().equals(SearchOperations.EQUAL)) {
-                predicates.add(
-                        builder.equal(root.get(
-                                criteria.getKey()), criteria.getValue()));
+                predicates.add(builder.equal(root.get(criteria.getKey()), criteria.getValue()));
             }
         }
 

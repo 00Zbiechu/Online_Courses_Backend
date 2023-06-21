@@ -11,6 +11,6 @@ import java.util.List;
 @Builder
 public class FoundCourses {
 
-    List<CoursesDTO> foundCoursesList;
+    List<FoundCourse> foundCoursesList;
 
 }

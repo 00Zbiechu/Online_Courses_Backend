@@ -22,13 +22,11 @@ public interface CourseService extends BaseService<CoursesDTO> {
 
     String uploadImageCourseImage(MultipartFile multipartFile);
 
-    FoundCourses searchForCourses(String title, LocalDate startDate, LocalDate endDate, String topic);
+    FoundCourses searchForCourses(String title, LocalDate startDate, LocalDate endDate, String topic, String username);
 
     PageRequest buildPageRequestForCoursePage(Integer page, Integer size, String sort, String order);
 
     CoursesForAdmin getCourseDataForAdmin(String username);
-
-
 
 
 }

@@ -18,10 +18,7 @@ import pl.courses.online_courses_backend.projection.CourseForList;
 import pl.courses.online_courses_backend.projection.wrapper.CoursesForAdmin;
 import pl.courses.online_courses_backend.repository.CoursesRepository;
 import pl.courses.online_courses_backend.repository.UsersRepository;
-import pl.courses.online_courses_backend.specification.CourseSpecification;
-import pl.courses.online_courses_backend.specification.FoundCourses;
-import pl.courses.online_courses_backend.specification.SearchCriteria;
-import pl.courses.online_courses_backend.specification.SearchOperations;
+import pl.courses.online_courses_backend.specification.*;
 import pl.courses.online_courses_backend.util.FileStorageUtil;
 
 import java.io.IOException;
@@ -112,24 +109,20 @@ public class CoursesServiceImpl extends AbstractService<CoursesEntity, CoursesDT
     }
 
     @Override
-    public FoundCourses searchForCourses(String title, LocalDate startDate, LocalDate endDate, String topic) {
-
-        CoursesDTO coursesDTO = CoursesDTO.builder()
-                .title(title)
-                .startDate(startDate)
-                .endDate(endDate)
-                .topic(topic)
-                .build();
+    public FoundCourses searchForCourses(String title, LocalDate startDate, LocalDate endDate, String topic, String username) {
 
         courseSpecification.clear();
 
-        courseSpecification.add(new SearchCriteria("title", coursesDTO.getTitle(), SearchOperations.MATCH));
-        courseSpecification.add(new SearchCriteria("startDate", coursesDTO.getStartDate(), SearchOperations.EQUAL));
-        courseSpecification.add(new SearchCriteria("endDate", coursesDTO.getEndDate(), SearchOperations.EQUAL));
-        courseSpecification.add(new SearchCriteria("topic", coursesDTO.getTopic(), SearchOperations.MATCH));
+        courseSpecification.add(new SearchCriteria("title", title, SearchOperations.MATCH));
+        courseSpecification.add(new SearchCriteria("startDate", startDate, SearchOperations.EQUAL));
+        courseSpecification.add(new SearchCriteria("endDate", endDate, SearchOperations.EQUAL));
+        courseSpecification.add(new SearchCriteria("topic", topic, SearchOperations.MATCH));
+        courseSpecification.add(new SearchCriteria("users.username", username, SearchOperations.MATCH));
 
-        List<CoursesDTO> list = coursesRepository.findAll(courseSpecification).stream()
-                .map(coursesMapper::toDTO).toList();
+
+        List<FoundCourse> list = coursesRepository.findAll(courseSpecification).stream()
+                .map(coursesMapper::toFoundCourse).toList();
+
 
         return FoundCourses.builder().foundCoursesList(list).build();
 

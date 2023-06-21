@@ -53,9 +53,10 @@ public class CoursesController extends BaseController<CoursesDTO, CourseService>
     public ResponseEntity<FoundCourses> findCourseWithCriteria(@RequestParam(value = "title", required = false) String title,
                                                                @RequestParam(value = "startDate", required = false) LocalDate startDate,
                                                                @RequestParam(value = "endDate", required = false) LocalDate endDate,
-                                                               @RequestParam(value = "topic", required = false) String topic) {
+                                                               @RequestParam(value = "topic", required = false) String topic,
+                                                               @RequestParam(value = "username", required = false) String username) {
 
-        return new ResponseEntity<>(courseService.searchForCourses(title, startDate, endDate, topic), HttpStatus.OK);
+        return new ResponseEntity<>(courseService.searchForCourses(title, startDate, endDate, topic, username), HttpStatus.OK);
 
     }
 
