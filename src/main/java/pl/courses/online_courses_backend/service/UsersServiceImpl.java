@@ -34,6 +34,8 @@ public class UsersServiceImpl extends AbstractService<UsersEntity, UsersDTO> imp
 
     private final AuthenticationManager authenticationManager;
 
+    private final EmailSenderService emailSenderService;
+
     @Override
     protected JpaRepository<UsersEntity, Long> getRepository() {
         return usersRepository;
@@ -56,6 +58,8 @@ public class UsersServiceImpl extends AbstractService<UsersEntity, UsersDTO> imp
 
         var refreshToken = jwtService.generateRefreshToken(user);
         saveUserToken(savedUser, jwtToken);
+
+        emailSenderService.sendEmail(user.getEmail(), "Registration", "Registration was successful");
 
         return AuthenticationResponseDTO.builder()
                 .accessToken(jwtToken)
