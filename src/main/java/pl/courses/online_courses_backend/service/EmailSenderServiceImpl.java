@@ -22,5 +22,4 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 
         javaMailSender.send(message);
     }
-
 }

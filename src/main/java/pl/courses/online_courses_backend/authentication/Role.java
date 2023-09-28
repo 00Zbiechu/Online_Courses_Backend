@@ -10,6 +10,7 @@ import java.util.Set;
 
 import static pl.courses.online_courses_backend.authentication.Permission.*;
 
+@Getter
 @RequiredArgsConstructor
 public enum Role {
 
@@ -23,7 +24,6 @@ public enum Role {
             )
     );
 
-    @Getter
     private final Set<Permission> permissions;
 
     public List<SimpleGrantedAuthority> getAuthorities() {
@@ -34,5 +34,4 @@ public enum Role {
         authorities.add(new SimpleGrantedAuthority("ROLE_" + this.name()));
         return authorities;
     }
-
 }

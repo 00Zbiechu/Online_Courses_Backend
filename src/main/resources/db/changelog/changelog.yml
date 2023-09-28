@@ -1,40 +1,16 @@
 databaseChangeLog:
   - include:
-      file: ./changes/2023-04-22-changes/init_database.yml
+      file: ./changes/202309301212_init_database.yml
       relativeToChangelogFile: true
   - include:
-      file: ./changes/2023-04-22-changes/create_table_courses.yml
+      file: ./changes/202309301226_create_table_course.yml
       relativeToChangelogFile: true
   - include:
-      file: ./changes/2023-04-22-changes/create_table_users.yml
+      file: ./changes/202309301237_create_table_app_user.yml
       relativeToChangelogFile: true
   - include:
-      file: ./changes/2023-04-22-changes/create_table_courses_users.yml
+      file: ./changes/202309302007_create_table_token.yml
       relativeToChangelogFile: true
   - include:
-      file: ./changes/2023-04-23-changes/create_sequence.yml
-      relativeToChangelogFile: true
-  - include:
-      file: ./changes/2023-04-23-changes/modify_table_courses_add_description.yml
-      relativeToChangelogFile: true
-  - include:
-      file: ./changes/2023-04-23-changes/modify_table_courses_add_image_path.yml
-      relativeToChangelogFile: true
-  - include:
-      file: ./changes/2023-05-05-changes/modify_table_courses_change_column_name_form_data_to_date.yml
-      relativeToChangelogFile: true
-  - include:
-      file: ./changes/2023-05-07-changes/modify_table_users_add_role.yml
-      relativeToChangelogFile: true
-  - include:
-      file: ./changes/2023-05-07-changes/modify_table_users_change_column_password_length.yml
-      relativeToChangelogFile: true
-  - include:
-      file: ./changes/2023-05-13-changes/create_table_token.yml
-      relativeToChangelogFile: true
-  - include:
-      file: ./changes/2023-05-13-changes/create_sequence_for_token.yml
-      relativeToChangelogFile: true
-  - include:
-      file: ./changes/2023-05-14-changes/add_foreign_key_to_token.yml
+      file: ./changes/202309302023_create_table_course_users.yml
       relativeToChangelogFile: true

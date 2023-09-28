@@ -1,153 +1,166 @@
 package pl.courses.online_courses_backend.service;
 
+import com.google.common.collect.Sets;
+import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import pl.courses.online_courses_backend.entity.CoursesEntity;
-import pl.courses.online_courses_backend.entity.UsersEntity;
+import pl.courses.online_courses_backend.authentication.CurrentUser;
+import pl.courses.online_courses_backend.entity.CourseEntity;
+import pl.courses.online_courses_backend.entity.CourseUsersEntity;
+import pl.courses.online_courses_backend.entity.UserEntity;
+import pl.courses.online_courses_backend.entity.key.CourseUsersPK;
+import pl.courses.online_courses_backend.exception.CustomErrorException;
+import pl.courses.online_courses_backend.exception.errors.ErrorCodes;
 import pl.courses.online_courses_backend.mapper.BaseMapper;
-import pl.courses.online_courses_backend.mapper.CoursesMapper;
-import pl.courses.online_courses_backend.model.AddCoursesDTO;
-import pl.courses.online_courses_backend.model.CoursesDTO;
-import pl.courses.online_courses_backend.projection.CourseForList;
-import pl.courses.online_courses_backend.projection.wrapper.CoursesForAdmin;
-import pl.courses.online_courses_backend.repository.CoursesRepository;
-import pl.courses.online_courses_backend.repository.UsersRepository;
-import pl.courses.online_courses_backend.specification.*;
-import pl.courses.online_courses_backend.util.FileStorageUtil;
+import pl.courses.online_courses_backend.mapper.CourseMapper;
+import pl.courses.online_courses_backend.model.*;
+import pl.courses.online_courses_backend.model.wrapper.CoursesDTO;
+import pl.courses.online_courses_backend.model.wrapper.CoursesForListDTO;
+import pl.courses.online_courses_backend.model.wrapper.CoursesForUserDTO;
+import pl.courses.online_courses_backend.photo.PhotoCompressor;
+import pl.courses.online_courses_backend.photo.PhotoDTO;
+import pl.courses.online_courses_backend.repository.CourseRepository;
+import pl.courses.online_courses_backend.type.OrderType;
 
-import java.io.IOException;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Random;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class CoursesServiceImpl extends AbstractService<CoursesEntity, CoursesDTO> implements CourseService {
+public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO> implements CourseService {
 
-    private final UsersRepository usersRepository;
+    private final CurrentUser currentUser;
 
-    private final CoursesRepository coursesRepository;
+    private final CourseRepository courseRepository;
 
-    private final CoursesMapper coursesMapper;
+    private final CourseMapper courseMapper;
 
-    private final FileStorageUtil fileStorageUtil;
-
-    private final CourseSpecification courseSpecification;
-
+    private final PhotoCompressor photoCompressor;
 
     @Override
-    protected JpaRepository<CoursesEntity, Long> getRepository() {
-        return coursesRepository;
+    protected JpaRepository<CourseEntity, Long> getRepository() {
+        return courseRepository;
     }
 
     @Override
-    protected BaseMapper<CoursesEntity, CoursesDTO> getMapper() {
-        return coursesMapper;
+    protected BaseMapper<CourseEntity, CourseDTO> getMapper() {
+        return courseMapper;
     }
 
     @Override
     public Long howManyCoursesIsInDatabase() {
-        return coursesRepository.count();
+        return courseRepository.count();
     }
 
     @Override
-    public Page<CourseForList> findCoursesPage(Pageable pageable) {
-
-        return coursesRepository.findCoursesPage(pageable);
-
+    public CoursesForListDTO findCoursesPage(Pageable pageable) {
+        Page<CourseEntity> courses = courseRepository.findAll(pageable);
+        List<CourseForListDTO> coursesForList = courses.stream().map(courseMapper::toCourseForList).toList();
+        return CoursesForListDTO.builder().coursesForList(coursesForList).build();
     }
 
     @Override
-    public CoursesDTO addCourseWithRandomImageName(AddCoursesDTO addCoursesDTO) {
-        addCoursesDTO.setImage(generateRandomImageName());
+    public CoursesDTO addCourse(AddCourseDTO addCourseDTO) {
 
-        UsersEntity usersEntity = usersRepository.findByUsername(addCoursesDTO.getUsername()).orElseThrow();
+        UserEntity currentUserEntity = currentUser.getCurrentlyLoggedUser();
+        CourseEntity courseEntity = courseMapper.toEntity(addCourseDTO);
 
-        CoursesDTO coursesDTO = CoursesMapper.INSTANCE.toCoursesDTOFromAddCoursesDTO(addCoursesDTO);
-
-        CoursesEntity coursesEntity = CoursesMapper.INSTANCE.toEntity(coursesDTO);
-
-        coursesEntity.setUsers((Set.of(usersEntity)));
-
-        coursesRepository.save(coursesEntity);
-
-        return coursesDTO;
-    }
-
-
-    private String generateRandomImageName() {
-        int leftLimit = 97; // letter 'a'
-        int rightLimit = 122; // letter 'z'
-        Random random = new Random();
-
-        String generatedString = random.ints(leftLimit, rightLimit + 1)
-                .limit(16)
-                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-                .toString();
-
-        return generatedString + ".jpg";
-    }
-
-    @Override
-    public String uploadImageCourseImage(MultipartFile multipartFile) {
-
-        try {
-            fileStorageUtil.saveFile(multipartFile);
-        } catch (IOException e) {
-            return "Image save failed";
-        }
-
-        return "Image saved";
-
-    }
-
-    @Override
-    public FoundCourses searchForCourses(String title, LocalDate startDate, LocalDate endDate, String topic, String username) {
-
-        courseSpecification.clear();
-
-        courseSpecification.add(new SearchCriteria("title", title, SearchOperations.MATCH));
-        courseSpecification.add(new SearchCriteria("startDate", startDate, SearchOperations.EQUAL));
-        courseSpecification.add(new SearchCriteria("endDate", endDate, SearchOperations.EQUAL));
-        courseSpecification.add(new SearchCriteria("topic", topic, SearchOperations.MATCH));
-        courseSpecification.add(new SearchCriteria("users.username", username, SearchOperations.MATCH));
-
-
-        List<FoundCourse> list = coursesRepository.findAll(courseSpecification).stream()
-                .map(coursesMapper::toFoundCourse).toList();
-
-        for (FoundCourse course : list) {
-            String userUsername = usersRepository.findUsernameByCourseTitle(course.getTitle()).orElseThrow();
-            course.setUsername(userUsername);
-        }
-
-
-        return FoundCourses.builder().foundCoursesList(list).build();
-
-    }
-
-    @Override
-    public PageRequest buildPageRequestForCoursePage(Integer page, Integer size, String sort, String order) {
-
-        if (order.equals("ASC")) {
-            return PageRequest.of(page, size, Sort.by(sort).ascending());
-        }
-
-        return PageRequest.of(page, size, Sort.by(sort).descending());
-    }
-
-    @Override
-    public CoursesForAdmin getCourseDataForAdmin(String username) {
-        return CoursesForAdmin.builder()
-                .courseForAdminList(coursesRepository.getCourseDataForAdmin(username))
+        CourseUsersEntity courseUserEntity = CourseUsersEntity.builder()
+                .courseUsersPK(CourseUsersPK.builder()
+                        .courseEntity(courseEntity)
+                        .userEntity(currentUserEntity)
+                        .build())
+                .owner(Boolean.TRUE)
                 .build();
+
+        courseEntity.setCourseUser(Sets.newHashSet(courseUserEntity));
+        courseRepository.save(courseEntity);
+        return findAllCoursesOfUser();
     }
 
+    @Override
+    public CoursesDTO deleteCourse(Long courseId) {
+        var courseEntity = findCourseOfUser(courseId);
+        courseRepository.delete(courseEntity);
+        return findAllCoursesOfUser();
+    }
+
+    @Override
+    public PhotoDTO getCourseImage(Long courseId) {
+
+        var courseEntity = courseRepository
+                .findById(courseId)
+                .orElseThrow(() -> new CustomErrorException("course", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND));
+
+        return PhotoDTO.builder().photo(courseEntity.getPhoto()).build();
+    }
+
+    @Override
+    public PhotoDTO uploadCourseImage(Long courseId, MultipartFile photo) {
+
+        var courseEntity = findCourseOfUser(courseId);
+
+        Try.run(() -> {
+            var compressedPhoto = photoCompressor.resizeImage(photo, 200, 200);
+            courseEntity.setPhoto(compressedPhoto);
+            courseRepository.save(courseEntity);
+        }).onFailure(image -> {
+            throw new CustomErrorException("photo", ErrorCodes.WRONG_FIELD_FORMAT, HttpStatus.BAD_REQUEST);
+        });
+        return PhotoDTO.builder().photo(courseEntity.getPhoto()).build();
+    }
+
+    @Override
+    public PhotoDTO deleteCourseImage(Long courseId) {
+        var courseEntity = findCourseOfUser(courseId);
+        courseEntity.setPhoto(null);
+        var result = courseRepository.save(courseEntity);
+        return PhotoDTO.builder().photo(result.getPhoto()).build();
+    }
+
+    @Override
+    public PageRequest buildPageRequestForCoursePage(PaginationForCourseListDTO paginationForCourseListDTO) {
+
+        if (paginationForCourseListDTO.getOrder().equals(OrderType.ASC)) {
+            return PageRequest.of(
+                    paginationForCourseListDTO.getPage(),
+                    paginationForCourseListDTO.getSize(),
+                    Sort.by(paginationForCourseListDTO.getSort().getFieldName()).ascending()
+            );
+        }
+        return PageRequest.of(
+                paginationForCourseListDTO.getPage(),
+                paginationForCourseListDTO.getSize(),
+                Sort.by(paginationForCourseListDTO.getSort().getFieldName()).descending()
+        );
+    }
+
+    @Override
+    public CoursesForUserDTO getCourseDataForUser() {
+        List<CourseEntity> list = courseRepository.findCoursesCreatedByUser(currentUser.getCurrentlyLoggedUser().getId());
+        List<CourseForUserDTO> resultList = list.stream().map(courseMapper::toCourseForAdmin).toList();
+        return CoursesForUserDTO.builder().courseForUserDTOList(resultList).build();
+    }
+
+    private CourseEntity findCourseOfUser(Long courseId) {
+        List<CourseEntity> coursesCreatedByUser = courseRepository
+                .findCoursesCreatedByUser(currentUser.getCurrentlyLoggedUser().getId());
+
+        return coursesCreatedByUser.stream()
+                .filter(course -> courseId.equals(course.getId()))
+                .findFirst()
+                .orElseThrow(() -> new CustomErrorException("course", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND));
+    }
+
+    private CoursesDTO findAllCoursesOfUser() {
+        List<CourseEntity> list = courseRepository.findCoursesCreatedByUser(currentUser.getCurrentlyLoggedUser().getId());
+        List<CourseDTO> resultList = list.stream().map(courseMapper::toDTO).toList();
+        return CoursesDTO.builder().foundCoursesList(resultList).build();
+    }
 }

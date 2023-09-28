@@ -11,8 +11,6 @@ public enum Permission {
     USER_DELETE("user:delete"),
     USER_UPDATE("user:update");
 
-
     @Getter
     private final String permission;
-
 }

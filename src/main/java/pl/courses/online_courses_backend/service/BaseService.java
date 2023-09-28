@@ -2,7 +2,7 @@ package pl.courses.online_courses_backend.service;
 
 import java.util.List;
 
-public interface BaseService<D>{
+public interface BaseService<D> {
 
     List<D> get();
 
@@ -11,5 +11,4 @@ public interface BaseService<D>{
     D update(Long id, D dto);
 
     D delete(D dto);
-
 }

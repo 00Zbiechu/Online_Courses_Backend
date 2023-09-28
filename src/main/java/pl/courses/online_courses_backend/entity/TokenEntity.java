@@ -2,22 +2,20 @@ package pl.courses.online_courses_backend.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.Hibernate;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import pl.courses.online_courses_backend.authentication.TokenType;
 
-import java.util.Objects;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "TOKEN")
+@EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@SequenceGenerator(name = "generator_seq",
-        sequenceName = "token_id_seq",
-        allocationSize = 1
-)
 public class TokenEntity extends BaseEntity {
 
     private String token;
@@ -25,24 +23,14 @@ public class TokenEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private TokenType tokenType;
 
-    private boolean expired;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "user_id",
+            referencedColumnName = "id"
+    )
+    private UserEntity userEntity;
 
-    private boolean revoked;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private UsersEntity user;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        TokenEntity that = (TokenEntity) o;
-        return getId() != null && Objects.equals(getId(), that.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
+    @Column(nullable = false, updatable = false)
+    @CreatedDate
+    private LocalDateTime creationDate;
 }

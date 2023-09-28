@@ -1,32 +1,33 @@
 package pl.courses.online_courses_backend.service;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
-import pl.courses.online_courses_backend.model.AddCoursesDTO;
-import pl.courses.online_courses_backend.model.CoursesDTO;
-import pl.courses.online_courses_backend.projection.CourseForList;
-import pl.courses.online_courses_backend.projection.wrapper.CoursesForAdmin;
-import pl.courses.online_courses_backend.specification.FoundCourses;
+import pl.courses.online_courses_backend.model.AddCourseDTO;
+import pl.courses.online_courses_backend.model.CourseDTO;
+import pl.courses.online_courses_backend.model.PaginationForCourseListDTO;
+import pl.courses.online_courses_backend.model.wrapper.CoursesDTO;
+import pl.courses.online_courses_backend.model.wrapper.CoursesForListDTO;
+import pl.courses.online_courses_backend.model.wrapper.CoursesForUserDTO;
+import pl.courses.online_courses_backend.photo.PhotoDTO;
 
-import java.time.LocalDate;
-
-public interface CourseService extends BaseService<CoursesDTO> {
+public interface CourseService extends BaseService<CourseDTO> {
 
     Long howManyCoursesIsInDatabase();
 
-    Page<CourseForList> findCoursesPage(Pageable pageable);
+    CoursesForListDTO findCoursesPage(Pageable pageable);
 
-    CoursesDTO addCourseWithRandomImageName(AddCoursesDTO addCoursesDTO);
+    CoursesDTO addCourse(AddCourseDTO addCourseDTO);
 
-    String uploadImageCourseImage(MultipartFile multipartFile);
+    CoursesDTO deleteCourse(Long courseId);
 
-    FoundCourses searchForCourses(String title, LocalDate startDate, LocalDate endDate, String topic, String username);
+    PhotoDTO getCourseImage(Long courseId);
 
-    PageRequest buildPageRequestForCoursePage(Integer page, Integer size, String sort, String order);
+    PhotoDTO uploadCourseImage(Long courseId, MultipartFile multipartFile);
 
-    CoursesForAdmin getCourseDataForAdmin(String username);
+    PhotoDTO deleteCourseImage(Long courseId);
 
+    PageRequest buildPageRequestForCoursePage(PaginationForCourseListDTO paginationForCourseListDTO);
 
+    CoursesForUserDTO getCourseDataForUser();
 }

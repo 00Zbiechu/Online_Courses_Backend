@@ -1,0 +1,53 @@
+databaseChangeLog:
+  - changeSet:
+      id: create table APP_USER
+      author: mzbiewski
+      preConditions:
+        - onFail: MARK_RAN
+          not:
+            tableExists:
+              tableName: APP_USER
+      changes:
+        - createTable:
+            tableName: APP_USER
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    - primaryKey: true
+                      primaryKeyName: APP_USER_ID_PK
+                      nullable: false
+              - column:
+                  name: username
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(40)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(60)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: modification_date
+                  type: timestamp
+              - column:
+                  name: deleted
+                  type: boolean
+              - column:
+                  name: delete_date
+                  type: timestamp

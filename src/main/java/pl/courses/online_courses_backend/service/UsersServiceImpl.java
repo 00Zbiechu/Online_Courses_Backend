@@ -1,34 +1,32 @@
 package pl.courses.online_courses_backend.service;
 
+import com.google.common.collect.Sets;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.courses.online_courses_backend.authentication.Role;
 import pl.courses.online_courses_backend.authentication.TokenType;
 import pl.courses.online_courses_backend.entity.TokenEntity;
-import pl.courses.online_courses_backend.entity.UsersEntity;
+import pl.courses.online_courses_backend.entity.UserEntity;
+import pl.courses.online_courses_backend.exception.CustomErrorException;
+import pl.courses.online_courses_backend.exception.errors.ErrorCodes;
 import pl.courses.online_courses_backend.mapper.BaseMapper;
-import pl.courses.online_courses_backend.mapper.UsersMapper;
+import pl.courses.online_courses_backend.mapper.UserMapper;
 import pl.courses.online_courses_backend.model.AuthenticationRequestDTO;
 import pl.courses.online_courses_backend.model.AuthenticationResponseDTO;
-import pl.courses.online_courses_backend.model.UsersDTO;
-import pl.courses.online_courses_backend.repository.TokenRepository;
-import pl.courses.online_courses_backend.repository.UsersRepository;
+import pl.courses.online_courses_backend.model.UserDTO;
+import pl.courses.online_courses_backend.repository.UserRepository;
 
 @Service
 @RequiredArgsConstructor
-public class UsersServiceImpl extends AbstractService<UsersEntity, UsersDTO> implements UserService {
+public class UsersServiceImpl extends AbstractService<UserEntity, UserDTO> implements UserService {
 
-    private final UsersRepository usersRepository;
+    private final UserRepository userRepository;
 
-    private final TokenRepository tokenRepository;
-
-    private final UsersMapper usersMapper;
-
-    private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
     private final JwtService jwtService;
 
@@ -37,25 +35,23 @@ public class UsersServiceImpl extends AbstractService<UsersEntity, UsersDTO> imp
     private final EmailSenderService emailSenderService;
 
     @Override
-    protected JpaRepository<UsersEntity, Long> getRepository() {
-        return usersRepository;
+    protected JpaRepository<UserEntity, Long> getRepository() {
+        return userRepository;
     }
 
     @Override
-    protected BaseMapper<UsersEntity, UsersDTO> getMapper() {
-        return usersMapper;
+    protected BaseMapper<UserEntity, UserDTO> getMapper() {
+        return userMapper;
     }
 
-
     @Override
-    public AuthenticationResponseDTO register(UsersDTO usersDTO) {
-        usersDTO.setPassword(passwordEncoder.encode(usersDTO.getPassword()));
-        usersDTO.setRole(Role.USER);
-        UsersEntity user = usersMapper.toEntity(usersDTO);
+    public AuthenticationResponseDTO register(UserDTO userDTO) {
 
-        var savedUser = usersRepository.save(user);
+        UserEntity user = userMapper.toEntity(userDTO);
+        user.setRole(Role.USER);
+
+        var savedUser = userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
-
         var refreshToken = jwtService.generateRefreshToken(user);
         saveUserToken(savedUser, jwtToken);
 
@@ -67,7 +63,6 @@ public class UsersServiceImpl extends AbstractService<UsersEntity, UsersDTO> imp
                 .build();
     }
 
-
     @Override
     public AuthenticationResponseDTO authenticate(AuthenticationRequestDTO authenticationRequestDTO) {
         authenticationManager.authenticate(
@@ -76,8 +71,10 @@ public class UsersServiceImpl extends AbstractService<UsersEntity, UsersDTO> imp
                         authenticationRequestDTO.getPassword()
                 )
         );
-        var user = usersRepository.findByUsername(authenticationRequestDTO.getUsername())
-                .orElseThrow();
+        var user = userRepository
+                .findByUsername(authenticationRequestDTO.getUsername())
+                .orElseThrow(() -> new CustomErrorException("username", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND));
+
         var jwtToken = jwtService.generateToken(user);
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
@@ -87,22 +84,17 @@ public class UsersServiceImpl extends AbstractService<UsersEntity, UsersDTO> imp
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
                 .build();
-
     }
-
 
     @Override
     public AuthenticationResponseDTO refreshToken(AuthenticationResponseDTO authenticationResponseDTO) {
 
-        final String username;
-
-        username = jwtService.extractUsername(authenticationResponseDTO.getRefreshToken());
-
+        var username = jwtService.extractUsername(authenticationResponseDTO.getRefreshToken());
 
         if (username != null) {
 
-            var userDetails = this.usersRepository.findByUsername(username).orElseThrow();
-
+            var userDetails = this.userRepository.findByUsername(username)
+                    .orElseThrow(() -> new CustomErrorException("username", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND));
 
             var newAccessToken = jwtService.generateToken(userDetails);
             var newRefreshToken = jwtService.generateRefreshToken(userDetails);
@@ -114,38 +106,28 @@ public class UsersServiceImpl extends AbstractService<UsersEntity, UsersDTO> imp
                     .accessToken(newAccessToken)
                     .refreshToken(newRefreshToken)
                     .build();
-
-
         }
-
-        return null;
+        throw new CustomErrorException("username", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND);
     }
 
-
-    private void saveUserToken(UsersEntity user, String jwtToken) {
+    private void saveUserToken(UserEntity user, String jwtToken) {
         var token = TokenEntity.builder()
-                .user(user)
+                .userEntity(user)
                 .token(jwtToken)
                 .tokenType(TokenType.BEARER)
-                .revoked(false)
-                .expired(false)
                 .build();
 
-        tokenRepository.save(token);
+        if (user.getTokens() == null) {
+            user.setTokens(Sets.newHashSet(token));
+        } else {
+            user.getTokens().add(token);
+        }
+
+        userRepository.save(user);
     }
 
-
-    private void revokeAllUserTokens(UsersEntity usersEntity) {
-        var validToken = tokenRepository.findAllValidTokensByUser(usersEntity.getId());
-        if (validToken.isEmpty()) {
-            return;
-        }
-        validToken.forEach(t -> {
-            t.setExpired(true);
-            t.setRevoked(true);
-        });
-        tokenRepository.saveAll(validToken);
-
-
+    public void revokeAllUserTokens(UserEntity userEntity) {
+        userEntity.getTokens().clear();
+        userRepository.save(userEntity);
     }
 }

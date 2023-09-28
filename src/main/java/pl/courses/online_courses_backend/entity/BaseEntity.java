@@ -5,14 +5,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
-
+import lombok.Setter;
 
 @Getter
+@Setter
 @MappedSuperclass
-public class BaseEntity {
+public abstract class BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generator_seq")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
 }

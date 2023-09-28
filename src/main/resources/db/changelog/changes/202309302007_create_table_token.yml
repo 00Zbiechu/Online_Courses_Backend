@@ -1,0 +1,41 @@
+databaseChangeLog:
+  - changeSet:
+      id: create table TOKEN
+      author: mzbiewski
+      preConditions:
+        - onFail: MARK_RAN
+          not:
+            tableExists:
+              tableName: TOKEN
+      changes:
+        - createTable:
+            tableName: TOKEN
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    - primaryKey: true
+                      primaryKeyName: TOKEN_ID_PK
+                      nullable: false
+              - column:
+                  name: token
+                  type: varchar(200)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: token_type
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    referencedTableName: APP_USER
+                    referencedColumnNames: id
+                    foreignKeyName: TOKEN_APP_USER_ID_FK
