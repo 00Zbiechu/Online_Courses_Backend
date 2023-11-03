@@ -48,7 +48,7 @@ public class CourseController extends BaseController<CourseDTO, CourseService> {
         return new ResponseEntity<>(courseService.howManyCoursesIsInDatabase(), HttpStatus.OK);
     }
 
-    @GetMapping("/get-course-page")
+    @PostMapping("/get-course-page")
     public ResponseEntity<CoursesForListDTO> findCoursesPage(@Valid @RequestBody PaginationForCourseListDTO paginationForCourseListDTO) {
         PageRequest pageRequest = courseService.buildPageRequestForCoursePage(paginationForCourseListDTO);
         return new ResponseEntity<>(courseService.findCoursesPage(pageRequest), HttpStatus.OK);

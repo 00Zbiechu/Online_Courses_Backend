@@ -107,7 +107,7 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
         var courseEntity = findCourseOfUser(courseId);
 
         Try.run(() -> {
-            var compressedPhoto = photoCompressor.resizeImage(photo, 200, 200);
+            var compressedPhoto = photoCompressor.resizeImage(photo, 400, 400);
             courseEntity.setPhoto(compressedPhoto);
             courseRepository.save(courseEntity);
         }).onFailure(image -> {

@@ -28,7 +28,7 @@ public class PhotoCompressor {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         Thumbnails.of(originalImage)
                 .size(targetWidth, targetHeight)
-                .outputFormat("JPEG")
+                .outputFormat("jpeg")
                 .outputQuality(0.7)
                 .toOutputStream(outputStream);
 
