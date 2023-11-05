@@ -37,7 +37,7 @@ class GetCoursePageIT extends BaseTest {
         var paginationForCourseListDTORequest = TestFactory.PaginationForCourseListDTOFactory.createPaginationForCourseListDTO();
 
         //when:
-        var response = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.GET, PATH)
+        var response = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.POST, PATH)
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(paginationForCourseListDTORequest)));
 
@@ -74,7 +74,7 @@ class GetCoursePageIT extends BaseTest {
         var paginationForCourseListDTORequest = TestFactory.PaginationForCourseListDTOFactory.createPaginationForCourseListDTO();
 
         //when:
-        var response = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.GET, PATH)
+        var response = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.POST, PATH)
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(paginationForCourseListDTORequest)));
 
@@ -123,7 +123,7 @@ class GetCoursePageIT extends BaseTest {
                 .build();
 
         //when:
-        var response = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.GET, PATH)
+        var response = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.POST, PATH)
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(paginationForCourseListDTORequest)));
 
@@ -185,7 +185,7 @@ class GetCoursePageIT extends BaseTest {
                 .build();
 
         //when:
-        var response = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.GET, PATH)
+        var response = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.POST, PATH)
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(paginationForCourseListDTORequest)));
 
@@ -224,7 +224,7 @@ class GetCoursePageIT extends BaseTest {
                 .build();
 
         //when:
-        var response = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.GET, PATH)
+        var response = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.POST, PATH)
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(paginationForCourseListDTORequest)));
 

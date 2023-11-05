@@ -59,7 +59,7 @@ public class CourseController extends BaseController<CourseDTO, CourseService> {
         return new ResponseEntity<>(courseService.getCourseDataForUser(), HttpStatus.OK);
     }
 
-    @GetMapping("/search-for-courses")
+    @PostMapping("/search-for-courses")
     public ResponseEntity<CoursesForListDTO> searchForCourses(@RequestBody SearchForCourseDTO searchForCourseDTO) {
         return new ResponseEntity<>(courseDataProvider.searchForCourses(searchForCourseDTO), HttpStatus.OK);
     }
