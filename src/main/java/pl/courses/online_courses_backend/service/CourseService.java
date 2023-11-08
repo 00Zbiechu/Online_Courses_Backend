@@ -1,21 +1,20 @@
 package pl.courses.online_courses_backend.service;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 import pl.courses.online_courses_backend.model.AddCourseDTO;
 import pl.courses.online_courses_backend.model.CourseDTO;
+import pl.courses.online_courses_backend.model.CourseForListDTO;
 import pl.courses.online_courses_backend.model.PaginationForCourseListDTO;
 import pl.courses.online_courses_backend.model.wrapper.CoursesDTO;
-import pl.courses.online_courses_backend.model.wrapper.CoursesForListDTO;
 import pl.courses.online_courses_backend.model.wrapper.CoursesForUserDTO;
 import pl.courses.online_courses_backend.photo.PhotoDTO;
 
 public interface CourseService extends BaseService<CourseDTO> {
 
-    Long howManyCoursesIsInDatabase();
-
-    CoursesForListDTO findCoursesPage(Pageable pageable);
+    Page<CourseForListDTO> findCoursesPage(Pageable pageable);
 
     CoursesDTO addCourse(AddCourseDTO addCourseDTO);
 

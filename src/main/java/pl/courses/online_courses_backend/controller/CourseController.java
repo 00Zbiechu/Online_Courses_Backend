@@ -3,6 +3,7 @@ package pl.courses.online_courses_backend.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,12 +11,8 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.courses.online_courses_backend.dataprovider.CourseDataProvider;
-import pl.courses.online_courses_backend.model.AddCourseDTO;
-import pl.courses.online_courses_backend.model.CourseDTO;
-import pl.courses.online_courses_backend.model.PaginationForCourseListDTO;
-import pl.courses.online_courses_backend.model.SearchForCourseDTO;
+import pl.courses.online_courses_backend.model.*;
 import pl.courses.online_courses_backend.model.wrapper.CoursesDTO;
-import pl.courses.online_courses_backend.model.wrapper.CoursesForListDTO;
 import pl.courses.online_courses_backend.model.wrapper.CoursesForUserDTO;
 import pl.courses.online_courses_backend.photo.PhotoDTO;
 import pl.courses.online_courses_backend.service.CourseService;
@@ -43,13 +40,8 @@ public class CourseController extends BaseController<CourseDTO, CourseService> {
         return courseService;
     }
 
-    @GetMapping("/how-many-courses")
-    public ResponseEntity<Long> howManyCoursesIsInDatabase() {
-        return new ResponseEntity<>(courseService.howManyCoursesIsInDatabase(), HttpStatus.OK);
-    }
-
     @PostMapping("/get-course-page")
-    public ResponseEntity<CoursesForListDTO> findCoursesPage(@Valid @RequestBody PaginationForCourseListDTO paginationForCourseListDTO) {
+    public ResponseEntity<Page<CourseForListDTO>> findCoursesPage(@Valid @RequestBody PaginationForCourseListDTO paginationForCourseListDTO) {
         PageRequest pageRequest = courseService.buildPageRequestForCoursePage(paginationForCourseListDTO);
         return new ResponseEntity<>(courseService.findCoursesPage(pageRequest), HttpStatus.OK);
     }
@@ -60,7 +52,7 @@ public class CourseController extends BaseController<CourseDTO, CourseService> {
     }
 
     @PostMapping("/search-for-courses")
-    public ResponseEntity<CoursesForListDTO> searchForCourses(@RequestBody SearchForCourseDTO searchForCourseDTO) {
+    public ResponseEntity<Page<CourseForListDTO>> searchForCourses(@Valid @RequestBody SearchForCourseDTO searchForCourseDTO) {
         return new ResponseEntity<>(courseDataProvider.searchForCourses(searchForCourseDTO), HttpStatus.OK);
     }
 

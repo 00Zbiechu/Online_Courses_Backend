@@ -1,14 +1,13 @@
 package pl.courses.online_courses_backend.dataprovider;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
+import pl.courses.online_courses_backend.entity.CourseEntity;
 import pl.courses.online_courses_backend.mapper.CourseMapper;
 import pl.courses.online_courses_backend.model.CourseForListDTO;
 import pl.courses.online_courses_backend.model.SearchForCourseDTO;
-import pl.courses.online_courses_backend.model.wrapper.CoursesForListDTO;
 import pl.courses.online_courses_backend.queryservice.CourseQueryService;
-
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -18,11 +17,8 @@ public class CourseDataProvider {
 
     private final CourseMapper courseMapper;
 
-    public CoursesForListDTO searchForCourses(SearchForCourseDTO searchForCourseDTO) {
-        List<CourseForListDTO> foundCourses = courseQueryService.searchForCourses(searchForCourseDTO).stream()
-                .map(courseMapper::toCourseForList)
-                .toList();
-
-        return CoursesForListDTO.builder().coursesForList(foundCourses).build();
+    public Page<CourseForListDTO> searchForCourses(SearchForCourseDTO searchForCourseDTO) {
+        Page<CourseEntity> foundCourses = courseQueryService.searchForCourses(searchForCourseDTO);
+        return foundCourses.map(courseMapper::toCourseForList);
     }
 }

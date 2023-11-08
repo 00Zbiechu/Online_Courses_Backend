@@ -1,17 +1,17 @@
 package pl.courses.online_courses_backend.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class SearchForCourseDTO {
+@SuperBuilder
+public class SearchForCourseDTO extends PaginationForCourseListDTO {
 
     private String title;
 

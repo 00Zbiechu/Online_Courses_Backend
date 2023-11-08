@@ -22,7 +22,6 @@ import pl.courses.online_courses_backend.mapper.BaseMapper;
 import pl.courses.online_courses_backend.mapper.CourseMapper;
 import pl.courses.online_courses_backend.model.*;
 import pl.courses.online_courses_backend.model.wrapper.CoursesDTO;
-import pl.courses.online_courses_backend.model.wrapper.CoursesForListDTO;
 import pl.courses.online_courses_backend.model.wrapper.CoursesForUserDTO;
 import pl.courses.online_courses_backend.photo.PhotoCompressor;
 import pl.courses.online_courses_backend.photo.PhotoDTO;
@@ -54,20 +53,13 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
     }
 
     @Override
-    public Long howManyCoursesIsInDatabase() {
-        return courseRepository.count();
-    }
-
-    @Override
-    public CoursesForListDTO findCoursesPage(Pageable pageable) {
+    public Page<CourseForListDTO> findCoursesPage(Pageable pageable) {
         Page<CourseEntity> courses = courseRepository.findAll(pageable);
-        List<CourseForListDTO> coursesForList = courses.stream().map(courseMapper::toCourseForList).toList();
-        return CoursesForListDTO.builder().coursesForList(coursesForList).build();
+        return courses.map(courseMapper::toCourseForList);
     }
 
     @Override
     public CoursesDTO addCourse(AddCourseDTO addCourseDTO) {
-
         UserEntity currentUserEntity = currentUser.getCurrentlyLoggedUser();
         CourseEntity courseEntity = courseMapper.toEntity(addCourseDTO);
 
@@ -93,7 +85,6 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
 
     @Override
     public PhotoDTO getCourseImage(Long courseId) {
-
         var courseEntity = courseRepository
                 .findById(courseId)
                 .orElseThrow(() -> new CustomErrorException("course", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND));
@@ -126,18 +117,13 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
 
     @Override
     public PageRequest buildPageRequestForCoursePage(PaginationForCourseListDTO paginationForCourseListDTO) {
+        Sort.Direction direction = (paginationForCourseListDTO.getOrder() == OrderType.ASC) ? Sort.Direction.ASC : Sort.Direction.DESC;
+        String sortField = paginationForCourseListDTO.getSort().getFieldName();
 
-        if (paginationForCourseListDTO.getOrder().equals(OrderType.ASC)) {
-            return PageRequest.of(
-                    paginationForCourseListDTO.getPage(),
-                    paginationForCourseListDTO.getSize(),
-                    Sort.by(paginationForCourseListDTO.getSort().getFieldName()).ascending()
-            );
-        }
         return PageRequest.of(
                 paginationForCourseListDTO.getPage(),
                 paginationForCourseListDTO.getSize(),
-                Sort.by(paginationForCourseListDTO.getSort().getFieldName()).descending()
+                Sort.by(direction, sortField)
         );
     }
 

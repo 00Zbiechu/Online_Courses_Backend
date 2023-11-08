@@ -8,20 +8,17 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import pl.courses.online_courses_backend.BaseTest;
 import pl.courses.online_courses_backend.TestFactory;
 import pl.courses.online_courses_backend.entity.key.CourseUsersPK;
 import pl.courses.online_courses_backend.exception.wrapper.ErrorList;
-import pl.courses.online_courses_backend.model.wrapper.CoursesForListDTO;
 import pl.courses.online_courses_backend.type.OrderType;
 import pl.courses.online_courses_backend.type.SortType;
 
 import java.time.LocalDate;
 import java.util.stream.Stream;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -42,11 +39,8 @@ class GetCoursePageIT extends BaseTest {
                 .content(objectMapper.writeValueAsString(paginationForCourseListDTORequest)));
 
         //then:
-        var result = asObject(response, CoursesForListDTO.class);
-
-        response.andExpect(status().isOk());
-        //and:
-        assertThat(result.getCoursesForList(), empty());
+        response.andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content.size()").value("0"));
     }
 
     @DisplayName("Should return course list with 1 elements when Database Is Filed And Success Status")
@@ -79,18 +73,14 @@ class GetCoursePageIT extends BaseTest {
                 .content(objectMapper.writeValueAsString(paginationForCourseListDTORequest)));
 
         //then:
-        var result = asObject(response, CoursesForListDTO.class);
-
-        response.andExpect(status().isOk());
-        //and:
-        assertEquals(result.getCoursesForList().size(), 1);
-        assertAll(
-                () -> assertEquals(result.getCoursesForList().get(0).getTitle(), courseEntity.getTitle()),
-                () -> assertEquals(result.getCoursesForList().get(0).getTopic(), courseEntity.getTopic()),
-                () -> assertEquals(result.getCoursesForList().get(0).getStartDate(), courseEntity.getStartDate()),
-                () -> assertEquals(result.getCoursesForList().get(0).getDescription(), courseEntity.getDescription()),
-                () -> assertEquals(result.getCoursesForList().get(0).getUsername(), userEntity.getUsername())
-        );
+        response.andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content.size()").value("1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].title").value(courseEntity.getTitle()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].topic").value(courseEntity.getTopic()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].startDate").value(courseEntity.getStartDate().toString()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].description").value(courseEntity.getDescription()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].username").value(userEntity.getUsername())
+                );
     }
 
     @DisplayName("Should return course list with 0 elements when Database Is Filed And Success Status")
@@ -128,11 +118,8 @@ class GetCoursePageIT extends BaseTest {
                 .content(objectMapper.writeValueAsString(paginationForCourseListDTORequest)));
 
         //then:
-        var result = asObject(response, CoursesForListDTO.class);
-
-        response.andExpect(status().isOk());
-        //and:
-        assertEquals(result.getCoursesForList().size(), 0);
+        response.andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content.size()").value("0"));
     }
 
     @ParameterizedTest
@@ -190,12 +177,9 @@ class GetCoursePageIT extends BaseTest {
                 .content(objectMapper.writeValueAsString(paginationForCourseListDTORequest)));
 
         //then:
-        var result = asObject(response, CoursesForListDTO.class);
-
-        response.andExpect(status().isOk());
-        //and:
-        assertEquals(result.getCoursesForList().size(), 2);
-        assertEquals(result.getCoursesForList().get(0).getTitle(), value);
+        response.andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content.size()").value("2"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].title").value(value));
     }
 
     private static Stream<Arguments> orderAndSortDataProvider() {
