@@ -8,6 +8,7 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import pl.courses.online_courses_backend.entity.UserEntity;
 
 import java.security.Key;
 import java.util.Date;
@@ -36,17 +37,18 @@ public class JwtServiceImpl implements JwtService {
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserEntity userEntity) {
         Map<String, Object> claims = new HashMap<>();
-        return generateToken(claims, userDetails);
+        claims.put("mail", userEntity.getEmail());
+        return generateToken(claims, userEntity);
     }
 
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        return buildToken(extraClaims, userDetails, jwtExpiration);
+    public String generateToken(Map<String, Object> extraClaims, UserEntity userEntity) {
+        return buildToken(extraClaims, userEntity, jwtExpiration);
     }
 
-    public String generateRefreshToken(UserDetails userDetails) {
-        return buildToken(new HashMap<>(), userDetails, refreshExpiration);
+    public String generateRefreshToken(UserEntity userEntity) {
+        return buildToken(new HashMap<>(), userEntity, refreshExpiration);
     }
 
     private String buildToken(Map<String, Object> extraClaims, UserDetails userDetails, long expiration) {

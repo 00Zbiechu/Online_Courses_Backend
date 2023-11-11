@@ -20,6 +20,9 @@ import pl.courses.online_courses_backend.model.AuthenticationResponseDTO;
 import pl.courses.online_courses_backend.model.UserDTO;
 import pl.courses.online_courses_backend.repository.UserRepository;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class UsersServiceImpl extends AbstractService<UserEntity, UserDTO> implements UserService {
@@ -55,7 +58,7 @@ public class UsersServiceImpl extends AbstractService<UserEntity, UserDTO> imple
         var refreshToken = jwtService.generateRefreshToken(user);
         saveUserToken(savedUser, jwtToken);
 
-        emailSenderService.sendEmail(user.getEmail(), "Registration", "Registration was successful");
+//        emailSenderService.sendEmail(user.getEmail(), "Registration", "Registration was successful");
 
         return AuthenticationResponseDTO.builder()
                 .accessToken(jwtToken)
@@ -65,15 +68,17 @@ public class UsersServiceImpl extends AbstractService<UserEntity, UserDTO> imple
 
     @Override
     public AuthenticationResponseDTO authenticate(AuthenticationRequestDTO authenticationRequestDTO) {
+
+        var user = userRepository
+                .findByUsername(authenticationRequestDTO.getUsername())
+                .orElseThrow(() -> new CustomErrorException("username", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND));
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         authenticationRequestDTO.getUsername(),
                         authenticationRequestDTO.getPassword()
                 )
         );
-        var user = userRepository
-                .findByUsername(authenticationRequestDTO.getUsername())
-                .orElseThrow(() -> new CustomErrorException("username", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND));
 
         var jwtToken = jwtService.generateToken(user);
         revokeAllUserTokens(user);
