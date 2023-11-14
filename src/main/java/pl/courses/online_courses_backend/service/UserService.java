@@ -1,8 +1,10 @@
 package pl.courses.online_courses_backend.service;
 
+import org.springframework.web.multipart.MultipartFile;
 import pl.courses.online_courses_backend.model.AuthenticationRequestDTO;
 import pl.courses.online_courses_backend.model.AuthenticationResponseDTO;
 import pl.courses.online_courses_backend.model.UserDTO;
+import pl.courses.online_courses_backend.photo.PhotoDTO;
 
 public interface UserService extends BaseService<UserDTO> {
 
@@ -11,4 +13,8 @@ public interface UserService extends BaseService<UserDTO> {
     AuthenticationResponseDTO authenticate(AuthenticationRequestDTO authenticationRequestDTO);
 
     AuthenticationResponseDTO refreshToken(AuthenticationResponseDTO authenticationResponseDTO);
+
+    PhotoDTO getUserImage(String username);
+
+    PhotoDTO uploadUserImage(String username, MultipartFile photo);
 }

@@ -1,12 +1,14 @@
 package pl.courses.online_courses_backend.service;
 
 import com.google.common.collect.Sets;
+import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import pl.courses.online_courses_backend.authentication.Role;
 import pl.courses.online_courses_backend.authentication.TokenType;
 import pl.courses.online_courses_backend.entity.TokenEntity;
@@ -18,10 +20,9 @@ import pl.courses.online_courses_backend.mapper.UserMapper;
 import pl.courses.online_courses_backend.model.AuthenticationRequestDTO;
 import pl.courses.online_courses_backend.model.AuthenticationResponseDTO;
 import pl.courses.online_courses_backend.model.UserDTO;
+import pl.courses.online_courses_backend.photo.PhotoCompressor;
+import pl.courses.online_courses_backend.photo.PhotoDTO;
 import pl.courses.online_courses_backend.repository.UserRepository;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +37,8 @@ public class UsersServiceImpl extends AbstractService<UserEntity, UserDTO> imple
     private final AuthenticationManager authenticationManager;
 
     private final EmailSenderService emailSenderService;
+
+    private final PhotoCompressor photoCompressor;
 
     @Override
     protected JpaRepository<UserEntity, Long> getRepository() {
@@ -53,10 +56,9 @@ public class UsersServiceImpl extends AbstractService<UserEntity, UserDTO> imple
         UserEntity user = userMapper.toEntity(userDTO);
         user.setRole(Role.USER);
 
-        var savedUser = userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
-        saveUserToken(savedUser, jwtToken);
+        saveUserWithToken(user, jwtToken);
 
 //        emailSenderService.sendEmail(user.getEmail(), "Registration", "Registration was successful");
 
@@ -82,7 +84,7 @@ public class UsersServiceImpl extends AbstractService<UserEntity, UserDTO> imple
 
         var jwtToken = jwtService.generateToken(user);
         revokeAllUserTokens(user);
-        saveUserToken(user, jwtToken);
+        saveUserWithToken(user, jwtToken);
         var refreshToken = jwtService.generateRefreshToken(user);
 
         return AuthenticationResponseDTO.builder()
@@ -105,7 +107,7 @@ public class UsersServiceImpl extends AbstractService<UserEntity, UserDTO> imple
             var newRefreshToken = jwtService.generateRefreshToken(userDetails);
 
             revokeAllUserTokens(userDetails);
-            saveUserToken(userDetails, newAccessToken);
+            saveUserWithToken(userDetails, newAccessToken);
 
             return AuthenticationResponseDTO.builder()
                     .accessToken(newAccessToken)
@@ -115,7 +117,32 @@ public class UsersServiceImpl extends AbstractService<UserEntity, UserDTO> imple
         throw new CustomErrorException("username", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND);
     }
 
-    private void saveUserToken(UserEntity user, String jwtToken) {
+    @Override
+    public PhotoDTO getUserImage(String username) {
+
+        var userEntity = userRepository.findByUsername(username)
+                .orElseThrow(() -> new CustomErrorException("user", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND));
+
+        return PhotoDTO.builder().photo(userEntity.getPhoto()).build();
+    }
+
+    //TODO: Make generic method for course and user
+    public PhotoDTO uploadUserImage(String username, MultipartFile photo) {
+
+        var userEntity = userRepository.findByUsername(username).orElseThrow(() ->
+                new CustomErrorException("user", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND));
+
+        Try.run(() -> {
+            var compressedPhoto = photoCompressor.resizeImage(photo, 400, 400);
+            userEntity.setPhoto(compressedPhoto);
+            userRepository.save(userEntity);
+        }).onFailure(image -> {
+            throw new CustomErrorException("photo", ErrorCodes.WRONG_FIELD_FORMAT, HttpStatus.BAD_REQUEST);
+        });
+        return PhotoDTO.builder().photo(userEntity.getPhoto()).build();
+    }
+
+    private void saveUserWithToken(UserEntity user, String jwtToken) {
         var token = TokenEntity.builder()
                 .userEntity(user)
                 .token(jwtToken)
@@ -131,7 +158,7 @@ public class UsersServiceImpl extends AbstractService<UserEntity, UserDTO> imple
         userRepository.save(user);
     }
 
-    public void revokeAllUserTokens(UserEntity userEntity) {
+    private void revokeAllUserTokens(UserEntity userEntity) {
         userEntity.getTokens().clear();
         userRepository.save(userEntity);
     }

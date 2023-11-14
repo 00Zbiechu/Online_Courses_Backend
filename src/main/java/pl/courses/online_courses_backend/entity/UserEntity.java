@@ -40,6 +40,8 @@ public class UserEntity extends BaseEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    private byte[] photo;
+
     @OneToMany(mappedBy = "courseUsersPK.userEntity")
     private Set<CourseUsersEntity> courseUser = new HashSet<>();
 

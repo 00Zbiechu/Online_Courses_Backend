@@ -8,11 +8,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import pl.courses.online_courses_backend.exception.CustomErrorException;
 import pl.courses.online_courses_backend.exception.errors.ErrorCodes;
 import pl.courses.online_courses_backend.model.AuthenticationRequestDTO;
 import pl.courses.online_courses_backend.model.AuthenticationResponseDTO;
 import pl.courses.online_courses_backend.model.UserDTO;
+import pl.courses.online_courses_backend.photo.PhotoDTO;
 import pl.courses.online_courses_backend.service.UserService;
 import pl.courses.online_courses_backend.validator.UserValidator;
 
@@ -58,5 +60,15 @@ public class UserController extends BaseController<UserDTO, UserService> {
                 .onFailure(e -> {
                     throw new CustomErrorException("token", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND);
                 });
+    }
+
+    @GetMapping(value = "/get-photo")
+    public ResponseEntity<PhotoDTO> getCourseImage(@RequestParam String username) {
+        return new ResponseEntity<>(userService.getUserImage(username), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/upload-photo")
+    public ResponseEntity<PhotoDTO> uploadUserImage(@RequestParam String username, @RequestBody MultipartFile photo) {
+        return new ResponseEntity<>(userService.uploadUserImage(username, photo), HttpStatus.OK);
     }
 }

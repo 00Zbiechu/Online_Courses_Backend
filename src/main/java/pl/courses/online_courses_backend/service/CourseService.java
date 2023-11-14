@@ -16,7 +16,7 @@ public interface CourseService extends BaseService<CourseDTO> {
 
     Page<CourseForListDTO> findCoursesPage(Pageable pageable);
 
-    CoursesDTO addCourse(AddCourseDTO addCourseDTO);
+    CoursesDTO addCourse(AddCourseDTO addCourseDTO, MultipartFile photo);
 
     CoursesDTO deleteCourse(Long courseId);
 

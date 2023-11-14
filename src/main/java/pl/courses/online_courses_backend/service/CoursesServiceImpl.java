@@ -59,7 +59,7 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
     }
 
     @Override
-    public CoursesDTO addCourse(AddCourseDTO addCourseDTO) {
+    public CoursesDTO addCourse(AddCourseDTO addCourseDTO, MultipartFile photo) {
         UserEntity currentUserEntity = currentUser.getCurrentlyLoggedUser();
         CourseEntity courseEntity = courseMapper.toEntity(addCourseDTO);
 
@@ -73,6 +73,11 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
 
         courseEntity.setCourseUser(Sets.newHashSet(courseUserEntity));
         courseRepository.save(courseEntity);
+
+        if (photo != null && !photo.isEmpty()) {
+            uploadCourseImage(courseEntity.getId(), photo);
+        }
+
         return findAllCoursesOfUser();
     }
 
