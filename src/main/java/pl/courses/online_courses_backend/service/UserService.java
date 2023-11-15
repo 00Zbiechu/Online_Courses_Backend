@@ -14,7 +14,7 @@ public interface UserService extends BaseService<UserDTO> {
 
     AuthenticationResponseDTO refreshToken(AuthenticationResponseDTO authenticationResponseDTO);
 
-    PhotoDTO getUserImage(String username);
+    PhotoDTO getUserImage();
 
-    PhotoDTO uploadUserImage(String username, MultipartFile photo);
+    PhotoDTO uploadUserImage(MultipartFile photo);
 }

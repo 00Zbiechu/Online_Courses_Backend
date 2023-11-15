@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import pl.courses.online_courses_backend.authentication.CurrentUser;
 import pl.courses.online_courses_backend.authentication.Role;
 import pl.courses.online_courses_backend.authentication.TokenType;
 import pl.courses.online_courses_backend.entity.TokenEntity;
@@ -39,6 +40,8 @@ public class UsersServiceImpl extends AbstractService<UserEntity, UserDTO> imple
     private final EmailSenderService emailSenderService;
 
     private final PhotoCompressor photoCompressor;
+
+    private final CurrentUser currentUser;
 
     @Override
     protected JpaRepository<UserEntity, Long> getRepository() {
@@ -118,28 +121,21 @@ public class UsersServiceImpl extends AbstractService<UserEntity, UserDTO> imple
     }
 
     @Override
-    public PhotoDTO getUserImage(String username) {
-
-        var userEntity = userRepository.findByUsername(username)
-                .orElseThrow(() -> new CustomErrorException("user", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND));
-
-        return PhotoDTO.builder().photo(userEntity.getPhoto()).build();
+    public PhotoDTO getUserImage() {
+        return PhotoDTO.builder().photo(currentUser.getCurrentlyLoggedUser().getPhoto()).build();
     }
 
     //TODO: Make generic method for course and user
-    public PhotoDTO uploadUserImage(String username, MultipartFile photo) {
-
-        var userEntity = userRepository.findByUsername(username).orElseThrow(() ->
-                new CustomErrorException("user", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND));
+    public PhotoDTO uploadUserImage(MultipartFile photo) {
 
         Try.run(() -> {
             var compressedPhoto = photoCompressor.resizeImage(photo, 400, 400);
-            userEntity.setPhoto(compressedPhoto);
-            userRepository.save(userEntity);
+            currentUser.getCurrentlyLoggedUser().setPhoto(compressedPhoto);
+            userRepository.save(currentUser.getCurrentlyLoggedUser());
         }).onFailure(image -> {
             throw new CustomErrorException("photo", ErrorCodes.WRONG_FIELD_FORMAT, HttpStatus.BAD_REQUEST);
         });
-        return PhotoDTO.builder().photo(userEntity.getPhoto()).build();
+        return PhotoDTO.builder().photo(currentUser.getCurrentlyLoggedUser().getPhoto()).build();
     }
 
     private void saveUserWithToken(UserEntity user, String jwtToken) {
