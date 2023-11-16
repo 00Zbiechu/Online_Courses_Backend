@@ -73,7 +73,7 @@ public class CourseController extends BaseController<CourseDTO, CourseService> {
     }
 
     @PostMapping(value = "/upload-photo")
-    public ResponseEntity<PhotoDTO> uploadCourseImage(@RequestParam Long courseId, @RequestBody MultipartFile photo) {
+    public ResponseEntity<PhotoDTO> uploadCourseImage(@RequestParam Long courseId, @RequestParam MultipartFile photo) {
         return new ResponseEntity<>(courseService.uploadCourseImage(courseId, photo), HttpStatus.OK);
     }
 

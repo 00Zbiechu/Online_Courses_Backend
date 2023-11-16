@@ -68,7 +68,7 @@ public class UserController extends BaseController<UserDTO, UserService> {
     }
 
     @PostMapping(value = "/upload-photo")
-    public ResponseEntity<PhotoDTO> uploadUserImage(@RequestBody MultipartFile photo) {
+    public ResponseEntity<PhotoDTO> uploadUserImage(@RequestParam("photo") MultipartFile photo) {
         return new ResponseEntity<>(userService.uploadUserImage(photo), HttpStatus.OK);
     }
 }
