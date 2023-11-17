@@ -20,6 +20,7 @@ import pl.courses.online_courses_backend.mapper.BaseMapper;
 import pl.courses.online_courses_backend.mapper.UserMapper;
 import pl.courses.online_courses_backend.model.AuthenticationRequestDTO;
 import pl.courses.online_courses_backend.model.AuthenticationResponseDTO;
+import pl.courses.online_courses_backend.model.RefreshTokenDTO;
 import pl.courses.online_courses_backend.model.UserDTO;
 import pl.courses.online_courses_backend.photo.PhotoCompressor;
 import pl.courses.online_courses_backend.photo.PhotoDTO;
@@ -97,27 +98,31 @@ public class UsersServiceImpl extends AbstractService<UserEntity, UserDTO> imple
     }
 
     @Override
-    public AuthenticationResponseDTO refreshToken(AuthenticationResponseDTO authenticationResponseDTO) {
+    public AuthenticationResponseDTO refreshToken(RefreshTokenDTO refreshTokenDTO) {
 
-        var username = jwtService.extractUsername(authenticationResponseDTO.getRefreshToken());
+        var username = jwtService.extractUsername(refreshTokenDTO.getRefreshToken());
 
-        if (username != null) {
-
-            var userDetails = this.userRepository.findByUsername(username)
-                    .orElseThrow(() -> new CustomErrorException("username", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND));
-
-            var newAccessToken = jwtService.generateToken(userDetails);
-            var newRefreshToken = jwtService.generateRefreshToken(userDetails);
-
-            revokeAllUserTokens(userDetails);
-            saveUserWithToken(userDetails, newAccessToken);
-
-            return AuthenticationResponseDTO.builder()
-                    .accessToken(newAccessToken)
-                    .refreshToken(newRefreshToken)
-                    .build();
+        if (username == null) {
+            throw new CustomErrorException("username", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND);
         }
-        throw new CustomErrorException("username", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND);
+
+        var userDetails = this.userRepository.findByUsername(username)
+                .orElseThrow(() -> new CustomErrorException("username", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND));
+
+        if (!jwtService.isTokenValid(refreshTokenDTO.getRefreshToken(), userDetails)) {
+            throw new CustomErrorException("refreshToken", ErrorCodes.TOKEN_ERROR, HttpStatus.BAD_REQUEST);
+        }
+
+        var newAccessToken = jwtService.generateToken(userDetails);
+        var newRefreshToken = jwtService.generateRefreshToken(userDetails);
+
+        revokeAllUserTokens(userDetails);
+        saveUserWithToken(userDetails, newAccessToken);
+
+        return AuthenticationResponseDTO.builder()
+                .accessToken(newAccessToken)
+                .refreshToken(newRefreshToken)
+                .build();
     }
 
     @Override

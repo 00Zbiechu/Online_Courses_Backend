@@ -13,6 +13,7 @@ import pl.courses.online_courses_backend.exception.CustomErrorException;
 import pl.courses.online_courses_backend.exception.errors.ErrorCodes;
 import pl.courses.online_courses_backend.model.AuthenticationRequestDTO;
 import pl.courses.online_courses_backend.model.AuthenticationResponseDTO;
+import pl.courses.online_courses_backend.model.RefreshTokenDTO;
 import pl.courses.online_courses_backend.model.UserDTO;
 import pl.courses.online_courses_backend.photo.PhotoDTO;
 import pl.courses.online_courses_backend.service.UserService;
@@ -49,8 +50,8 @@ public class UserController extends BaseController<UserDTO, UserService> {
     }
 
     @PostMapping("/refresh-token")
-    public ResponseEntity<AuthenticationResponseDTO> refreshToken(@Valid @RequestBody AuthenticationResponseDTO authenticationResponseDTO) {
-        return ResponseEntity.ok(userService.refreshToken(authenticationResponseDTO));
+    public ResponseEntity<AuthenticationResponseDTO> refreshToken(@Valid @RequestBody RefreshTokenDTO refreshTokenDTO) {
+        return ResponseEntity.ok(userService.refreshToken(refreshTokenDTO));
     }
 
     //TODO: unresolved Exception - probably same situation as jwt expiration exception

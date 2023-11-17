@@ -9,4 +9,5 @@ public class ErrorCodes {
     public final static String WRONG_FIELD_FORMAT = "WRONG_FIELD_FORMAT";
     public final static String WRONG_DATE_RANGE = "WRONG_DATE_RANGE";
     public final static String WRONG_CREDENTIALS = "WRONG_CREDENTIALS";
+    public final static String TOKEN_ERROR = "TOKEN_ERROR";
 }
