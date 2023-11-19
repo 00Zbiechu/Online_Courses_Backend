@@ -32,6 +32,7 @@
         <junit>5.7.0</junit>
         <h2>2.2.224</h2>
         <testcontainers>1.19.1</testcontainers>
+        <kafka>3.0.12</kafka>
     </properties>
     <dependencies>
         <dependency>
@@ -76,12 +77,6 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-web</artifactId>
             <version>${spring.security}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-mail</artifactId>
-            <version>${spring.boot.starter}</version>
         </dependency>
 
         <dependency>
@@ -175,13 +170,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>runtime</scope>
-            <version>${h2}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>${testcontainers}</version>
@@ -194,6 +182,13 @@
             <version>${testcontainers}</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+            <version>${kafka}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

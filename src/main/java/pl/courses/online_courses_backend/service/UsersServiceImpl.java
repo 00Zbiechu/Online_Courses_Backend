@@ -18,10 +18,7 @@ import pl.courses.online_courses_backend.exception.CustomErrorException;
 import pl.courses.online_courses_backend.exception.errors.ErrorCodes;
 import pl.courses.online_courses_backend.mapper.BaseMapper;
 import pl.courses.online_courses_backend.mapper.UserMapper;
-import pl.courses.online_courses_backend.model.AuthenticationRequestDTO;
-import pl.courses.online_courses_backend.model.AuthenticationResponseDTO;
-import pl.courses.online_courses_backend.model.RefreshTokenDTO;
-import pl.courses.online_courses_backend.model.UserDTO;
+import pl.courses.online_courses_backend.model.*;
 import pl.courses.online_courses_backend.photo.PhotoCompressor;
 import pl.courses.online_courses_backend.photo.PhotoDTO;
 import pl.courses.online_courses_backend.repository.UserRepository;
@@ -38,11 +35,11 @@ public class UsersServiceImpl extends AbstractService<UserEntity, UserDTO> imple
 
     private final AuthenticationManager authenticationManager;
 
-    private final EmailSenderService emailSenderService;
-
     private final PhotoCompressor photoCompressor;
 
     private final CurrentUser currentUser;
+
+    private final EmailService emailService;
 
     @Override
     protected JpaRepository<UserEntity, Long> getRepository() {
@@ -64,7 +61,12 @@ public class UsersServiceImpl extends AbstractService<UserEntity, UserDTO> imple
         var refreshToken = jwtService.generateRefreshToken(user);
         saveUserWithToken(user, jwtToken);
 
-//        emailSenderService.sendEmail(user.getEmail(), "Registration", "Registration was successful");
+        emailService.sendMail(
+                UsernameAndMailDTO.builder()
+                        .username(userDTO.getUsername())
+                        .mail(userDTO.getEmail())
+                        .build()
+        );
 
         return AuthenticationResponseDTO.builder()
                 .accessToken(jwtToken)
