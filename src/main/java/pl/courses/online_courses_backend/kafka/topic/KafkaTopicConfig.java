@@ -1,4 +1,4 @@
-package pl.courses.online_courses_backend.kafka.config;
+package pl.courses.online_courses_backend.kafka.topic;
 
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.context.annotation.Bean;

@@ -14,5 +14,5 @@ import java.util.List;
 @Builder
 public class CoursesForUserDTO {
 
-    private List<CourseForUserDTO> courseForUserDTOList;
+    private List<CourseForUserDTO> courseForUserList;
 }

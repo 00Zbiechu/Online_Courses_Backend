@@ -1,4 +1,4 @@
-package pl.courses.online_courses_backend.kafka.config;
+package pl.courses.online_courses_backend.kafka.producer;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;

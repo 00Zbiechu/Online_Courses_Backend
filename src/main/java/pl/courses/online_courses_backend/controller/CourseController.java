@@ -56,10 +56,9 @@ public class CourseController extends BaseController<CourseDTO, CourseService> {
         return new ResponseEntity<>(courseDataProvider.searchForCourses(searchForCourseDTO), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/add-course")
-    public ResponseEntity<CoursesDTO> addCourse(@Valid @RequestPart AddCourseDTO addCourseDTO,
-                                                @Valid @RequestPart(required = false) MultipartFile photo) {
-        return new ResponseEntity<>(courseService.addCourse(addCourseDTO, photo), HttpStatus.CREATED);
+    @PostMapping("/add-course")
+    public ResponseEntity<CoursesDTO> addCourse(@Valid @RequestBody AddCourseDTO addCourseDTO) {
+        return new ResponseEntity<>(courseService.addCourse(addCourseDTO), HttpStatus.CREATED);
     }
 
     @DeleteMapping(value = "/delete-course")

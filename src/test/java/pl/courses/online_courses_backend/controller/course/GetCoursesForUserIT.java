@@ -77,8 +77,8 @@ class GetCoursesForUserIT extends BaseTest {
 
         //then:
         assertAll(
-                () -> assertEquals(1L, result.getCourseForUserDTOList().size()),
-                () -> assertEquals("Course title", result.getCourseForUserDTOList().get(0).getTitle())
+                () -> assertEquals(1L, result.getCourseForUserList().size()),
+                () -> assertEquals("Course title", result.getCourseForUserList().get(0).getTitle())
         );
     }
 
@@ -119,6 +119,6 @@ class GetCoursesForUserIT extends BaseTest {
         var result = asObject(request, CoursesForUserDTO.class);
 
         //then:
-        assertEquals(0L, result.getCourseForUserDTOList().size());
+        assertEquals(0L, result.getCourseForUserList().size());
     }
 }
