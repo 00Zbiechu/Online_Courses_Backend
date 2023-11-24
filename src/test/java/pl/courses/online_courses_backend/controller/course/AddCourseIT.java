@@ -11,7 +11,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pl.courses.online_courses_backend.BaseTest;
 import pl.courses.online_courses_backend.TestFactory;
 import pl.courses.online_courses_backend.entity.key.CourseUsersPK;
-import pl.courses.online_courses_backend.model.wrapper.CoursesDTO;
+import pl.courses.online_courses_backend.model.CourseDTO;
 
 import java.time.LocalDate;
 import java.util.stream.Stream;
@@ -39,17 +39,17 @@ class AddCourseIT extends BaseTest {
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(addCourseDtoRequest)));
 
-        var result = asObject(request, CoursesDTO.class);
+        var result = asObject(request, CourseDTO.class);
 
         //then:
         request.andExpect(status().isCreated());
         assertAll(
-                () -> assertEquals("Course", result.getFoundCoursesList().get(0).getTitle()),
-                () -> assertEquals("Course topic", result.getFoundCoursesList().get(0).getTopic()),
-                () -> assertEquals(LocalDate.now(), result.getFoundCoursesList().get(0).getStartDate()),
-                () -> assertEquals(LocalDate.now(), result.getFoundCoursesList().get(0).getEndDate()),
-                () -> assertEquals("Course description", result.getFoundCoursesList().get(0).getDescription()),
-                () -> assertNull(result.getFoundCoursesList().get(0).getPhoto())
+                () -> assertEquals("Course", result.getTitle()),
+                () -> assertEquals("Course topic", result.getTopic()),
+                () -> assertEquals(LocalDate.now(), result.getStartDate()),
+                () -> assertEquals(LocalDate.now(), result.getEndDate()),
+                () -> assertEquals("Course description", result.getDescription()),
+                () -> assertNull(result.getPhoto())
         );
     }
 

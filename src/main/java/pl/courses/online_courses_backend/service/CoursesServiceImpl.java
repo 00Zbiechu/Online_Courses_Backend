@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.courses.online_courses_backend.authentication.CurrentUser;
@@ -20,10 +21,7 @@ import pl.courses.online_courses_backend.exception.CustomErrorException;
 import pl.courses.online_courses_backend.exception.errors.ErrorCodes;
 import pl.courses.online_courses_backend.mapper.BaseMapper;
 import pl.courses.online_courses_backend.mapper.CourseMapper;
-import pl.courses.online_courses_backend.model.AddCourseDTO;
-import pl.courses.online_courses_backend.model.CourseDTO;
-import pl.courses.online_courses_backend.model.CourseForListDTO;
-import pl.courses.online_courses_backend.model.PaginationForCourseListDTO;
+import pl.courses.online_courses_backend.model.*;
 import pl.courses.online_courses_backend.model.wrapper.CoursesDTO;
 import pl.courses.online_courses_backend.model.wrapper.CoursesForUserDTO;
 import pl.courses.online_courses_backend.photo.PhotoCompressor;
@@ -45,6 +43,8 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
 
     private final PhotoCompressor photoCompressor;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Override
     protected JpaRepository<CourseEntity, Long> getRepository() {
         return courseRepository;
@@ -62,7 +62,7 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
     }
 
     @Override
-    public CoursesDTO addCourse(AddCourseDTO addCourseDTO) {
+    public CourseDTO addCourse(AddCourseDTO addCourseDTO) {
         UserEntity currentUserEntity = currentUser.getCurrentlyLoggedUser();
         CourseEntity courseEntity = courseMapper.toEntity(addCourseDTO);
 
@@ -75,9 +75,18 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
                 .build();
 
         courseEntity.setCourseUser(Sets.newHashSet(courseUserEntity));
-        courseRepository.save(courseEntity);
+        var result = courseRepository.save(courseEntity);
 
-        return findAllCoursesOfUser();
+        return courseMapper.toDTO(result);
+    }
+
+    @Override
+    public CourseDTO editCourse(EditCourseDTO editCourseDTO) {
+        var courseEntity = findCourseOfUser(editCourseDTO.getId());
+        courseMapper.updateCourseEntityFromEditCourseDTO(editCourseDTO, courseEntity);
+        courseEntity.setPassword(passwordEncoder.encode(courseEntity.getPassword()));
+        var result = courseRepository.save(courseEntity);
+        return courseMapper.toDTO(result);
     }
 
     @Override

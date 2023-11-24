@@ -36,7 +36,7 @@ public class AddCourseValidator implements Validator {
     }
 
     private void validateIsCourseTitleIsUnique(AddCourseDTO dto) {
-        courseRepository.findByTitle(dto.getTitle()).ifPresent(course -> {
+        courseRepository.findByTitleAndDeletedFalse(dto.getTitle()).ifPresent(course -> {
             throw new CustomErrorException("title", ErrorCodes.ENTITY_ALREADY_EXIST, HttpStatus.BAD_REQUEST);
         });
     }

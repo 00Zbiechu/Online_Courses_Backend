@@ -97,6 +97,25 @@ public class TestFactory {
         }
     }
 
+    public static class EditCourseDTOFactory {
+
+        public static EditCourseDTO.EditCourseDTOBuilder createEditCourseDTOBuilder() {
+            return EditCourseDTO.builder();
+        }
+
+        public static EditCourseDTO createEditCourseEdit(Long courseId) {
+            return (EditCourseDTO) createEditCourseDTOBuilder()
+                    .id(courseId)
+                    .title("Course")
+                    .topic("Course topic")
+                    .startDate(LocalDate.now())
+                    .endDate(LocalDate.now())
+                    .description("Course description")
+                    .password("Course_password")
+                    .build();
+        }
+    }
+
     public static class UserDTOFactory {
         public static UserDTO.UserDTOBuilder createUserDTOBuilder() {
             return UserDTO.builder();

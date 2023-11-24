@@ -14,5 +14,5 @@ public interface CourseRepository extends JpaRepository<CourseEntity, Long> {
     @Query("SELECT c FROM CourseEntity c JOIN c.courseUser cu JOIN cu.courseUsersPK.userEntity u WHERE u.id=:userId AND cu.owner=true")
     List<CourseEntity> findCoursesCreatedByUser(Long userId);
 
-    Optional<CourseEntity> findByTitle(String title);
+    Optional<CourseEntity> findByTitleAndDeletedFalse(String title);
 }

@@ -17,6 +17,7 @@ import pl.courses.online_courses_backend.model.wrapper.CoursesForUserDTO;
 import pl.courses.online_courses_backend.photo.PhotoDTO;
 import pl.courses.online_courses_backend.service.CourseService;
 import pl.courses.online_courses_backend.validator.AddCourseValidator;
+import pl.courses.online_courses_backend.validator.EditCourseValidator;
 
 @RestController
 @RequestMapping("/api/courses")
@@ -30,9 +31,16 @@ public class CourseController extends BaseController<CourseDTO, CourseService> {
 
     private final AddCourseValidator addCourseValidator;
 
+    private final EditCourseValidator editCourseValidator;
+
     @InitBinder("addCourseDTO")
     public void addValidationForAddCourseDTO(WebDataBinder binder) {
         binder.addValidators(addCourseValidator);
+    }
+
+    @InitBinder("editCourseDTO")
+    public void addValidationForEditCourseDTO(WebDataBinder binder) {
+        binder.addValidators(editCourseValidator);
     }
 
     @Override
@@ -57,8 +65,13 @@ public class CourseController extends BaseController<CourseDTO, CourseService> {
     }
 
     @PostMapping("/add-course")
-    public ResponseEntity<CoursesDTO> addCourse(@Valid @RequestBody AddCourseDTO addCourseDTO) {
+    public ResponseEntity<CourseDTO> addCourse(@Valid @RequestBody AddCourseDTO addCourseDTO) {
         return new ResponseEntity<>(courseService.addCourse(addCourseDTO), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/edit-course")
+    public ResponseEntity<CourseDTO> editCourse(@Valid @RequestBody EditCourseDTO editCourseDTO) {
+        return new ResponseEntity<>(courseService.editCourse(editCourseDTO), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/delete-course")
