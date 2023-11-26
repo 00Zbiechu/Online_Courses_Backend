@@ -14,7 +14,7 @@ import pl.courses.online_courses_backend.authentication.Role;
 import pl.courses.online_courses_backend.authentication.TokenType;
 import pl.courses.online_courses_backend.entity.TokenEntity;
 import pl.courses.online_courses_backend.entity.UserEntity;
-import pl.courses.online_courses_backend.event.UserAndMailDTO;
+import pl.courses.online_courses_backend.event.UsernameAndMailDTO;
 import pl.courses.online_courses_backend.exception.CustomErrorException;
 import pl.courses.online_courses_backend.exception.errors.ErrorCodes;
 import pl.courses.online_courses_backend.mapper.BaseMapper;
@@ -65,7 +65,7 @@ public class UsersServiceImpl extends AbstractService<UserEntity, UserDTO> imple
         var refreshToken = jwtService.generateRefreshToken(user);
         saveUserWithToken(user, jwtToken);
 
-        emailService.sendMail(UserAndMailDTO.newBuilder()
+        emailService.sendMail(UsernameAndMailDTO.newBuilder()
                 .setUsername(userDTO.getUsername())
                 .setMail(userDTO.getEmail())
                 .build()

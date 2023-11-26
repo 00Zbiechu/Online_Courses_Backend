@@ -9,7 +9,7 @@
       "type": "string"
     }
   ],
-  "name": "UserAndMailDTO",
+  "name": "UsernameAndMailDTO",
   "namespace": "pl.courses.online_courses_backend.event",
   "type": "record",
   "version": "1"

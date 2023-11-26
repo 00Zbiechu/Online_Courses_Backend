@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
-import pl.courses.online_courses_backend.event.UserAndMailDTO;
+import pl.courses.online_courses_backend.event.UsernameAndMailDTO;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,20 +28,17 @@ public class KafkaProducerConfig {
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class);
-        props.put(ProducerConfig.RETRIES_CONFIG, 1);
-        props.put(ProducerConfig.RECONNECT_BACKOFF_MS_CONFIG, "5000");
-        props.put(ProducerConfig.RETRY_BACKOFF_MS_CONFIG, "5000");
         props.put("schema.registry.url", schemaRegistryUrl);
         return props;
     }
 
     @Bean
-    public ProducerFactory<String, UserAndMailDTO> producerFactory() {
+    public ProducerFactory<String, UsernameAndMailDTO> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfig());
     }
 
     @Bean
-    public KafkaTemplate<String, UserAndMailDTO> kafkaTemplate(ProducerFactory<String, UserAndMailDTO> producerFactory) {
+    public KafkaTemplate<String, UsernameAndMailDTO> kafkaTemplate(ProducerFactory<String, UsernameAndMailDTO> producerFactory) {
         return new KafkaTemplate<>(producerFactory);
     }
 }
