@@ -1,8 +1,8 @@
 package pl.courses.online_courses_backend.service;
 
-import pl.courses.online_courses_backend.model.UsernameAndMailDTO;
+import pl.courses.online_courses_backend.event.UserAndMailDTO;
 
 public interface EmailService {
 
-    void sendMail(UsernameAndMailDTO usernameAndMailDTO);
+    void sendMail(UserAndMailDTO event);
 }
