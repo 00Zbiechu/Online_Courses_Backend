@@ -90,6 +90,13 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
     }
 
     @Override
+    public CourseForListDTO getCourse(Long courseId) {
+        var courseEntity = courseRepository.findById(courseId)
+                .orElseThrow(() -> new CustomErrorException("course", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND));
+        return courseMapper.toCourseForList(courseEntity);
+    }
+
+    @Override
     public CoursesDTO deleteCourse(Long courseId) {
         var courseEntity = findCourseOfUser(courseId);
         courseRepository.delete(courseEntity);

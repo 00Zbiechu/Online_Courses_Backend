@@ -64,6 +64,11 @@ public class CourseController extends BaseController<CourseDTO, CourseService> {
         return new ResponseEntity<>(courseDataProvider.searchForCourses(searchForCourseDTO), HttpStatus.OK);
     }
 
+    @GetMapping("/get-course")
+    public ResponseEntity<CourseForListDTO> getCourse(@RequestParam Long courseId) {
+        return new ResponseEntity<>(courseService.getCourse(courseId), HttpStatus.OK);
+    }
+
     @PostMapping("/add-course")
     public ResponseEntity<CourseDTO> addCourse(@Valid @RequestBody AddCourseDTO addCourseDTO) {
         return new ResponseEntity<>(courseService.addCourse(addCourseDTO), HttpStatus.CREATED);

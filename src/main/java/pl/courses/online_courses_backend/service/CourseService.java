@@ -28,4 +28,6 @@ public interface CourseService extends BaseService<CourseDTO> {
     CoursesForUserDTO getCourseDataForUser();
 
     CourseDTO editCourse(EditCourseDTO editCourseDTO);
+
+    CourseForListDTO getCourse(Long courseId);
 }
