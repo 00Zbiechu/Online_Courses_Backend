@@ -18,7 +18,6 @@ databaseChangeLog:
                   constraints:
                     - primaryKey: true
                       primaryKeyName: APP_USER_ID_PK
-                      nullable: false
               - column:
                   name: username
                   type: varchar(20)
@@ -42,6 +41,9 @@ databaseChangeLog:
               - column:
                   name: photo
                   type: bytea
+              - column:
+                  name: enabled
+                  type: boolean
               - column:
                   name: creation_date
                   type: timestamp

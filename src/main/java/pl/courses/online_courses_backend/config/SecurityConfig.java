@@ -46,6 +46,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/users/refresh-token").permitAll()
                 .requestMatchers("/api/users/logout").permitAll()
 
+                .requestMatchers("/api/tokens/confirm").permitAll()
+
                 .anyRequest()
                 .authenticated()
                 .and()

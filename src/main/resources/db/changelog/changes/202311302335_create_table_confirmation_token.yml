@@ -1,15 +1,15 @@
 databaseChangeLog:
   - changeSet:
-      id: create table TOKEN
+      id: create table confirmation token
       author: mzbiewski
       preConditions:
         - onFail: MARK_RAN
           not:
             tableExists:
-              tableName: TOKEN
+              tableName: CONFIRMATION_TOKEN
       changes:
         - createTable:
-            tableName: TOKEN
+            tableName: CONFIRMATION_TOKEN
             columns:
               - column:
                   name: id
@@ -17,19 +17,24 @@ databaseChangeLog:
                   autoIncrement: true
                   constraints:
                     - primaryKey: true
-                      primaryKeyName: TOKEN_ID_PK
+                      primaryKeyName: CONFIRMATION_TOKEN_ID_PK
               - column:
                   name: token
-                  type: varchar(300)
+                  type: varchar(60)
                   constraints:
                     nullable: false
               - column:
-                  name: token_type
-                  type: varchar(20)
+                  name: created_at
+                  type: timestamp
                   constraints:
                     nullable: false
               - column:
-                  name: creation_date
+                  name: expires_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: confirmed_at
                   type: timestamp
               - column:
                   name: user_id
@@ -37,4 +42,6 @@ databaseChangeLog:
                   constraints:
                     referencedTableName: APP_USER
                     referencedColumnNames: id
-                    foreignKeyName: TOKEN_APP_USER_ID_FK
+                    foreignKeyName: CONFIRMATION_TOKEN_APP_USER_ID_FK
+
+

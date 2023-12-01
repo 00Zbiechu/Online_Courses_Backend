@@ -37,5 +37,5 @@ public class CourseUsersEntity {
 
     private boolean deleted;
 
-    private LocalDateTime delete_date;
+    private LocalDateTime deleteDate;
 }

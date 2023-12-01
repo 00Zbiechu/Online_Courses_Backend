@@ -41,13 +41,19 @@ class RegisterIT extends BaseTest {
     void registrationShouldThrowError(String username, String email, String password, Integer status) throws Exception {
 
         //given:
-        var registrationRequest = TestFactory.UserDTOFactory.createUserDTO();
+        var registrationRequest = TestFactory.UserDTOFactory.createUserDTOBuilder()
+                .username(username)
+                .email(email)
+                .password(password)
+                .build();
+
         var userEntity = TestFactory.UserEntityFactory.createUserEntityBuilder()
                 .username("UserForTest")
                 .email("TestTest@java.com.pl")
                 .password("TestForApplicationPassword")
                 .role(Role.USER)
                 .deleted(false)
+                .enabled(true)
                 .build();
 
         entityManager.persist(userEntity);

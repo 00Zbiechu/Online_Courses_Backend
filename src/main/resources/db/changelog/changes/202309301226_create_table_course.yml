@@ -18,7 +18,6 @@ databaseChangeLog:
                   constraints:
                     - primaryKey: true
                       primaryKeyName: COURSE_ID_PK
-                      nullable: false
               - column:
                   name: title
                   type: varchar(30)

@@ -42,6 +42,9 @@ public class UserEntity extends BaseEntity implements UserDetails {
 
     private byte[] photo;
 
+    @Column(nullable = false)
+    private boolean enabled = false;
+
     @OneToMany(mappedBy = "courseUsersPK.userEntity")
     private Set<CourseUsersEntity> courseUser = new HashSet<>();
 
@@ -52,6 +55,12 @@ public class UserEntity extends BaseEntity implements UserDetails {
     )
     private Set<TokenEntity> tokens = new HashSet<>();
 
+    @OneToMany(
+            mappedBy = "userEntity",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}
+    )
+    private Set<ConfirmationTokenEntity> confirmationTokenEntities = new HashSet<>();
+
     @CreatedDate
     private LocalDateTime creationDate;
 
@@ -60,7 +69,7 @@ public class UserEntity extends BaseEntity implements UserDetails {
 
     private boolean deleted = Boolean.FALSE;
 
-    private LocalDateTime delete_date;
+    private LocalDateTime deleteDate;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -94,6 +103,6 @@ public class UserEntity extends BaseEntity implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return enabled;
     }
 }

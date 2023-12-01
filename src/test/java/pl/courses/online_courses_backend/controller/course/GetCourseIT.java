@@ -15,7 +15,7 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class GetCourseIT extends BaseTest {
+class GetCourseIT extends BaseTest {
 
     private final String PATH = "/api/courses/get-course";
 

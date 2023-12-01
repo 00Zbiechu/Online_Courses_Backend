@@ -3,6 +3,7 @@ package pl.courses.online_courses_backend.service;
 import com.google.common.collect.Sets;
 import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.courses.online_courses_backend.authentication.CurrentUser;
 import pl.courses.online_courses_backend.authentication.Role;
 import pl.courses.online_courses_backend.authentication.TokenType;
+import pl.courses.online_courses_backend.entity.ConfirmationTokenEntity;
 import pl.courses.online_courses_backend.entity.TokenEntity;
 import pl.courses.online_courses_backend.entity.UserEntity;
 import pl.courses.online_courses_backend.event.UsernameAndMailDTO;
@@ -26,6 +28,9 @@ import pl.courses.online_courses_backend.model.UserDTO;
 import pl.courses.online_courses_backend.photo.PhotoCompressor;
 import pl.courses.online_courses_backend.photo.PhotoDTO;
 import pl.courses.online_courses_backend.repository.UserRepository;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +50,12 @@ public class UsersServiceImpl extends AbstractService<UserEntity, UserDTO> imple
 
     private final EmailService emailService;
 
+    @Value("${online-courses.confirmation.token.link}")
+    private String confirmationLink;
+
+    @Value("${online-courses.confirmation.token.expires.time}")
+    private Long expirationConfirmationTokenTime;
+
     @Override
     protected JpaRepository<UserEntity, Long> getRepository() {
         return userRepository;
@@ -63,11 +74,22 @@ public class UsersServiceImpl extends AbstractService<UserEntity, UserDTO> imple
 
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
+
+        ConfirmationTokenEntity confirmationTokenEntity = ConfirmationTokenEntity.builder()
+                .token(UUID.randomUUID().toString())
+                .createdAt(LocalDateTime.now())
+                .expiresAt(LocalDateTime.now().plusMinutes(expirationConfirmationTokenTime))
+                .userEntity(user)
+                .build();
+
+        user.setConfirmationTokenEntities(Sets.newHashSet(confirmationTokenEntity));
+
         saveUserWithToken(user, jwtToken);
 
         emailService.sendMail(UsernameAndMailDTO.newBuilder()
                 .setUsername(userDTO.getUsername())
                 .setMail(userDTO.getEmail())
+                .setConfirmationLink(confirmationLink + confirmationTokenEntity.getToken())
                 .build()
         );
 
@@ -148,7 +170,7 @@ public class UsersServiceImpl extends AbstractService<UserEntity, UserDTO> imple
         return PhotoDTO.builder().photo(currentUser.getCurrentlyLoggedUser().getPhoto()).build();
     }
 
-    private void saveUserWithToken(UserEntity user, String jwtToken) {
+    private UserEntity saveUserWithToken(UserEntity user, String jwtToken) {
         var token = TokenEntity.builder()
                 .userEntity(user)
                 .token(jwtToken)
@@ -161,7 +183,7 @@ public class UsersServiceImpl extends AbstractService<UserEntity, UserDTO> imple
             user.getTokens().add(token);
         }
 
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     private void revokeAllUserTokens(UserEntity userEntity) {

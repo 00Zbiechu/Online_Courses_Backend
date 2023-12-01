@@ -1,5 +1,6 @@
 package pl.courses.online_courses_backend.controller.user;
 
+import com.google.common.collect.Sets;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -11,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pl.courses.online_courses_backend.BaseTest;
 import pl.courses.online_courses_backend.TestFactory;
+import pl.courses.online_courses_backend.authentication.Role;
 
 import java.util.stream.Stream;
 
@@ -66,6 +68,35 @@ class AuthenticateIT extends BaseTest {
 
         //then:
         response.andExpect(status().is(status));
+    }
+
+    @Test
+    public void shouldThrowErrorIfAccountIsNotActivated() throws Exception {
+
+        //given:
+        var userEntity = TestFactory.UserEntityFactory.createUserEntityBuilder()
+                .username("TestUsername")
+                .email("Test@java.com.pl")
+                .password(passwordEncoder.encode("UserPassword"))
+                .tokens(Sets.newHashSet())
+                .role(Role.USER)
+                .deleted(false)
+                .build();
+
+        entityManager.persist(userEntity);
+
+        var loginRequest = TestFactory.AuthenticationRequestDTOFactory.createAuthenticationRequestDTOBuilder()
+                .username("TestUsername")
+                .password("UserPassword")
+                .build();
+
+        //when:
+        var response = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.POST, PATH)
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(loginRequest)));
+
+        //then:
+        response.andExpect(status().isNotFound());
     }
 
     private static Stream<Arguments> loginDataProvider() {

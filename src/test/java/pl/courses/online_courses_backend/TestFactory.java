@@ -2,6 +2,7 @@ package pl.courses.online_courses_backend;
 
 import com.google.common.collect.Sets;
 import pl.courses.online_courses_backend.authentication.Role;
+import pl.courses.online_courses_backend.entity.ConfirmationTokenEntity;
 import pl.courses.online_courses_backend.entity.CourseEntity;
 import pl.courses.online_courses_backend.entity.CourseUsersEntity;
 import pl.courses.online_courses_backend.entity.UserEntity;
@@ -46,6 +47,7 @@ public class TestFactory {
                     .tokens(Sets.newHashSet())
                     .role(Role.USER)
                     .deleted(false)
+                    .enabled(true)
                     .build();
         }
     }
@@ -136,6 +138,13 @@ public class TestFactory {
             {
                 return AuthenticationRequestDTO.builder();
             }
+        }
+    }
+
+    public static class ConfirmationTokenFactory {
+
+        public static ConfirmationTokenEntity.ConfirmationTokenEntityBuilder createConfirmationTokenBuilder() {
+            return ConfirmationTokenEntity.builder();
         }
     }
 }
