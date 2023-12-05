@@ -53,7 +53,7 @@ public class UsersServiceImpl extends AbstractService<UserEntity, UserDTO> imple
     @Value("${online-courses.confirmation.token.link}")
     private String confirmationLink;
 
-    @Value("${online-courses.confirmation.token.expires.time}")
+    @Value("${online-courses.confirmation.token.expires.time.day}")
     private Long expirationConfirmationTokenTime;
 
     @Override
@@ -78,7 +78,7 @@ public class UsersServiceImpl extends AbstractService<UserEntity, UserDTO> imple
         ConfirmationTokenEntity confirmationTokenEntity = ConfirmationTokenEntity.builder()
                 .token(UUID.randomUUID().toString())
                 .createdAt(LocalDateTime.now())
-                .expiresAt(LocalDateTime.now().plusMinutes(expirationConfirmationTokenTime))
+                .expiresAt(LocalDateTime.now().plusDays(expirationConfirmationTokenTime))
                 .userEntity(user)
                 .build();
 

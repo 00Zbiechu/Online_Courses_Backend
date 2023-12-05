@@ -56,6 +56,7 @@ public class UserEntity extends BaseEntity implements UserDetails {
     private Set<TokenEntity> tokens = new HashSet<>();
 
     @OneToMany(
+            fetch = FetchType.EAGER,
             mappedBy = "userEntity",
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}
     )
