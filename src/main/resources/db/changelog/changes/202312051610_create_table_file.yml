@@ -1,0 +1,53 @@
+databaseChangeLog:
+  - changeSet:
+      id: create table file
+      author: mzbiewski
+      preConditions:
+        - onFail: MARK_RAN
+          not:
+            tableExists:
+              tableName: file
+      changes:
+        - createTable:
+            tableName: file
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: FILE_ID_PK
+              - column:
+                  name: name
+                  type: varchar(40)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type
+                  type: varchar(10)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: data
+                  type: bytea
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_by
+                  type: varchar(20)
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: deleted
+                  type: boolean
+              - column:
+                  name: delete_date
+                  type: timestamp
+              - column:
+                  name: topic_id
+                  type: bigint
+                  constraints:
+                    referencedTableName: TOPIC
+                    referencedColumnNames: id
+                    foreignKeyName: FILE_TOPIC_ID_FK

@@ -17,3 +17,12 @@ databaseChangeLog:
   - include:
       file: ./changes/202311302335_create_table_confirmation_token.yml
       relativeToChangelogFile: true
+  - include:
+      file: ./changes/202312051616_create_table_topic.yml
+      relativeToChangelogFile: true
+  - include:
+      file: ./changes/202312051626_create_table_note.yml
+      relativeToChangelogFile: true
+  - include:
+      file: ./changes/202312051610_create_table_file.yml
+      relativeToChangelogFile: true

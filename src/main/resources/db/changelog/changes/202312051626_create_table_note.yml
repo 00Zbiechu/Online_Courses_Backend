@@ -1,0 +1,42 @@
+databaseChangeLog:
+  - changeSet:
+      id: create table note
+      author: mzbiewski
+      preConditions:
+        - onFail: MARK_RAN
+          not:
+            tableExists:
+              tableName: note
+      changes:
+        - createTable:
+            tableName: note
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: NOTE_ID_PK
+              - column:
+                  name: data
+                  type: varchar(400)
+              - column:
+                  name: created_by
+                  type: varchar(20)
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: deleted
+                  type: boolean
+              - column:
+                  name: delete_date
+                  type: timestamp
+              - column:
+                  name: topic_id
+                  type: bigint
+                  constraints:
+                    referencedTableName: TOPIC
+                    referencedColumnNames: id
+                    foreignKeyName: NOTE_TOPIC_ID_FK
+
