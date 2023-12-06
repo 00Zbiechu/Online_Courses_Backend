@@ -13,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.courses.online_courses_backend.dataprovider.CourseDataProvider;
 import pl.courses.online_courses_backend.model.*;
 import pl.courses.online_courses_backend.model.wrapper.CoursesDTO;
-import pl.courses.online_courses_backend.model.wrapper.CoursesForUserDTO;
 import pl.courses.online_courses_backend.photo.PhotoDTO;
 import pl.courses.online_courses_backend.service.CourseService;
 import pl.courses.online_courses_backend.validator.AddCourseValidator;
@@ -49,23 +48,23 @@ public class CourseController extends BaseController<CourseDTO, CourseService> {
     }
 
     @PostMapping("/get-course-page")
-    public ResponseEntity<Page<CourseForListDTO>> findCoursesPage(@Valid @RequestBody PaginationForCourseListDTO paginationForCourseListDTO) {
+    public ResponseEntity<Page<CourseWithAuthorDTO>> findCoursesPage(@Valid @RequestBody PaginationForCourseListDTO paginationForCourseListDTO) {
         PageRequest pageRequest = courseService.buildPageRequestForCoursePage(paginationForCourseListDTO);
         return new ResponseEntity<>(courseService.findCoursesPage(pageRequest), HttpStatus.OK);
     }
 
     @GetMapping(value = "/get-courses-for-user")
-    public ResponseEntity<CoursesForUserDTO> getCourseDataForUser() {
+    public ResponseEntity<CoursesDTO> getCourseDataForUser() {
         return new ResponseEntity<>(courseService.getCourseDataForUser(), HttpStatus.OK);
     }
 
     @PostMapping("/search-for-courses")
-    public ResponseEntity<Page<CourseForListDTO>> searchForCourses(@Valid @RequestBody SearchForCourseDTO searchForCourseDTO) {
+    public ResponseEntity<Page<CourseWithAuthorDTO>> searchForCourses(@Valid @RequestBody SearchForCourseDTO searchForCourseDTO) {
         return new ResponseEntity<>(courseDataProvider.searchForCourses(searchForCourseDTO), HttpStatus.OK);
     }
 
     @GetMapping("/get-course")
-    public ResponseEntity<CourseForListDTO> getCourse(@RequestParam Long courseId) {
+    public ResponseEntity<CourseWithAuthorDTO> getCourse(@RequestParam Long courseId) {
         return new ResponseEntity<>(courseService.getCourse(courseId), HttpStatus.OK);
     }
 

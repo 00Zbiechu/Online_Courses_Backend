@@ -9,7 +9,7 @@ import pl.courses.online_courses_backend.BaseTest;
 import pl.courses.online_courses_backend.TestFactory;
 import pl.courses.online_courses_backend.authentication.Role;
 import pl.courses.online_courses_backend.entity.key.CourseUsersPK;
-import pl.courses.online_courses_backend.model.wrapper.CoursesForUserDTO;
+import pl.courses.online_courses_backend.model.wrapper.CoursesDTO;
 
 import java.time.LocalDate;
 
@@ -72,12 +72,12 @@ class GetCoursesForUserIT extends BaseTest {
 
         //when:
         var request = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.GET, PATH).with(user(userEntity)));
-        var result = asObject(request, CoursesForUserDTO.class);
+        var result = asObject(request, CoursesDTO.class);
 
         //then:
         assertAll(
-                () -> assertEquals(1L, result.getCourseForUserList().size()),
-                () -> assertEquals("Course title", result.getCourseForUserList().get(0).getTitle())
+                () -> assertEquals(1L, result.getFoundCoursesList().size()),
+                () -> assertEquals("Course title", result.getFoundCoursesList().get(0).getTitle())
         );
     }
 
@@ -115,9 +115,9 @@ class GetCoursesForUserIT extends BaseTest {
 
         //when:
         var request = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.GET, PATH).with(user(userEntityTwo)));
-        var result = asObject(request, CoursesForUserDTO.class);
+        var result = asObject(request, CoursesDTO.class);
 
         //then:
-        assertEquals(0L, result.getCourseForUserList().size());
+        assertEquals(0L, result.getFoundCoursesList().size());
     }
 }

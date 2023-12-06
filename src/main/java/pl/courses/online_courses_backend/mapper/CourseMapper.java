@@ -5,7 +5,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import pl.courses.online_courses_backend.entity.CourseEntity;
 import pl.courses.online_courses_backend.mapper.decorator.CourseMapperDecorator;
-import pl.courses.online_courses_backend.model.*;
+import pl.courses.online_courses_backend.model.AddCourseDTO;
+import pl.courses.online_courses_backend.model.CourseDTO;
+import pl.courses.online_courses_backend.model.CourseWithAuthorDTO;
+import pl.courses.online_courses_backend.model.EditCourseDTO;
 
 @DecoratedWith(CourseMapperDecorator.class)
 @Mapper(componentModel = "spring")
@@ -15,7 +18,5 @@ public interface CourseMapper extends BaseMapper<CourseEntity, CourseDTO> {
 
     CourseEntity toEntity(AddCourseDTO addCourseDTO);
 
-    CourseForListDTO toCourseForList(CourseEntity courseEntity);
-
-    CourseForUserDTO toCourseForAdmin(CourseEntity courseEntity);
+    CourseWithAuthorDTO toCourseForList(CourseEntity courseEntity);
 }

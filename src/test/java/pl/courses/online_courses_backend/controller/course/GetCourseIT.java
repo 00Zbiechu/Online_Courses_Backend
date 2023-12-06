@@ -8,7 +8,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pl.courses.online_courses_backend.BaseTest;
 import pl.courses.online_courses_backend.TestFactory;
 import pl.courses.online_courses_backend.entity.key.CourseUsersPK;
-import pl.courses.online_courses_backend.model.CourseForListDTO;
+import pl.courses.online_courses_backend.model.CourseWithAuthorDTO;
 
 import java.time.LocalDate;
 
@@ -46,7 +46,7 @@ class GetCourseIT extends BaseTest {
         var request = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.GET, PATH).param("courseId", courseEntity.getId().toString()));
 
         //then
-        var result = asObject(request, CourseForListDTO.class);
+        var result = asObject(request, CourseWithAuthorDTO.class);
 
         request.andExpect(status().is(200));
 

@@ -10,7 +10,7 @@ import pl.courses.online_courses_backend.exception.CustomErrorException;
 import pl.courses.online_courses_backend.exception.errors.ErrorCodes;
 import pl.courses.online_courses_backend.mapper.CourseMapper;
 import pl.courses.online_courses_backend.model.AddCourseDTO;
-import pl.courses.online_courses_backend.model.CourseForListDTO;
+import pl.courses.online_courses_backend.model.CourseWithAuthorDTO;
 
 @NoArgsConstructor
 public abstract class CourseMapperDecorator implements CourseMapper {
@@ -28,7 +28,7 @@ public abstract class CourseMapperDecorator implements CourseMapper {
     }
 
     @Override
-    public CourseForListDTO toCourseForList(CourseEntity courseEntity) {
+    public CourseWithAuthorDTO toCourseForList(CourseEntity courseEntity) {
 
         String username = courseEntity.getCourseUser()
                 .stream()

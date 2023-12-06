@@ -23,7 +23,6 @@ import pl.courses.online_courses_backend.mapper.BaseMapper;
 import pl.courses.online_courses_backend.mapper.CourseMapper;
 import pl.courses.online_courses_backend.model.*;
 import pl.courses.online_courses_backend.model.wrapper.CoursesDTO;
-import pl.courses.online_courses_backend.model.wrapper.CoursesForUserDTO;
 import pl.courses.online_courses_backend.photo.PhotoCompressor;
 import pl.courses.online_courses_backend.photo.PhotoDTO;
 import pl.courses.online_courses_backend.repository.CourseRepository;
@@ -56,7 +55,7 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
     }
 
     @Override
-    public Page<CourseForListDTO> findCoursesPage(Pageable pageable) {
+    public Page<CourseWithAuthorDTO> findCoursesPage(Pageable pageable) {
         Page<CourseEntity> courses = courseRepository.findAll(pageable);
         return courses.map(courseMapper::toCourseForList);
     }
@@ -90,7 +89,7 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
     }
 
     @Override
-    public CourseForListDTO getCourse(Long courseId) {
+    public CourseWithAuthorDTO getCourse(Long courseId) {
         var courseEntity = courseRepository.findById(courseId)
                 .orElseThrow(() -> new CustomErrorException("course", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND));
         return courseMapper.toCourseForList(courseEntity);
@@ -148,10 +147,10 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
     }
 
     @Override
-    public CoursesForUserDTO getCourseDataForUser() {
+    public CoursesDTO getCourseDataForUser() {
         List<CourseEntity> list = courseRepository.findCoursesCreatedByUser(currentUser.getCurrentlyLoggedUser().getId());
-        var coursesForUser = list.stream().map(courseMapper::toCourseForAdmin).toList();
-        return CoursesForUserDTO.builder().courseForUserList(coursesForUser).build();
+        var coursesForUser = list.stream().map(courseMapper::toDTO).toList();
+        return CoursesDTO.builder().foundCoursesList(coursesForUser).build();
     }
 
     private CourseEntity findCourseOfUser(Long courseId) {
