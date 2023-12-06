@@ -135,7 +135,6 @@ class GetCoursePageIT extends BaseTest {
                 .startDate(LocalDate.now().plusDays(1L))
                 .endDate(LocalDate.now().plusDays(1L))
                 .password("CoursePassword")
-                .deleted(false)
                 .build();
 
         var userEntity = TestFactory.UserEntityFactory.createUserEntity();

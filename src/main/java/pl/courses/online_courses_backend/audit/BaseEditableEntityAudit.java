@@ -5,10 +5,9 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import pl.courses.online_courses_backend.entity.BaseEntity;
 
 import java.time.LocalDateTime;
 
@@ -16,16 +15,12 @@ import java.time.LocalDateTime;
 @Setter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class BaseEntityAudit extends BaseEntity {
+public class BaseEditableEntityAudit extends BaseEntityAudit {
 
     @Column(nullable = false, updatable = false)
-    @CreatedBy
-    private String createdBy;
+    @LastModifiedBy
+    private String modifiedBy;
 
-    @CreatedDate
-    private LocalDateTime creationDate;
-
-    private boolean deleted = Boolean.FALSE;
-
-    private LocalDateTime deleteDate;
+    @LastModifiedDate
+    private LocalDateTime modificationDate;
 }

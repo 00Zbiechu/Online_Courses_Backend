@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class TokenEntity extends BaseEntity {
 
+    @Column(nullable = false, length = 300)
     private String token;
 
     @Enumerated(EnumType.STRING)

@@ -4,10 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
-import pl.courses.online_courses_backend.audit.BaseEntityAudit;
+import pl.courses.online_courses_backend.audit.BaseEditableEntityAudit;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,7 +19,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CourseEntity extends BaseEntityAudit {
+public class CourseEntity extends BaseEditableEntityAudit {
 
     @Column(length = 30, nullable = false)
     private String title;
@@ -48,7 +47,9 @@ public class CourseEntity extends BaseEntityAudit {
     )
     private Set<CourseUsersEntity> courseUser = new HashSet<>();
 
-    private boolean deleted = Boolean.FALSE;
-
-    private LocalDateTime deleteDate;
+    @OneToMany(
+            mappedBy = "courseEntity",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}
+    )
+    private Set<TopicEntity> topics = new HashSet<>();
 }

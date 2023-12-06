@@ -28,7 +28,6 @@ public class TestFactory {
                     .startDate(LocalDate.now())
                     .endDate(LocalDate.now())
                     .password("CoursePassword")
-                    .deleted(false)
                     .build();
         }
     }
