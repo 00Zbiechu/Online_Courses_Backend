@@ -55,6 +55,7 @@ class EditCourseIT extends BaseTest {
     }
 
 
+    @DisplayName("Should throw error if owner does not have course with specific id")
     @Test
     void shouldThrowErrorIfOwnerDoesNotHaveCourseWithSpecificId() throws Exception {
 

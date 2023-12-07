@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 import pl.courses.online_courses_backend.model.*;
 import pl.courses.online_courses_backend.model.wrapper.CoursesDTO;
+import pl.courses.online_courses_backend.model.wrapper.TopicsDTO;
 import pl.courses.online_courses_backend.photo.PhotoDTO;
 
 public interface CourseService extends BaseService<CourseDTO> {
@@ -29,4 +30,6 @@ public interface CourseService extends BaseService<CourseDTO> {
     CourseDTO editCourse(EditCourseDTO editCourseDTO);
 
     CourseWithAuthorDTO getCourse(Long courseId);
+
+    TopicsDTO addTopic(Long courseId, TopicDTO topicDTO);
 }

@@ -13,10 +13,12 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.courses.online_courses_backend.dataprovider.CourseDataProvider;
 import pl.courses.online_courses_backend.model.*;
 import pl.courses.online_courses_backend.model.wrapper.CoursesDTO;
+import pl.courses.online_courses_backend.model.wrapper.TopicsDTO;
 import pl.courses.online_courses_backend.photo.PhotoDTO;
 import pl.courses.online_courses_backend.service.CourseService;
 import pl.courses.online_courses_backend.validator.AddCourseValidator;
 import pl.courses.online_courses_backend.validator.EditCourseValidator;
+import pl.courses.online_courses_backend.validator.TopicValidator;
 
 @RestController
 @RequestMapping("/api/courses")
@@ -32,6 +34,8 @@ public class CourseController extends BaseController<CourseDTO, CourseService> {
 
     private final EditCourseValidator editCourseValidator;
 
+    private final TopicValidator topicValidator;
+
     @InitBinder("addCourseDTO")
     public void addValidationForAddCourseDTO(WebDataBinder binder) {
         binder.addValidators(addCourseValidator);
@@ -40,6 +44,11 @@ public class CourseController extends BaseController<CourseDTO, CourseService> {
     @InitBinder("editCourseDTO")
     public void addValidationForEditCourseDTO(WebDataBinder binder) {
         binder.addValidators(editCourseValidator);
+    }
+
+    @InitBinder("topicDTO")
+    public void addValidationForTopicDTO(WebDataBinder binder) {
+        binder.addValidators(topicValidator);
     }
 
     @Override
@@ -53,7 +62,7 @@ public class CourseController extends BaseController<CourseDTO, CourseService> {
         return new ResponseEntity<>(courseService.findCoursesPage(pageRequest), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/get-courses-for-user")
+    @GetMapping("/get-courses-for-user")
     public ResponseEntity<CoursesDTO> getCourseDataForUser() {
         return new ResponseEntity<>(courseService.getCourseDataForUser(), HttpStatus.OK);
     }
@@ -78,23 +87,28 @@ public class CourseController extends BaseController<CourseDTO, CourseService> {
         return new ResponseEntity<>(courseService.editCourse(editCourseDTO), HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/delete-course")
+    @DeleteMapping("/delete-course")
     public ResponseEntity<CoursesDTO> deleteCourse(@RequestParam Long courseId) {
         return new ResponseEntity<>(courseService.deleteCourse(courseId), HttpStatus.ACCEPTED);
     }
 
-    @GetMapping(value = "/get-photo")
+    @GetMapping("/get-photo")
     public ResponseEntity<PhotoDTO> getCourseImage(@RequestParam Long courseId) {
         return new ResponseEntity<>(courseService.getCourseImage(courseId), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/upload-photo")
+    @PostMapping("/upload-photo")
     public ResponseEntity<PhotoDTO> uploadCourseImage(@RequestParam Long courseId, @RequestParam MultipartFile photo) {
         return new ResponseEntity<>(courseService.uploadCourseImage(courseId, photo), HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/delete-photo")
+    @DeleteMapping("/delete-photo")
     public ResponseEntity<PhotoDTO> deleteCourseImage(@RequestParam Long courseId) {
         return new ResponseEntity<>(courseService.deleteCourseImage(courseId), HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/add-topic")
+    public ResponseEntity<TopicsDTO> addTopicToCourse(@RequestParam Long courseId, @RequestBody TopicDTO topicDTO) {
+        return new ResponseEntity<>(courseService.addTopic(courseId, topicDTO), HttpStatus.CREATED);
     }
 }

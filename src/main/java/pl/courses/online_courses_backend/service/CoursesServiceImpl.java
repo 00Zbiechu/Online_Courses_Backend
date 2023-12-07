@@ -21,14 +21,17 @@ import pl.courses.online_courses_backend.exception.CustomErrorException;
 import pl.courses.online_courses_backend.exception.errors.ErrorCodes;
 import pl.courses.online_courses_backend.mapper.BaseMapper;
 import pl.courses.online_courses_backend.mapper.CourseMapper;
+import pl.courses.online_courses_backend.mapper.TopicMapper;
 import pl.courses.online_courses_backend.model.*;
 import pl.courses.online_courses_backend.model.wrapper.CoursesDTO;
+import pl.courses.online_courses_backend.model.wrapper.TopicsDTO;
 import pl.courses.online_courses_backend.photo.PhotoCompressor;
 import pl.courses.online_courses_backend.photo.PhotoDTO;
 import pl.courses.online_courses_backend.repository.CourseRepository;
 import pl.courses.online_courses_backend.type.OrderType;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +42,8 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
     private final CourseRepository courseRepository;
 
     private final CourseMapper courseMapper;
+
+    private final TopicMapper topicMapper;
 
     private final PhotoCompressor photoCompressor;
 
@@ -167,5 +172,25 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
         List<CourseEntity> list = courseRepository.findCoursesCreatedByUser(currentUser.getCurrentlyLoggedUser().getId());
         List<CourseDTO> resultList = list.stream().map(courseMapper::toDTO).toList();
         return CoursesDTO.builder().foundCoursesList(resultList).build();
+    }
+
+    @Override
+    public TopicsDTO addTopic(Long courseId, TopicDTO topicDTO) {
+
+        var courseEntity = courseRepository.findCoursesCreatedByUser(
+                currentUser.getCurrentlyLoggedUser().getId()).stream().filter(
+                course -> Objects.equals(course.getId(), topicDTO.getCourseId())
+        ).toList().get(0);
+
+        if (courseEntity.getTopics() == null) {
+            courseEntity.setTopics(Sets.newHashSet(topicMapper.toEntity(topicDTO)));
+        } else {
+            courseEntity.getTopics().add(topicMapper.toEntity(topicDTO));
+        }
+
+        var result = courseRepository.save(courseEntity);
+
+        var topicList = result.getTopics().stream().map(topicMapper::toDTO).toList();
+        return TopicsDTO.builder().topics(topicList).build();
     }
 }
