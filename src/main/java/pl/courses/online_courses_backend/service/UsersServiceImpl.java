@@ -67,13 +67,10 @@ public class UsersServiceImpl extends AbstractService<UserEntity, UserDTO> imple
     }
 
     @Override
-    public AuthenticationResponseDTO register(UserDTO userDTO) {
+    public void register(UserDTO userDTO) {
 
         UserEntity user = userMapper.toEntity(userDTO);
         user.setRole(Role.USER);
-
-        var jwtToken = jwtService.generateToken(user);
-        var refreshToken = jwtService.generateRefreshToken(user);
 
         ConfirmationTokenEntity confirmationTokenEntity = ConfirmationTokenEntity.builder()
                 .token(UUID.randomUUID().toString())
@@ -84,7 +81,7 @@ public class UsersServiceImpl extends AbstractService<UserEntity, UserDTO> imple
 
         user.setConfirmationTokenEntities(Sets.newHashSet(confirmationTokenEntity));
 
-        saveUserWithToken(user, jwtToken);
+        userRepository.save(user);
 
         emailService.sendMail(UsernameAndMailDTO.newBuilder()
                 .setUsername(userDTO.getUsername())
@@ -92,18 +89,13 @@ public class UsersServiceImpl extends AbstractService<UserEntity, UserDTO> imple
                 .setConfirmationLink(confirmationLink + confirmationTokenEntity.getToken())
                 .build()
         );
-
-        return AuthenticationResponseDTO.builder()
-                .accessToken(jwtToken)
-                .refreshToken(refreshToken)
-                .build();
     }
 
     @Override
     public AuthenticationResponseDTO authenticate(AuthenticationRequestDTO authenticationRequestDTO) {
 
         var user = userRepository
-                .findByUsername(authenticationRequestDTO.getUsername())
+                .findActiveAccountByUsername(authenticationRequestDTO.getUsername())
                 .orElseThrow(() -> new CustomErrorException("username", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND));
 
         authenticationManager.authenticate(
@@ -133,7 +125,7 @@ public class UsersServiceImpl extends AbstractService<UserEntity, UserDTO> imple
             throw new CustomErrorException("username", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND);
         }
 
-        var userDetails = this.userRepository.findByUsername(username)
+        var userDetails = this.userRepository.findActiveAccountByUsername(username)
                 .orElseThrow(() -> new CustomErrorException("username", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND));
 
         if (!jwtService.isTokenValid(refreshTokenDTO.getRefreshToken(), userDetails)) {
@@ -170,7 +162,7 @@ public class UsersServiceImpl extends AbstractService<UserEntity, UserDTO> imple
         return PhotoDTO.builder().photo(currentUser.getCurrentlyLoggedUser().getPhoto()).build();
     }
 
-    private UserEntity saveUserWithToken(UserEntity user, String jwtToken) {
+    private void saveUserWithToken(UserEntity user, String jwtToken) {
         var token = TokenEntity.builder()
                 .userEntity(user)
                 .token(jwtToken)
@@ -183,7 +175,7 @@ public class UsersServiceImpl extends AbstractService<UserEntity, UserDTO> imple
             user.getTokens().add(token);
         }
 
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 
     private void revokeAllUserTokens(UserEntity userEntity) {

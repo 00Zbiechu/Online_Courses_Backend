@@ -18,7 +18,6 @@ import pl.courses.online_courses_backend.photo.PhotoDTO;
 import pl.courses.online_courses_backend.service.CourseService;
 import pl.courses.online_courses_backend.validator.AddCourseValidator;
 import pl.courses.online_courses_backend.validator.EditCourseValidator;
-import pl.courses.online_courses_backend.validator.TopicValidator;
 
 @RestController
 @RequestMapping("/api/courses")
@@ -34,8 +33,6 @@ public class CourseController extends BaseController<CourseDTO, CourseService> {
 
     private final EditCourseValidator editCourseValidator;
 
-    private final TopicValidator topicValidator;
-
     @InitBinder("addCourseDTO")
     public void addValidationForAddCourseDTO(WebDataBinder binder) {
         binder.addValidators(addCourseValidator);
@@ -44,11 +41,6 @@ public class CourseController extends BaseController<CourseDTO, CourseService> {
     @InitBinder("editCourseDTO")
     public void addValidationForEditCourseDTO(WebDataBinder binder) {
         binder.addValidators(editCourseValidator);
-    }
-
-    @InitBinder("topicDTO")
-    public void addValidationForTopicDTO(WebDataBinder binder) {
-        binder.addValidators(topicValidator);
     }
 
     @Override

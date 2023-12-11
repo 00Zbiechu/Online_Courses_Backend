@@ -40,8 +40,9 @@ public class UserController extends BaseController<UserDTO, UserService> {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponseDTO> register(@Valid @RequestBody UserDTO userDTO) {
-        return ResponseEntity.ok(userService.register(userDTO));
+    public ResponseEntity<Void> register(@Valid @RequestBody UserDTO userDTO) {
+        userService.register(userDTO);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/authenticate")

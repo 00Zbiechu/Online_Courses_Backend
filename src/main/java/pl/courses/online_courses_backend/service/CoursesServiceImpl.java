@@ -29,9 +29,9 @@ import pl.courses.online_courses_backend.photo.PhotoCompressor;
 import pl.courses.online_courses_backend.photo.PhotoDTO;
 import pl.courses.online_courses_backend.repository.CourseRepository;
 import pl.courses.online_courses_backend.type.OrderType;
+import pl.courses.online_courses_backend.validator.TopicValidator;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +44,8 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
     private final CourseMapper courseMapper;
 
     private final TopicMapper topicMapper;
+
+    private final TopicValidator topicValidator;
 
     private final PhotoCompressor photoCompressor;
 
@@ -177,15 +179,17 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
     @Override
     public TopicsDTO addTopic(Long courseId, TopicDTO topicDTO) {
 
-        var courseEntity = courseRepository.findCoursesCreatedByUser(
-                currentUser.getCurrentlyLoggedUser().getId()).stream().filter(
-                course -> Objects.equals(course.getId(), topicDTO.getCourseId())
-        ).toList().get(0);
+        var courseEntity = findCourseOfUser(courseId);
+
+        topicValidator.validateIsTopicUnique(topicDTO, courseEntity);
+
+        var topicEntity = topicMapper.toEntity(topicDTO);
+        topicEntity.setCourseEntity(courseEntity);
 
         if (courseEntity.getTopics() == null) {
-            courseEntity.setTopics(Sets.newHashSet(topicMapper.toEntity(topicDTO)));
+            courseEntity.setTopics(Sets.newHashSet(topicEntity));
         } else {
-            courseEntity.getTopics().add(topicMapper.toEntity(topicDTO));
+            courseEntity.getTopics().add(topicEntity);
         }
 
         var result = courseRepository.save(courseEntity);

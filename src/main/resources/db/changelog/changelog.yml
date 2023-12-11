@@ -23,6 +23,6 @@ databaseChangeLog:
   - include:
       file: ./changes/202312051626_create_table_note.yml
       relativeToChangelogFile: true
-  - include:
-      file: ./changes/202312051610_create_table_file.yml
-      relativeToChangelogFile: true
+#  - include:
+#      file: ./changes/202312051610_create_table_file.yml
+#      relativeToChangelogFile: true
