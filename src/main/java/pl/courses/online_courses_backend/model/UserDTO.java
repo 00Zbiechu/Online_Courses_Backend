@@ -9,7 +9,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import static pl.courses.online_courses_backend.exception.errors.ErrorCodes.*;
+import static pl.courses.online_courses_backend.exception.errors.ErrorCodes.FIELD_REQUIRED;
+import static pl.courses.online_courses_backend.exception.errors.ErrorCodes.WRONG_FIELD_FORMAT;
+import static pl.courses.online_courses_backend.exception.errors.ErrorCodes.WRONG_FIELD_SIZE;
 
 @Data
 @AllArgsConstructor

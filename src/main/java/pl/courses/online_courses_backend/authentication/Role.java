@@ -8,7 +8,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.List;
 import java.util.Set;
 
-import static pl.courses.online_courses_backend.authentication.Permission.*;
+import static pl.courses.online_courses_backend.authentication.Permission.USER_CREATE;
+import static pl.courses.online_courses_backend.authentication.Permission.USER_DELETE;
+import static pl.courses.online_courses_backend.authentication.Permission.USER_READ;
+import static pl.courses.online_courses_backend.authentication.Permission.USER_UPDATE;
 
 @Getter
 @RequiredArgsConstructor

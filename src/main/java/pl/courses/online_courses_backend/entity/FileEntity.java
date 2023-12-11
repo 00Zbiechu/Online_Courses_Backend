@@ -1,5 +1,6 @@
 package pl.courses.online_courses_backend.entity;
 
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -16,18 +17,24 @@ import org.hibernate.annotations.Where;
 import pl.courses.online_courses_backend.audit.BaseEntityAudit;
 
 @Entity
-@Table(name = "NOTE")
-@SQLDelete(sql = "UPDATE NOTE SET deleted = true, delete_date = now() WHERE id=?")
+@Table(name = "FILE")
+@SQLDelete(sql = "UPDATE FILE SET deleted = true, delete_date = now() WHERE id=?")
 @Where(clause = "deleted=false")
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class NoteEntity extends BaseEntityAudit {
+public class FileEntity extends BaseEntityAudit {
 
-    @Column(nullable = false, length = 400)
-    private String data;
+    @Column(nullable = false, length = 40)
+    private String name;
+
+    @Column(nullable = false, length = 10)
+    private String type;
+
+    @Column(nullable = false)
+    private byte[] data;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(

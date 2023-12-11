@@ -22,7 +22,12 @@ import pl.courses.online_courses_backend.exception.errors.ErrorCodes;
 import pl.courses.online_courses_backend.mapper.BaseMapper;
 import pl.courses.online_courses_backend.mapper.CourseMapper;
 import pl.courses.online_courses_backend.mapper.TopicMapper;
-import pl.courses.online_courses_backend.model.*;
+import pl.courses.online_courses_backend.model.AddCourseDTO;
+import pl.courses.online_courses_backend.model.CourseDTO;
+import pl.courses.online_courses_backend.model.CourseWithAuthorDTO;
+import pl.courses.online_courses_backend.model.EditCourseDTO;
+import pl.courses.online_courses_backend.model.PaginationForCourseListDTO;
+import pl.courses.online_courses_backend.model.TopicDTO;
 import pl.courses.online_courses_backend.model.wrapper.CoursesDTO;
 import pl.courses.online_courses_backend.model.wrapper.TopicsDTO;
 import pl.courses.online_courses_backend.photo.PhotoCompressor;
@@ -177,7 +182,7 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
     }
 
     @Override
-    public TopicsDTO addTopic(Long courseId, TopicDTO topicDTO) {
+    public TopicsDTO addTopic(Long courseId, MultipartFile[] files, TopicDTO topicDTO) {
 
         var courseEntity = findCourseOfUser(courseId);
 

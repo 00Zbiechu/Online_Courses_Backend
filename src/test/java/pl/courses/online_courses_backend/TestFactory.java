@@ -6,7 +6,12 @@ import pl.courses.online_courses_backend.entity.ConfirmationTokenEntity;
 import pl.courses.online_courses_backend.entity.CourseEntity;
 import pl.courses.online_courses_backend.entity.CourseUsersEntity;
 import pl.courses.online_courses_backend.entity.UserEntity;
-import pl.courses.online_courses_backend.model.*;
+import pl.courses.online_courses_backend.model.AddCourseDTO;
+import pl.courses.online_courses_backend.model.AuthenticationRequestDTO;
+import pl.courses.online_courses_backend.model.EditCourseDTO;
+import pl.courses.online_courses_backend.model.PaginationForCourseListDTO;
+import pl.courses.online_courses_backend.model.SearchForCourseDTO;
+import pl.courses.online_courses_backend.model.UserDTO;
 import pl.courses.online_courses_backend.type.OrderType;
 import pl.courses.online_courses_backend.type.SortType;
 
@@ -28,6 +33,7 @@ public class TestFactory {
                     .startDate(LocalDate.now())
                     .endDate(LocalDate.now())
                     .password("CoursePassword")
+                    .topics(Sets.newHashSet())
                     .build();
         }
     }

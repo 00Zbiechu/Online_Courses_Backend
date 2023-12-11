@@ -11,10 +11,12 @@ import pl.courses.online_courses_backend.model.TopicDTO;
 public class TopicValidator {
 
     public void validateIsTopicUnique(TopicDTO topicDTO, CourseEntity courseEntity) {
-        courseEntity.getTopics().forEach(topic -> {
-            if (topic.getTitle().equals(topicDTO.getTitle())) {
-                throw new CustomErrorException("topic", ErrorCodes.ENTITY_ALREADY_EXIST, HttpStatus.BAD_REQUEST);
-            }
-        });
+        if (courseEntity.getTopics() != null) {
+            courseEntity.getTopics().forEach(topic -> {
+                if (topic.getTitle().equals(topicDTO.getTitle())) {
+                    throw new CustomErrorException("topic", ErrorCodes.ENTITY_ALREADY_EXIST, HttpStatus.BAD_REQUEST);
+                }
+            });
+        }
     }
 }
