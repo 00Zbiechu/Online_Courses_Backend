@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.http.HttpMethod;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pl.courses.online_courses_backend.BaseTest;
 import pl.courses.online_courses_backend.TestFactory;
@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class AddTopicIT extends BaseTest {
+class AddTopicIT extends BaseTest {
 
     private final String PATH = "/api/courses/add-topic";
 
@@ -55,11 +55,15 @@ public class AddTopicIT extends BaseTest {
                 )
                 .build();
 
+        MockMultipartFile topicJson = new MockMultipartFile("topicDTO", null,
+                "application/json", asJson(topicRequest).getBytes());
+
         //when:
-        var request = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.POST, PATH).with(user(userEntity))
+        var request = mockMvc.perform(MockMvcRequestBuilders.multipart(PATH)
+                .file(topicJson)
                 .param("courseId", courseEntity.getId().toString())
-                .contentType("application/json")
-                .content(objectMapper.writeValueAsString(topicRequest)));
+                .with(user(userEntity))
+        );
 
         //then:
         var result = asObject(request, TopicsDTO.class);
@@ -98,11 +102,15 @@ public class AddTopicIT extends BaseTest {
                 )
                 .build();
 
+        MockMultipartFile topicJson = new MockMultipartFile("topicDTO", null,
+                "application/json", asJson(topicRequest).getBytes());
+
         //when:
-        var request = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.POST, PATH).with(user(userEntity))
+        var request = mockMvc.perform(MockMvcRequestBuilders.multipart(PATH)
+                .file(topicJson)
                 .param("courseId", String.valueOf((courseEntity.getId() + 1L)))
-                .contentType("application/json")
-                .content(objectMapper.writeValueAsString(topicRequest)));
+                .with(user(userEntity))
+        );
 
         //then:
         request.andExpect(status().isNotFound());
@@ -126,11 +134,15 @@ public class AddTopicIT extends BaseTest {
                 )
                 .build();
 
+        MockMultipartFile topicJson = new MockMultipartFile("topicDTO", null,
+                "application/json", asJson(topicRequest).getBytes());
+
         //when:
-        var request = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.POST, PATH).with(user(userEntity))
+        var request = mockMvc.perform(MockMvcRequestBuilders.multipart(PATH)
+                .file(topicJson)
                 .param("courseId", courseEntity.getId().toString())
-                .contentType("application/json")
-                .content(objectMapper.writeValueAsString(topicRequest)));
+                .with(user(userEntity))
+        );
 
         //then:
         request.andExpect(status().isNotFound());
@@ -166,11 +178,14 @@ public class AddTopicIT extends BaseTest {
                 )
                 .build();
 
+        MockMultipartFile topicJson = new MockMultipartFile("topicDTO", null,
+                "application/json", asJson(topicRequest).getBytes());
+
         //when:
-        var request = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.POST, PATH).with(user(userEntity))
+        var request = mockMvc.perform(MockMvcRequestBuilders.multipart(PATH)
+                .file(topicJson)
                 .param("courseId", courseEntity.getId().toString())
-                .contentType("application/json")
-                .content(objectMapper.writeValueAsString(topicRequest)));
+                .with(user(userEntity)));
 
         //then:
         request.andExpect(status().is(status));
