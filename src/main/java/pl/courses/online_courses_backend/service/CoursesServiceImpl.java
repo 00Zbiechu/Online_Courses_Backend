@@ -11,10 +11,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import pl.courses.online_courses_backend.authentication.CurrentUser;
 import pl.courses.online_courses_backend.entity.CourseEntity;
 import pl.courses.online_courses_backend.entity.CourseUsersEntity;
+import pl.courses.online_courses_backend.entity.FileEntity;
+import pl.courses.online_courses_backend.entity.TopicEntity;
 import pl.courses.online_courses_backend.entity.UserEntity;
 import pl.courses.online_courses_backend.entity.key.CourseUsersPK;
 import pl.courses.online_courses_backend.exception.CustomErrorException;
@@ -23,6 +26,7 @@ import pl.courses.online_courses_backend.mapper.BaseMapper;
 import pl.courses.online_courses_backend.mapper.CourseMapper;
 import pl.courses.online_courses_backend.mapper.TopicMapper;
 import pl.courses.online_courses_backend.model.AddCourseDTO;
+import pl.courses.online_courses_backend.model.AddTopicDTO;
 import pl.courses.online_courses_backend.model.CourseDTO;
 import pl.courses.online_courses_backend.model.CourseWithAuthorDTO;
 import pl.courses.online_courses_backend.model.EditCourseDTO;
@@ -34,9 +38,13 @@ import pl.courses.online_courses_backend.photo.PhotoCompressor;
 import pl.courses.online_courses_backend.photo.PhotoDTO;
 import pl.courses.online_courses_backend.repository.CourseRepository;
 import pl.courses.online_courses_backend.type.OrderType;
+import pl.courses.online_courses_backend.validator.FileValidator;
 import pl.courses.online_courses_backend.validator.TopicValidator;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -51,6 +59,8 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
     private final TopicMapper topicMapper;
 
     private final TopicValidator topicValidator;
+
+    private final FileValidator fileValidator;
 
     private final PhotoCompressor photoCompressor;
 
@@ -133,7 +143,7 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
             courseEntity.setPhoto(compressedPhoto);
             courseRepository.save(courseEntity);
         }).onFailure(image -> {
-            throw new CustomErrorException("photo", ErrorCodes.WRONG_FIELD_FORMAT, HttpStatus.BAD_REQUEST);
+            throw new CustomErrorException("photo", ErrorCodes.WRONG_FORMAT, HttpStatus.BAD_REQUEST);
         });
         return PhotoDTO.builder().photo(courseEntity.getPhoto()).build();
     }
@@ -182,13 +192,14 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
     }
 
     @Override
-    public TopicsDTO addTopic(Long courseId, MultipartFile[] files, TopicDTO topicDTO) {
+    public TopicsDTO addTopic(Long courseId, MultipartFile[] files, AddTopicDTO addTopicDTO) {
 
         var courseEntity = findCourseOfUser(courseId);
 
-        topicValidator.validateIsTopicUnique(topicDTO, courseEntity);
+        topicValidator.validateIsTopicUnique(addTopicDTO, courseEntity);
 
-        var topicEntity = topicMapper.toEntity(topicDTO);
+        var topicEntity = topicMapper.toEntity(addTopicDTO);
+        topicEntity.setFiles(buildAttachmentsList(topicEntity, files));
         topicEntity.setCourseEntity(courseEntity);
 
         if (courseEntity.getTopics() == null) {
@@ -199,7 +210,37 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
 
         var result = courseRepository.save(courseEntity);
 
-        var topicList = result.getTopics().stream().map(topicMapper::toDTO).toList();
+        var topicList = result.getTopics().stream().map(topicMapper::toDTO)
+                .sorted(Comparator.comparing(TopicDTO::getId))
+                .toList();
+
         return TopicsDTO.builder().topics(topicList).build();
+    }
+
+    private Set<FileEntity> buildAttachmentsList(TopicEntity topicEntity, MultipartFile[] files) {
+
+        Set<FileEntity> attachmentList = Sets.newHashSet();
+
+        if (files == null || !(files.length > 0)) {
+            return attachmentList;
+        }
+
+        for (MultipartFile file : files) {
+            Try.run(() -> {
+                fileValidator.validateFile(file);
+                var fileEntity = FileEntity.builder()
+                        .name(StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename())))
+                        .type(file.getContentType())
+                        .data(file.getBytes())
+                        .build();
+
+                fileEntity.setTopicEntity(topicEntity);
+                attachmentList.add(fileEntity);
+
+            }).onFailure(error -> {
+                throw new CustomErrorException("file", ErrorCodes.WRONG_FORMAT, HttpStatus.BAD_REQUEST);
+            });
+        }
+        return attachmentList;
     }
 }

@@ -30,7 +30,7 @@ public class FileEntity extends BaseEntityAudit {
     @Column(nullable = false, length = 40)
     private String name;
 
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false, length = 30)
     private String type;
 
     @Column(nullable = false)

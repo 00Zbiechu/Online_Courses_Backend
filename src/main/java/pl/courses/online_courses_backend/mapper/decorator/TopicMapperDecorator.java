@@ -4,7 +4,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.courses.online_courses_backend.entity.TopicEntity;
 import pl.courses.online_courses_backend.mapper.TopicMapper;
-import pl.courses.online_courses_backend.model.TopicDTO;
+import pl.courses.online_courses_backend.model.AddTopicDTO;
 
 import java.util.Optional;
 
@@ -16,7 +16,7 @@ public abstract class TopicMapperDecorator implements TopicMapper {
     private TopicMapper topicMapper;
 
     @Override
-    public TopicEntity toEntity(TopicDTO dto) {
+    public TopicEntity toEntity(AddTopicDTO dto) {
         var topicEntity = topicMapper.toEntity(dto);
 
         Optional.ofNullable(topicEntity.getNotes())

@@ -47,11 +47,9 @@ public class TopicEntity extends BaseEntityAudit {
     )
     private Set<NoteEntity> notes;
 
-    /*
     @OneToMany(
             mappedBy = "topicEntity",
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}
     )
     private Set<FileEntity> files;
-     */
 }

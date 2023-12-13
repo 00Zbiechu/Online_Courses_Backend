@@ -5,11 +5,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 import pl.courses.online_courses_backend.model.AddCourseDTO;
+import pl.courses.online_courses_backend.model.AddTopicDTO;
 import pl.courses.online_courses_backend.model.CourseDTO;
 import pl.courses.online_courses_backend.model.CourseWithAuthorDTO;
 import pl.courses.online_courses_backend.model.EditCourseDTO;
 import pl.courses.online_courses_backend.model.PaginationForCourseListDTO;
-import pl.courses.online_courses_backend.model.TopicDTO;
 import pl.courses.online_courses_backend.model.wrapper.CoursesDTO;
 import pl.courses.online_courses_backend.model.wrapper.TopicsDTO;
 import pl.courses.online_courses_backend.photo.PhotoDTO;
@@ -36,5 +36,5 @@ public interface CourseService extends BaseService<CourseDTO> {
 
     CourseWithAuthorDTO getCourse(Long courseId);
 
-    TopicsDTO addTopic(Long courseId, MultipartFile[] files, TopicDTO topicDTO);
+    TopicsDTO addTopic(Long courseId, MultipartFile[] files, AddTopicDTO addTopicDTO);
 }

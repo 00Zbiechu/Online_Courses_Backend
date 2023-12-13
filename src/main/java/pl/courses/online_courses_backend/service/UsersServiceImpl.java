@@ -157,7 +157,7 @@ public class UsersServiceImpl extends AbstractService<UserEntity, UserDTO> imple
             currentUser.getCurrentlyLoggedUser().setPhoto(compressedPhoto);
             userRepository.save(currentUser.getCurrentlyLoggedUser());
         }).onFailure(image -> {
-            throw new CustomErrorException("photo", ErrorCodes.WRONG_FIELD_FORMAT, HttpStatus.BAD_REQUEST);
+            throw new CustomErrorException("photo", ErrorCodes.WRONG_FORMAT, HttpStatus.BAD_REQUEST);
         });
         return PhotoDTO.builder().photo(currentUser.getCurrentlyLoggedUser().getPhoto()).build();
     }

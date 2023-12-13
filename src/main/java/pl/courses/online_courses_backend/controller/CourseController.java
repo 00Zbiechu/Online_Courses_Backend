@@ -21,12 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import pl.courses.online_courses_backend.dataprovider.CourseDataProvider;
 import pl.courses.online_courses_backend.model.AddCourseDTO;
+import pl.courses.online_courses_backend.model.AddTopicDTO;
 import pl.courses.online_courses_backend.model.CourseDTO;
 import pl.courses.online_courses_backend.model.CourseWithAuthorDTO;
 import pl.courses.online_courses_backend.model.EditCourseDTO;
 import pl.courses.online_courses_backend.model.PaginationForCourseListDTO;
 import pl.courses.online_courses_backend.model.SearchForCourseDTO;
-import pl.courses.online_courses_backend.model.TopicDTO;
 import pl.courses.online_courses_backend.model.wrapper.CoursesDTO;
 import pl.courses.online_courses_backend.model.wrapper.TopicsDTO;
 import pl.courses.online_courses_backend.photo.PhotoDTO;
@@ -117,7 +117,7 @@ public class CourseController extends BaseController<CourseDTO, CourseService> {
     @PostMapping("/add-topic")
     public ResponseEntity<TopicsDTO> addTopicToCourse(@RequestParam Long courseId,
                                                       @RequestPart(required = false) MultipartFile[] files,
-                                                      @Valid @RequestPart TopicDTO topicDTO) {
-        return new ResponseEntity<>(courseService.addTopic(courseId, files, topicDTO), HttpStatus.CREATED);
+                                                      @Valid @RequestPart AddTopicDTO addTopicDTO) {
+        return new ResponseEntity<>(courseService.addTopic(courseId, files, addTopicDTO), HttpStatus.CREATED);
     }
 }

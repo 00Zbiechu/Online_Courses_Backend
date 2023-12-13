@@ -13,9 +13,9 @@ import lombok.Setter;
 @Builder
 public class FileDTO {
 
+    private Long id;
+
     private String name;
 
     private String type;
-
-    private byte[] data;
 }

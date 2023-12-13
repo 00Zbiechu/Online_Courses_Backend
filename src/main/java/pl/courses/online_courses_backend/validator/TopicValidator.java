@@ -5,15 +5,15 @@ import org.springframework.stereotype.Component;
 import pl.courses.online_courses_backend.entity.CourseEntity;
 import pl.courses.online_courses_backend.exception.CustomErrorException;
 import pl.courses.online_courses_backend.exception.errors.ErrorCodes;
-import pl.courses.online_courses_backend.model.TopicDTO;
+import pl.courses.online_courses_backend.model.AddTopicDTO;
 
 @Component
 public class TopicValidator {
 
-    public void validateIsTopicUnique(TopicDTO topicDTO, CourseEntity courseEntity) {
+    public void validateIsTopicUnique(AddTopicDTO addTopicDTO, CourseEntity courseEntity) {
         if (courseEntity.getTopics() != null) {
             courseEntity.getTopics().forEach(topic -> {
-                if (topic.getTitle().equals(topicDTO.getTitle())) {
+                if (topic.getTitle().equals(addTopicDTO.getTitle())) {
                     throw new CustomErrorException("topic", ErrorCodes.ENTITY_ALREADY_EXIST, HttpStatus.BAD_REQUEST);
                 }
             });
