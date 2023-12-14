@@ -7,10 +7,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum AttachmentType {
 
-    PDF("pdf"),
-    JPEG("jpeg"),
-    JPG("jpg"),
-    PNG("png");
+    PDF("application/pdf"),
+    JPEG("image/jpeg"),
+    JPG("image/jpg"),
+    PNG("image/png");
 
-    private final String format;
+    private final String type;
 }

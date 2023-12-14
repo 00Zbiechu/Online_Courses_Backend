@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import pl.courses.online_courses_backend.exception.CustomErrorException;
 import pl.courses.online_courses_backend.exception.errors.ErrorCodes;
+import pl.courses.online_courses_backend.type.AttachmentExtensionType;
 import pl.courses.online_courses_backend.type.AttachmentType;
 import pl.courses.online_courses_backend.type.ImageType;
 
@@ -45,7 +46,23 @@ public class FileValidator {
     public void validateFile(MultipartFile file) {
         validateIsNotEmpty(file);
         validateFileFormat(file);
+        validateFileType(file);
         validateFileName(file);
+    }
+
+    private void validateFileType(MultipartFile file) {
+        if (!fileHasValidType(file.getContentType())) {
+            throw new CustomErrorException("file", ErrorCodes.WRONG_FORMAT, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    private boolean fileHasValidType(String fileType) {
+        for (AttachmentType type : AttachmentType.values()) {
+            if (fileType.equals(type.getType())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void validateFileName(MultipartFile file) {
@@ -66,8 +83,8 @@ public class FileValidator {
         String[] parts = filename.split("\\.");
         if (parts.length > 1) {
             String fileExtension = parts[parts.length - 1].toLowerCase();
-            for (AttachmentType attachmentType : AttachmentType.values()) {
-                if (attachmentType.getFormat().equals(fileExtension)) {
+            for (AttachmentExtensionType attachmentExtensionType : AttachmentExtensionType.values()) {
+                if (attachmentExtensionType.getFormat().equals(fileExtension)) {
                     return true;
                 }
             }

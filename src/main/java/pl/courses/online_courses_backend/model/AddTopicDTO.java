@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Set;
+import java.util.List;
 
 import static pl.courses.online_courses_backend.exception.errors.ErrorCodes.FIELD_REQUIRED;
 import static pl.courses.online_courses_backend.exception.errors.ErrorCodes.WRONG_FIELD_SIZE;
@@ -28,5 +28,5 @@ public class AddTopicDTO {
 
     @Valid
     @NotNull
-    private Set<NoteDTO> notes;
+    private List<NoteDTO> notes;
 }

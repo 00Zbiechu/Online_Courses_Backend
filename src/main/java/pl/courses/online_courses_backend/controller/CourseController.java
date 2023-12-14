@@ -120,4 +120,9 @@ public class CourseController extends BaseController<CourseDTO, CourseService> {
                                                       @Valid @RequestPart AddTopicDTO addTopicDTO) {
         return new ResponseEntity<>(courseService.addTopic(courseId, files, addTopicDTO), HttpStatus.CREATED);
     }
+
+    @GetMapping("/get-topics")
+    public ResponseEntity<TopicsDTO> getTopicsForCourse(@RequestParam Long courseId) {
+        return new ResponseEntity<>(courseService.getTopics(courseId), HttpStatus.OK);
+    }
 }

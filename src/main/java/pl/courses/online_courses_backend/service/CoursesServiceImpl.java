@@ -45,6 +45,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -242,5 +243,11 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
             });
         }
         return attachmentList;
+    }
+
+    @Override
+    public TopicsDTO getTopics(Long courseId) {
+        var topics = findCourseOfUser(courseId).getTopics().stream().map(topicMapper::toDTO).collect(Collectors.toList());
+        return TopicsDTO.builder().topics(topics).build();
     }
 }

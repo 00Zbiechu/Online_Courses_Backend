@@ -37,4 +37,6 @@ public interface CourseService extends BaseService<CourseDTO> {
     CourseWithAuthorDTO getCourse(Long courseId);
 
     TopicsDTO addTopic(Long courseId, MultipartFile[] files, AddTopicDTO addTopicDTO);
+
+    TopicsDTO getTopics(Long courseId);
 }

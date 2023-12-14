@@ -5,6 +5,7 @@ import pl.courses.online_courses_backend.authentication.Role;
 import pl.courses.online_courses_backend.entity.ConfirmationTokenEntity;
 import pl.courses.online_courses_backend.entity.CourseEntity;
 import pl.courses.online_courses_backend.entity.CourseUsersEntity;
+import pl.courses.online_courses_backend.entity.TopicEntity;
 import pl.courses.online_courses_backend.entity.UserEntity;
 import pl.courses.online_courses_backend.model.AddCourseDTO;
 import pl.courses.online_courses_backend.model.AuthenticationRequestDTO;
@@ -150,6 +151,13 @@ public class TestFactory {
 
         public static ConfirmationTokenEntity.ConfirmationTokenEntityBuilder createConfirmationTokenBuilder() {
             return ConfirmationTokenEntity.builder();
+        }
+    }
+
+    public static class TopicEntityFactory {
+
+        public static TopicEntity.TopicEntityBuilder createTopicEntityBuilder() {
+            return TopicEntity.builder();
         }
     }
 }

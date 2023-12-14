@@ -18,6 +18,7 @@ import pl.courses.online_courses_backend.model.AddTopicDTO;
 import pl.courses.online_courses_backend.model.NoteDTO;
 import pl.courses.online_courses_backend.model.wrapper.TopicsDTO;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -53,7 +54,7 @@ class AddTopicIT extends BaseTest {
         var topicRequest = AddTopicDTO.builder()
                 .title("Test topic")
                 .notes(
-                        Sets.newHashSet(NoteDTO.builder().data("Test Data for topic").build())
+                        List.of(NoteDTO.builder().data("Test Data for topic").build())
                 )
                 .build();
 
@@ -100,7 +101,7 @@ class AddTopicIT extends BaseTest {
         var topicRequest = AddTopicDTO.builder()
                 .title("Test topic")
                 .notes(
-                        Sets.newHashSet(NoteDTO.builder().data("Test Data for topic").build())
+                        List.of(NoteDTO.builder().data("Test Data for topic").build())
                 )
                 .build();
 
@@ -132,7 +133,7 @@ class AddTopicIT extends BaseTest {
         var topicRequest = AddTopicDTO.builder()
                 .title("Test topic")
                 .notes(
-                        Sets.newHashSet(NoteDTO.builder().data("Test Data for topic").build())
+                        List.of(NoteDTO.builder().data("Test Data for topic").build())
                 )
                 .build();
 
@@ -154,6 +155,7 @@ class AddTopicIT extends BaseTest {
     @ParameterizedTest
     @MethodSource("topicDataProvider")
     void shouldThrowBadRequestError(String title, String data, int status) throws Exception {
+
         //given:
         var userEntity = TestFactory.UserEntityFactory.createUserEntity();
         var courseEntity = TestFactory.CourseEntityFactory.createCourseEntity();
@@ -176,7 +178,7 @@ class AddTopicIT extends BaseTest {
         var topicRequest = AddTopicDTO.builder()
                 .title(title)
                 .notes(
-                        Sets.newHashSet(NoteDTO.builder().data(data).build())
+                        List.of(NoteDTO.builder().data(data).build())
                 )
                 .build();
 
@@ -231,7 +233,7 @@ class AddTopicIT extends BaseTest {
         var topicRequest = AddTopicDTO.builder()
                 .title("Test topic")
                 .notes(
-                        Sets.newHashSet(NoteDTO.builder().data("Test Data for topic").build())
+                        List.of(NoteDTO.builder().data("Test Data for topic").build())
                 )
                 .build();
 
@@ -297,7 +299,7 @@ class AddTopicIT extends BaseTest {
         var topicRequest = AddTopicDTO.builder()
                 .title("Test topic")
                 .notes(
-                        Sets.newHashSet(NoteDTO.builder().data("Test Data for topic").build())
+                        List.of(NoteDTO.builder().data("Test Data for topic").build())
                 )
                 .build();
 
@@ -326,6 +328,7 @@ class AddTopicIT extends BaseTest {
                 Arguments.of(null, null, null),
                 Arguments.of("", "", RandomUtils.nextBytes(20)),
                 Arguments.of(RandomStringUtils.random(41, true, true), "application/test", RandomUtils.nextBytes(20)),
+                Arguments.of("Test.jpg", "application/test", RandomUtils.nextBytes(20)),
                 Arguments.of(RandomStringUtils.random(41, true, true), "application/jpeg", RandomUtils.nextBytes(20)),
                 Arguments.of(".", "application/test", RandomUtils.nextBytes(20))
         );

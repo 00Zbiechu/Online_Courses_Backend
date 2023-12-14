@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -17,7 +17,7 @@ public class TopicDTO {
 
     private String title;
 
-    private Set<NoteDTO> notes;
+    private List<NoteDTO> notes;
 
-    private Set<FileDTO> files;
+    private List<FileDTO> files;
 }
