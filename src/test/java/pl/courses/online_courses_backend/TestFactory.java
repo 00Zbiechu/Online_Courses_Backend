@@ -54,6 +54,7 @@ public class TestFactory {
                     .role(Role.USER)
                     .deleted(false)
                     .enabled(true)
+                    .courseUser(Sets.newHashSet())
                     .build();
         }
     }

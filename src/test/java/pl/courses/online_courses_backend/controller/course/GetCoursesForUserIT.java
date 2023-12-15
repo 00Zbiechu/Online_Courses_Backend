@@ -15,6 +15,7 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 
 class GetCoursesForUserIT extends BaseTest {
@@ -96,6 +97,7 @@ class GetCoursesForUserIT extends BaseTest {
                 .password("UserPassword")
                 .role(Role.USER)
                 .deleted(false)
+                .courseUser(Sets.newHashSet())
                 .build();
 
         var courseUsersEntity = TestFactory.CourseUsersEntityFactory.createCourseUsersEntityBuilder()
@@ -118,6 +120,6 @@ class GetCoursesForUserIT extends BaseTest {
         var result = asObject(request, CoursesDTO.class);
 
         //then:
-        assertEquals(0L, result.getFoundCoursesList().size());
+        assertNull(result.getFoundCoursesList());
     }
 }
