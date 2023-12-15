@@ -9,7 +9,7 @@ import pl.courses.online_courses_backend.photo.PhotoDTO;
 
 public interface UserService extends BaseService<UserDTO> {
 
-    void register(UserDTO userDTO);
+    void register(MultipartFile photo, UserDTO userDTO);
 
     AuthenticationResponseDTO authenticate(AuthenticationRequestDTO authenticationRequestDTO);
 

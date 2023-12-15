@@ -5,12 +5,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.http.HttpMethod;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pl.courses.online_courses_backend.BaseTest;
 import pl.courses.online_courses_backend.TestFactory;
 import pl.courses.online_courses_backend.authentication.Role;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.stream.Stream;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -19,20 +21,33 @@ class RegisterIT extends BaseTest {
 
     private final String PATH = "/api/users/register";
 
-    @DisplayName("Should register new user")
+    @DisplayName("Should register new user with photo")
     @Test
-    void shouldRegisterNewUser() throws Exception {
+    void shouldRegisterNewUserWithPhoto() throws Exception {
 
         //given:
         var registrationRequest = TestFactory.UserDTOFactory.createUserDTO();
 
+        var registrationJson = new MockMultipartFile(
+                "userDTO",
+                null,
+                "application/json",
+                asJson(registrationRequest).getBytes()
+        );
+
+        byte[] imageBytes = Files.readAllBytes(Paths.get("src/main/resources/image/test_image.jpg"));
+
+        MockMultipartFile photo = new MockMultipartFile("photo", "photo.png",
+                "image/png", imageBytes);
+
         //when:
-        var response = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.POST, PATH)
-                .contentType("application/json")
-                .content(objectMapper.writeValueAsString(registrationRequest)));
+        var request = mockMvc.perform(MockMvcRequestBuilders.multipart(PATH)
+                .file(registrationJson)
+                .file(photo)
+        );
 
         //then:
-        response.andExpect(status().isOk());
+        request.andExpect(status().isOk());
     }
 
     @DisplayName("Registration should throw error")
@@ -47,6 +62,13 @@ class RegisterIT extends BaseTest {
                 .password(password)
                 .build();
 
+        var registrationJson = new MockMultipartFile(
+                "userDTO",
+                null,
+                "application/json",
+                asJson(registrationRequest).getBytes()
+        );
+
         var userEntity = TestFactory.UserEntityFactory.createUserEntityBuilder()
                 .username("UserForTest")
                 .email("TestTest@java.com.pl")
@@ -59,9 +81,9 @@ class RegisterIT extends BaseTest {
         entityManager.persist(userEntity);
 
         //when:
-        var response = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.POST, PATH)
-                .contentType("application/json")
-                .content(objectMapper.writeValueAsString(registrationRequest)));
+        var response = mockMvc.perform(MockMvcRequestBuilders.multipart(PATH)
+                .file(registrationJson)
+        );
 
         //then:
         response.andExpect(status().is(status));

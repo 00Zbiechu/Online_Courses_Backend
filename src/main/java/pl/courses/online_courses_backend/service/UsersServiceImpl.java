@@ -67,7 +67,7 @@ public class UsersServiceImpl extends AbstractService<UserEntity, UserDTO> imple
     }
 
     @Override
-    public void register(UserDTO userDTO) {
+    public void register(MultipartFile photo, UserDTO userDTO) {
 
         UserEntity user = userMapper.toEntity(userDTO);
         user.setRole(Role.USER);
@@ -80,6 +80,15 @@ public class UsersServiceImpl extends AbstractService<UserEntity, UserDTO> imple
                 .build();
 
         user.setConfirmationTokenEntities(Sets.newHashSet(confirmationTokenEntity));
+
+        if (photo != null) {
+            Try.run(() -> {
+                var compressedPhoto = photoCompressor.resizeImage(photo, 400, 400);
+                user.setPhoto(compressedPhoto);
+            }).onFailure(image -> {
+                throw new CustomErrorException("photo", ErrorCodes.WRONG_FORMAT, HttpStatus.BAD_REQUEST);
+            });
+        }
 
         userRepository.save(user);
 
