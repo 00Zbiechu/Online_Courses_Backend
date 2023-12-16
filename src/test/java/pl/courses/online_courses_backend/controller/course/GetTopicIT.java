@@ -84,9 +84,7 @@ class GetTopicIT extends BaseTest {
 
         var topicRequest = AddTopicDTO.builder()
                 .title("Test topic")
-                .notes(
-                        List.of(NoteDTO.builder().data("Test Data for topic").build())
-                )
+                .note("Test Data for topic")
                 .build();
 
         MockMultipartFile[] files = {

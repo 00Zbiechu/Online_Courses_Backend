@@ -20,7 +20,7 @@ databaseChangeLog:
                     primaryKeyName: NOTE_ID_PK
               - column:
                   name: data
-                  type: varchar(400)
+                  type: text
                   constraints:
                     nullable: false
               - column:

@@ -15,10 +15,8 @@ import pl.courses.online_courses_backend.TestFactory;
 import pl.courses.online_courses_backend.entity.TopicEntity;
 import pl.courses.online_courses_backend.entity.key.CourseUsersPK;
 import pl.courses.online_courses_backend.model.AddTopicDTO;
-import pl.courses.online_courses_backend.model.NoteDTO;
 import pl.courses.online_courses_backend.model.wrapper.TopicsDTO;
 
-import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -53,9 +51,7 @@ class AddTopicIT extends BaseTest {
 
         var topicRequest = AddTopicDTO.builder()
                 .title("Test topic")
-                .notes(
-                        List.of(NoteDTO.builder().data("Test Data for topic").build())
-                )
+                .note("Test Data for topic")
                 .build();
 
         MockMultipartFile topicJson = new MockMultipartFile("addTopicDTO", null,
@@ -100,9 +96,7 @@ class AddTopicIT extends BaseTest {
 
         var topicRequest = AddTopicDTO.builder()
                 .title("Test topic")
-                .notes(
-                        List.of(NoteDTO.builder().data("Test Data for topic").build())
-                )
+                .note("Test Data for topic")
                 .build();
 
         MockMultipartFile topicJson = new MockMultipartFile("addTopicDTO", null,
@@ -132,9 +126,7 @@ class AddTopicIT extends BaseTest {
 
         var topicRequest = AddTopicDTO.builder()
                 .title("Test topic")
-                .notes(
-                        List.of(NoteDTO.builder().data("Test Data for topic").build())
-                )
+                .note("Test Data for topic")
                 .build();
 
         MockMultipartFile topicJson = new MockMultipartFile("addTopicDTO", null,
@@ -177,9 +169,7 @@ class AddTopicIT extends BaseTest {
 
         var topicRequest = AddTopicDTO.builder()
                 .title(title)
-                .notes(
-                        List.of(NoteDTO.builder().data(data).build())
-                )
+                .note(data)
                 .build();
 
         MockMultipartFile topicJson = new MockMultipartFile("addTopicDTO", null,
@@ -232,9 +222,7 @@ class AddTopicIT extends BaseTest {
 
         var topicRequest = AddTopicDTO.builder()
                 .title("Test topic")
-                .notes(
-                        List.of(NoteDTO.builder().data("Test Data for topic").build())
-                )
+                .note("Test Data for topic")
                 .build();
 
         MockMultipartFile[] files = {
@@ -298,9 +286,7 @@ class AddTopicIT extends BaseTest {
 
         var topicRequest = AddTopicDTO.builder()
                 .title("Test topic")
-                .notes(
-                        List.of(NoteDTO.builder().data("Test Data for topic").build())
-                )
+                .note("Test Data for topic")
                 .build();
 
         MockMultipartFile[] files = {
