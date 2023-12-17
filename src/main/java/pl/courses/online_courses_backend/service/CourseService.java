@@ -9,6 +9,7 @@ import pl.courses.online_courses_backend.model.AddTopicDTO;
 import pl.courses.online_courses_backend.model.CourseDTO;
 import pl.courses.online_courses_backend.model.CourseWithAuthorDTO;
 import pl.courses.online_courses_backend.model.EditCourseDTO;
+import pl.courses.online_courses_backend.model.FileDataDTO;
 import pl.courses.online_courses_backend.model.PaginationForCourseListDTO;
 import pl.courses.online_courses_backend.model.wrapper.CoursesDTO;
 import pl.courses.online_courses_backend.model.wrapper.TopicsDTO;
@@ -39,4 +40,6 @@ public interface CourseService extends BaseService<CourseDTO> {
     TopicsDTO addTopic(Long courseId, MultipartFile[] files, AddTopicDTO addTopicDTO);
 
     TopicsDTO getTopics(Long courseId);
+
+    FileDataDTO getAttachment(Long courseId, Long topicId, Long fileId);
 }

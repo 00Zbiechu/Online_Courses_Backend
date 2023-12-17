@@ -30,6 +30,7 @@ import pl.courses.online_courses_backend.model.AddTopicDTO;
 import pl.courses.online_courses_backend.model.CourseDTO;
 import pl.courses.online_courses_backend.model.CourseWithAuthorDTO;
 import pl.courses.online_courses_backend.model.EditCourseDTO;
+import pl.courses.online_courses_backend.model.FileDataDTO;
 import pl.courses.online_courses_backend.model.PaginationForCourseListDTO;
 import pl.courses.online_courses_backend.model.TopicDTO;
 import pl.courses.online_courses_backend.model.wrapper.CoursesDTO;
@@ -249,5 +250,15 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
     public TopicsDTO getTopics(Long courseId) {
         var topics = findCourseOfUser(courseId).getTopics().stream().map(topicMapper::toDTO).collect(Collectors.toList());
         return TopicsDTO.builder().topics(topics).build();
+    }
+
+    @Override
+    public FileDataDTO getAttachment(Long courseId, Long topicId, Long fileId) {
+        var courseEntity = findCourseOfUser(courseId);
+        var topicEntity = courseEntity.getTopics().stream().filter(topic -> topic.getId().equals(topicId)).findFirst().orElseThrow(
+                () -> new CustomErrorException("topic", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND));
+        var fileEntity = topicEntity.getFiles().stream().filter(file -> file.getId().equals(fileId)).findFirst().orElseThrow(
+                () -> new CustomErrorException("file", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND));
+        return FileDataDTO.builder().data(fileEntity.getData()).build();
     }
 }

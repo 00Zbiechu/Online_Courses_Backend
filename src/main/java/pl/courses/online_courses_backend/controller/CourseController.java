@@ -24,6 +24,7 @@ import pl.courses.online_courses_backend.model.AddTopicDTO;
 import pl.courses.online_courses_backend.model.CourseDTO;
 import pl.courses.online_courses_backend.model.CourseWithAuthorDTO;
 import pl.courses.online_courses_backend.model.EditCourseDTO;
+import pl.courses.online_courses_backend.model.FileDataDTO;
 import pl.courses.online_courses_backend.model.PaginationForCourseListDTO;
 import pl.courses.online_courses_backend.model.SearchForCourseDTO;
 import pl.courses.online_courses_backend.model.wrapper.CoursesDTO;
@@ -122,5 +123,10 @@ public class CourseController extends BaseController<CourseDTO, CourseService> {
     @GetMapping("/get-topics")
     public ResponseEntity<TopicsDTO> getTopicsForCourse(@RequestParam Long courseId) {
         return new ResponseEntity<>(courseService.getTopics(courseId), HttpStatus.OK);
+    }
+
+    @GetMapping("/get-attachment")
+    public ResponseEntity<FileDataDTO> getCourseAttachment(@RequestParam Long courseId, @RequestParam Long topicId, @RequestParam Long fileId) {
+        return new ResponseEntity<>(courseService.getAttachment(courseId, topicId, fileId), HttpStatus.OK);
     }
 }
