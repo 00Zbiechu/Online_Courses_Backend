@@ -38,6 +38,7 @@ import pl.courses.online_courses_backend.model.wrapper.TopicsDTO;
 import pl.courses.online_courses_backend.photo.PhotoCompressor;
 import pl.courses.online_courses_backend.photo.PhotoDTO;
 import pl.courses.online_courses_backend.repository.CourseRepository;
+import pl.courses.online_courses_backend.repository.TopicRepository;
 import pl.courses.online_courses_backend.type.OrderType;
 import pl.courses.online_courses_backend.validator.FileValidator;
 import pl.courses.online_courses_backend.validator.TopicValidator;
@@ -55,6 +56,8 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
     private final CurrentUser currentUser;
 
     private final CourseRepository courseRepository;
+
+    private final TopicRepository topicRepository;
 
     private final CourseMapper courseMapper;
 
@@ -260,5 +263,19 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
         var fileEntity = topicEntity.getFiles().stream().filter(file -> file.getId().equals(fileId)).findFirst().orElseThrow(
                 () -> new CustomErrorException("file", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND));
         return FileDataDTO.builder().data(fileEntity.getData()).build();
+    }
+
+    @Override
+    public TopicsDTO deleteTopic(Long courseId, Long topicId) {
+        var courseEntity = findCourseOfUser(courseId);
+        var topicEntity = courseEntity.getTopics().stream().filter(topic -> topic.getId().equals(topicId)).findFirst().orElseThrow(
+                () -> new CustomErrorException("topic", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND));
+
+        courseEntity.getTopics().remove(topicEntity);
+        topicRepository.deleteById(topicEntity.getId());
+
+        return TopicsDTO.builder().topics(courseEntity.getTopics().stream().map(topicMapper::toDTO)
+                .sorted(Comparator.comparing(TopicDTO::getId))
+                .toList()).build();
     }
 }

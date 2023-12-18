@@ -125,6 +125,11 @@ public class CourseController extends BaseController<CourseDTO, CourseService> {
         return new ResponseEntity<>(courseService.getTopics(courseId), HttpStatus.OK);
     }
 
+    @DeleteMapping("/delete-topic")
+    public ResponseEntity<TopicsDTO> deleteTopicForCourse(@RequestParam Long courseId, @RequestParam Long topicId) {
+        return new ResponseEntity<>(courseService.deleteTopic(courseId, topicId), HttpStatus.OK);
+    }
+
     @GetMapping("/get-attachment")
     public ResponseEntity<FileDataDTO> getCourseAttachment(@RequestParam Long courseId, @RequestParam Long topicId, @RequestParam Long fileId) {
         return new ResponseEntity<>(courseService.getAttachment(courseId, topicId, fileId), HttpStatus.OK);

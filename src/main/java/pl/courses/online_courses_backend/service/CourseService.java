@@ -41,5 +41,7 @@ public interface CourseService extends BaseService<CourseDTO> {
 
     TopicsDTO getTopics(Long courseId);
 
+    TopicsDTO deleteTopic(Long courseId, Long topicId);
+
     FileDataDTO getAttachment(Long courseId, Long topicId, Long fileId);
 }
