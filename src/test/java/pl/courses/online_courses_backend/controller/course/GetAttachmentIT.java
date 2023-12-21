@@ -14,6 +14,8 @@ import pl.courses.online_courses_backend.model.AddTopicDTO;
 import pl.courses.online_courses_backend.model.FileDataDTO;
 import pl.courses.online_courses_backend.model.wrapper.TopicsDTO;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -75,6 +77,9 @@ class GetAttachmentIT extends BaseTest {
         var result = asObject(request, FileDataDTO.class);
 
         request.andExpect(status().isOk());
-        Assertions.assertNotNull(result.getData());
+        assertAll(
+                () -> Assertions.assertNotNull(result.getData()),
+                () -> assertEquals("image/jpg", result.getType())
+        );
     }
 }

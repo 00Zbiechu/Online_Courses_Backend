@@ -13,5 +13,7 @@ import lombok.Setter;
 @Builder
 public class FileDataDTO {
 
-    byte[] data;
+    private byte[] data;
+
+    private String type;
 }
