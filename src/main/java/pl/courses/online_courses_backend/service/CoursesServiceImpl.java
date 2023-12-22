@@ -262,7 +262,7 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
                 () -> new CustomErrorException("topic", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND));
         var fileEntity = topicEntity.getFiles().stream().filter(file -> file.getId().equals(fileId)).findFirst().orElseThrow(
                 () -> new CustomErrorException("file", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND));
-        return FileDataDTO.builder().data(fileEntity.getData()).type(fileEntity.getType()).build();
+        return FileDataDTO.builder().name(fileEntity.getName()).data(fileEntity.getData()).type(fileEntity.getType()).build();
     }
 
     @Override

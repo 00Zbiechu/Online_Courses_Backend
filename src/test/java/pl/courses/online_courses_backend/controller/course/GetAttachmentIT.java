@@ -79,7 +79,8 @@ class GetAttachmentIT extends BaseTest {
         request.andExpect(status().isOk());
         assertAll(
                 () -> Assertions.assertNotNull(result.getData()),
-                () -> assertEquals("image/jpg", result.getType())
+                () -> assertEquals("image/jpg", result.getType()),
+                () -> assertEquals("Test.jpg", result.getName())
         );
     }
 }
