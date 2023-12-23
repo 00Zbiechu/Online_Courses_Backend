@@ -1,8 +1,6 @@
 package pl.courses.online_courses_backend.service;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 import pl.courses.online_courses_backend.model.AddCourseDTO;
 import pl.courses.online_courses_backend.model.AddTopicDTO;
@@ -17,7 +15,7 @@ import pl.courses.online_courses_backend.photo.PhotoDTO;
 
 public interface CourseService extends BaseService<CourseDTO> {
 
-    Page<CourseWithAuthorDTO> findCoursesPage(Pageable pageable);
+    Page<CourseWithAuthorDTO> findCoursesPage(PaginationForCourseListDTO paginationForCourseListDTO);
 
     CourseDTO addCourse(AddCourseDTO addCourseDTO);
 
@@ -28,8 +26,6 @@ public interface CourseService extends BaseService<CourseDTO> {
     PhotoDTO uploadCourseImage(Long courseId, MultipartFile multipartFile);
 
     PhotoDTO deleteCourseImage(Long courseId);
-
-    PageRequest buildPageRequestForCoursePage(PaginationForCourseListDTO paginationForCourseListDTO);
 
     CoursesDTO getCourseDataForUser();
 

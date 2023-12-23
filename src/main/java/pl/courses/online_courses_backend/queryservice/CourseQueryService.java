@@ -13,6 +13,7 @@ import pl.courses.online_courses_backend.entity.QCourseEntity;
 import pl.courses.online_courses_backend.model.SearchForCourseDTO;
 import pl.courses.online_courses_backend.type.OrderType;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Component
@@ -35,6 +36,7 @@ public class CourseQueryService {
 
     private BooleanExpression buildWhereClause(SearchForCourseDTO searchForCourseDTO) {
         BooleanExpression whereClause = course.isNotNull();
+        whereClause.and(course.endDate.before(LocalDate.now()));
 
         if (isNotBlank(searchForCourseDTO.getTitle())) {
             whereClause = whereClause.and(course.title.containsIgnoreCase(searchForCourseDTO.getTitle()));

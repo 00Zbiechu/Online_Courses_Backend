@@ -5,7 +5,6 @@ import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
@@ -82,8 +81,9 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
     }
 
     @Override
-    public Page<CourseWithAuthorDTO> findCoursesPage(Pageable pageable) {
-        Page<CourseEntity> courses = courseRepository.findAll(pageable);
+    public Page<CourseWithAuthorDTO> findCoursesPage(PaginationForCourseListDTO paginationForCourseListDTO) {
+        PageRequest pageRequest = buildPageRequestForCoursePage(paginationForCourseListDTO);
+        Page<CourseEntity> courses = courseRepository.findActiveCourses(pageRequest);
         return courses.map(courseMapper::toCourseForList);
     }
 
@@ -161,8 +161,7 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
         return PhotoDTO.builder().photo(result.getPhoto()).build();
     }
 
-    @Override
-    public PageRequest buildPageRequestForCoursePage(PaginationForCourseListDTO paginationForCourseListDTO) {
+    private PageRequest buildPageRequestForCoursePage(PaginationForCourseListDTO paginationForCourseListDTO) {
         Sort.Direction direction = (paginationForCourseListDTO.getOrder() == OrderType.ASC) ? Sort.Direction.ASC : Sort.Direction.DESC;
         String sortField = paginationForCourseListDTO.getSort().getFieldName();
 

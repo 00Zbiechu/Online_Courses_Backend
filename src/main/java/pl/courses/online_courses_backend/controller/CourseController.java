@@ -4,7 +4,6 @@ package pl.courses.online_courses_backend.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
@@ -64,8 +63,7 @@ public class CourseController extends BaseController<CourseDTO, CourseService> {
 
     @PostMapping("/get-course-page")
     public ResponseEntity<Page<CourseWithAuthorDTO>> findCoursesPage(@Valid @RequestBody PaginationForCourseListDTO paginationForCourseListDTO) {
-        PageRequest pageRequest = courseService.buildPageRequestForCoursePage(paginationForCourseListDTO);
-        return new ResponseEntity<>(courseService.findCoursesPage(pageRequest), HttpStatus.OK);
+        return new ResponseEntity<>(courseService.findCoursesPage(paginationForCourseListDTO), HttpStatus.OK);
     }
 
     @GetMapping("/get-courses-for-user")
