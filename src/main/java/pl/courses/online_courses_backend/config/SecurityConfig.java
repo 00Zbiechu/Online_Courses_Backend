@@ -46,7 +46,7 @@ public class SecurityConfig {
                 .requestMatchers(antMatcher("/api/courses/get-course-page**")).permitAll()
                 .requestMatchers("/api/courses/how-many-courses").permitAll()
                 .requestMatchers(antMatcher("/api/courses/search-for-courses**")).permitAll()
-                .requestMatchers(antMatcher("/api/courses/get-course**")).permitAll()
+                .requestMatchers(antMatcher("/api/courses/get-course")).permitAll()
 
                 .requestMatchers("/api/users/register").permitAll()
                 .requestMatchers("/api/users/authenticate").permitAll()
