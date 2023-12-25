@@ -46,7 +46,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -250,13 +249,17 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
 
     @Override
     public TopicsDTO getTopics(Long courseId) {
-        var topics = findCourseOfUser(courseId).getTopics().stream().map(topicMapper::toDTO).collect(Collectors.toList());
+        var courseEntity = courseRepository.findById(courseId).orElseThrow(
+                () -> new CustomErrorException("course", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND)
+        );
+        var topics = courseEntity.getTopics().stream().map(topicMapper::toDTO).toList();
         return TopicsDTO.builder().topics(topics).build();
     }
 
     @Override
     public FileDataDTO getAttachment(Long courseId, Long topicId, Long fileId) {
-        var courseEntity = findCourseOfUser(courseId);
+        var courseEntity = courseRepository.findById(courseId).orElseThrow(
+                () -> new CustomErrorException("course", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND));
         var topicEntity = courseEntity.getTopics().stream().filter(topic -> topic.getId().equals(topicId)).findFirst().orElseThrow(
                 () -> new CustomErrorException("topic", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND));
         var fileEntity = topicEntity.getFiles().stream().filter(file -> file.getId().equals(fileId)).findFirst().orElseThrow(

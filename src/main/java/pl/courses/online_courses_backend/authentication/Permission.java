@@ -9,7 +9,8 @@ public enum Permission {
     USER_READ("user:read"),
     USER_CREATE("user:create"),
     USER_DELETE("user:delete"),
-    USER_UPDATE("user:update");
+    USER_UPDATE("user:update"),
+    GUEST_READ("guest:read");
 
     @Getter
     private final String permission;

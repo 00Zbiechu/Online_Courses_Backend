@@ -8,6 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.List;
 import java.util.Set;
 
+import static pl.courses.online_courses_backend.authentication.Permission.GUEST_READ;
 import static pl.courses.online_courses_backend.authentication.Permission.USER_CREATE;
 import static pl.courses.online_courses_backend.authentication.Permission.USER_DELETE;
 import static pl.courses.online_courses_backend.authentication.Permission.USER_READ;
@@ -23,7 +24,12 @@ public enum Role {
                     USER_DELETE,
                     USER_CREATE,
                     USER_UPDATE
+            )
+    ),
 
+    GUEST(
+            Set.of(
+                    GUEST_READ
             )
     );
 

@@ -83,4 +83,163 @@ class GetAttachmentIT extends BaseTest {
                 () -> assertEquals("Test.jpg", result.getName())
         );
     }
+
+    @DisplayName("Should not return attachment cause wrong courseId")
+    @Test
+    public void shouldNotReturnAttachmentCauseCourseId() throws Exception {
+        //given:
+        var userEntity = TestFactory.UserEntityFactory.createUserEntity();
+        var courseEntity = TestFactory.CourseEntityFactory.createCourseEntity();
+
+        var courseUsersEntity = TestFactory.CourseUsersEntityFactory.createCourseUsersEntityBuilder()
+                .courseUsersPK(CourseUsersPK.builder()
+                        .courseEntity(courseEntity)
+                        .userEntity(userEntity)
+                        .build())
+                .owner(Boolean.TRUE)
+                .build();
+
+        courseEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
+        userEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
+
+        entityManager.persist(userEntity);
+        entityManager.persist(courseEntity);
+
+        var topicRequest = AddTopicDTO.builder()
+                .title("Test topic")
+                .note("Test Data for topic")
+                .build();
+
+        MockMultipartFile[] files = {
+                new MockMultipartFile("addTopicDTO", null,
+                        "application/json", asJson(topicRequest).getBytes()),
+
+                new MockMultipartFile("files", "Test.jpg",
+                        "image/jpg", asJson(topicRequest).getBytes())
+        };
+
+        //when:
+        var saveRequest = mockMvc.perform(MockMvcRequestBuilders.multipart(SAVE_PATH)
+                .file(files[0])
+                .file(files[1])
+                .param("courseId", courseEntity.getId().toString())
+                .with(user(userEntity))
+        );
+
+        var saveResult = asObject(saveRequest, TopicsDTO.class);
+
+        var request = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.GET, PATH).with(user(userEntity))
+                .param("courseId", String.valueOf(courseEntity.getId() + 1))
+                .param("topicId", saveResult.getTopics().get(0).getId().toString())
+                .param("fileId", saveResult.getTopics().get(0).getFiles().get(0).getId().toString())
+        );
+
+        request.andExpect(status().isNotFound());
+    }
+
+    @DisplayName("Should not return attachment cause wrong topicId")
+    @Test
+    public void shouldNotReturnAttachmentCauseTopicId() throws Exception {
+        //given:
+        var userEntity = TestFactory.UserEntityFactory.createUserEntity();
+        var courseEntity = TestFactory.CourseEntityFactory.createCourseEntity();
+
+        var courseUsersEntity = TestFactory.CourseUsersEntityFactory.createCourseUsersEntityBuilder()
+                .courseUsersPK(CourseUsersPK.builder()
+                        .courseEntity(courseEntity)
+                        .userEntity(userEntity)
+                        .build())
+                .owner(Boolean.TRUE)
+                .build();
+
+        courseEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
+        userEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
+
+        entityManager.persist(userEntity);
+        entityManager.persist(courseEntity);
+
+        var topicRequest = AddTopicDTO.builder()
+                .title("Test topic")
+                .note("Test Data for topic")
+                .build();
+
+        MockMultipartFile[] files = {
+                new MockMultipartFile("addTopicDTO", null,
+                        "application/json", asJson(topicRequest).getBytes()),
+
+                new MockMultipartFile("files", "Test.jpg",
+                        "image/jpg", asJson(topicRequest).getBytes())
+        };
+
+        //when:
+        var saveRequest = mockMvc.perform(MockMvcRequestBuilders.multipart(SAVE_PATH)
+                .file(files[0])
+                .file(files[1])
+                .param("courseId", courseEntity.getId().toString())
+                .with(user(userEntity))
+        );
+
+        var saveResult = asObject(saveRequest, TopicsDTO.class);
+
+        var request = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.GET, PATH).with(user(userEntity))
+                .param("courseId", courseEntity.getId().toString())
+                .param("topicId", String.valueOf(saveResult.getTopics().get(0).getId() + 1L))
+                .param("fileId", saveResult.getTopics().get(0).getFiles().get(0).getId().toString())
+        );
+
+        request.andExpect(status().isNotFound());
+    }
+
+    @DisplayName("Should not return attachment cause wrong fileId")
+    @Test
+    public void shouldNotReturnAttachmentCauseFileId() throws Exception {
+        //given:
+        var userEntity = TestFactory.UserEntityFactory.createUserEntity();
+        var courseEntity = TestFactory.CourseEntityFactory.createCourseEntity();
+
+        var courseUsersEntity = TestFactory.CourseUsersEntityFactory.createCourseUsersEntityBuilder()
+                .courseUsersPK(CourseUsersPK.builder()
+                        .courseEntity(courseEntity)
+                        .userEntity(userEntity)
+                        .build())
+                .owner(Boolean.TRUE)
+                .build();
+
+        courseEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
+        userEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
+
+        entityManager.persist(userEntity);
+        entityManager.persist(courseEntity);
+
+        var topicRequest = AddTopicDTO.builder()
+                .title("Test topic")
+                .note("Test Data for topic")
+                .build();
+
+        MockMultipartFile[] files = {
+                new MockMultipartFile("addTopicDTO", null,
+                        "application/json", asJson(topicRequest).getBytes()),
+
+                new MockMultipartFile("files", "Test.jpg",
+                        "image/jpg", asJson(topicRequest).getBytes())
+        };
+
+        //when:
+        var saveRequest = mockMvc.perform(MockMvcRequestBuilders.multipart(SAVE_PATH)
+                .file(files[0])
+                .file(files[1])
+                .param("courseId", courseEntity.getId().toString())
+                .with(user(userEntity))
+        );
+
+        var saveResult = asObject(saveRequest, TopicsDTO.class);
+
+        var request = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.GET, PATH).with(user(userEntity))
+                .param("courseId", courseEntity.getId().toString())
+                .param("topicId", saveResult.getTopics().get(0).getId().toString())
+                .param("fileId", String.valueOf(saveResult.getTopics().get(0).getFiles().get(0).getId() + 1L))
+        );
+
+        request.andExpect(status().isNotFound());
+    }
 }
