@@ -84,6 +84,184 @@ class GetAttachmentIT extends BaseTest {
         );
     }
 
+    @DisplayName("Should return attachment with password")
+    @Test
+    public void shouldReturnAttachmentWithPassword() throws Exception {
+        //given:
+        var userEntity = TestFactory.UserEntityFactory.createUserEntity();
+        var courseEntity = TestFactory.CourseEntityFactory.createCourseEntity();
+        courseEntity.setPassword(passwordEncoder.encode("PasswordTest"));
+
+        var courseUsersEntity = TestFactory.CourseUsersEntityFactory.createCourseUsersEntityBuilder()
+                .courseUsersPK(CourseUsersPK.builder()
+                        .courseEntity(courseEntity)
+                        .userEntity(userEntity)
+                        .build())
+                .owner(Boolean.TRUE)
+                .build();
+
+        courseEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
+        userEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
+
+        entityManager.persist(userEntity);
+        entityManager.persist(courseEntity);
+
+        var topicRequest = AddTopicDTO.builder()
+                .title("Test topic")
+                .note("Test Data for topic")
+                .build();
+
+        MockMultipartFile[] files = {
+                new MockMultipartFile("addTopicDTO", null,
+                        "application/json", asJson(topicRequest).getBytes()),
+
+                new MockMultipartFile("files", "Test.jpg",
+                        "image/jpg", asJson(topicRequest).getBytes())
+        };
+
+        //when:
+        var saveRequest = mockMvc.perform(MockMvcRequestBuilders.multipart(SAVE_PATH)
+                .file(files[0])
+                .file(files[1])
+                .param("courseId", courseEntity.getId().toString())
+                .with(user(userEntity))
+        );
+
+        var saveResult = asObject(saveRequest, TopicsDTO.class);
+
+        var request = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.GET, PATH).with(user(userEntity))
+                .param("courseId", courseEntity.getId().toString())
+                .param("topicId", saveResult.getTopics().get(0).getId().toString())
+                .param("fileId", saveResult.getTopics().get(0).getFiles().get(0).getId().toString())
+                .param("password", "PasswordTest")
+        );
+
+        var result = asObject(request, FileDataDTO.class);
+
+        request.andExpect(status().isOk());
+        assertAll(
+                () -> Assertions.assertNotNull(result.getData()),
+                () -> assertEquals("image/jpg", result.getType()),
+                () -> assertEquals("Test.jpg", result.getName())
+        );
+    }
+
+    @DisplayName("Should not return attachment with wrong password")
+    @Test
+    public void shouldNotReturnAttachmentWithWrongPassword() throws Exception {
+        //given:
+        var userEntity = TestFactory.UserEntityFactory.createUserEntity();
+        var courseEntity = TestFactory.CourseEntityFactory.createCourseEntity();
+        courseEntity.setPassword(passwordEncoder.encode("PasswordTest"));
+
+        var courseUsersEntity = TestFactory.CourseUsersEntityFactory.createCourseUsersEntityBuilder()
+                .courseUsersPK(CourseUsersPK.builder()
+                        .courseEntity(courseEntity)
+                        .userEntity(userEntity)
+                        .build())
+                .owner(Boolean.TRUE)
+                .build();
+
+        courseEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
+        userEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
+
+        entityManager.persist(userEntity);
+        entityManager.persist(courseEntity);
+
+        var topicRequest = AddTopicDTO.builder()
+                .title("Test topic")
+                .note("Test Data for topic")
+                .build();
+
+        MockMultipartFile[] files = {
+                new MockMultipartFile("addTopicDTO", null,
+                        "application/json", asJson(topicRequest).getBytes()),
+
+                new MockMultipartFile("files", "Test.jpg",
+                        "image/jpg", asJson(topicRequest).getBytes())
+        };
+
+        //when:
+        var saveRequest = mockMvc.perform(MockMvcRequestBuilders.multipart(SAVE_PATH)
+                .file(files[0])
+                .file(files[1])
+                .param("courseId", courseEntity.getId().toString())
+                .with(user(userEntity))
+        );
+
+        var saveResult = asObject(saveRequest, TopicsDTO.class);
+
+        var request = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.GET, PATH).with(user(userEntity))
+                .param("courseId", courseEntity.getId().toString())
+                .param("topicId", saveResult.getTopics().get(0).getId().toString())
+                .param("fileId", saveResult.getTopics().get(0).getFiles().get(0).getId().toString())
+                .param("password", "1234")
+        );
+
+        var result = asObject(request, FileDataDTO.class);
+
+        request.andExpect(status().isOk());
+        assertAll(
+                () -> Assertions.assertNotNull(result.getData()),
+                () -> assertEquals("image/jpg", result.getType()),
+                () -> assertEquals("Test.jpg", result.getName())
+        );
+    }
+
+    @DisplayName("Should not return attachment cause lack of user and password")
+    @Test
+    public void shouldNotReturnAttachmentCauseLackOfUserAndPassword() throws Exception {
+        //given:
+        var userEntity = TestFactory.UserEntityFactory.createUserEntity();
+        var courseEntity = TestFactory.CourseEntityFactory.createCourseEntity();
+        courseEntity.setPassword(passwordEncoder.encode("PasswordTest"));
+
+        var courseUsersEntity = TestFactory.CourseUsersEntityFactory.createCourseUsersEntityBuilder()
+                .courseUsersPK(CourseUsersPK.builder()
+                        .courseEntity(courseEntity)
+                        .userEntity(userEntity)
+                        .build())
+                .owner(Boolean.TRUE)
+                .build();
+
+        courseEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
+        userEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
+
+        entityManager.persist(userEntity);
+        entityManager.persist(courseEntity);
+
+        var topicRequest = AddTopicDTO.builder()
+                .title("Test topic")
+                .note("Test Data for topic")
+                .build();
+
+        MockMultipartFile[] files = {
+                new MockMultipartFile("addTopicDTO", null,
+                        "application/json", asJson(topicRequest).getBytes()),
+
+                new MockMultipartFile("files", "Test.jpg",
+                        "image/jpg", asJson(topicRequest).getBytes())
+        };
+
+        //when:
+        var saveRequest = mockMvc.perform(MockMvcRequestBuilders.multipart(SAVE_PATH)
+                .file(files[0])
+                .file(files[1])
+                .param("courseId", courseEntity.getId().toString())
+                .with(user(userEntity))
+        );
+
+        var saveResult = asObject(saveRequest, TopicsDTO.class);
+
+        var request = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.GET, PATH)
+                .param("courseId", courseEntity.getId().toString())
+                .param("topicId", saveResult.getTopics().get(0).getId().toString())
+                .param("fileId", saveResult.getTopics().get(0).getFiles().get(0).getId().toString())
+        );
+
+        request.andExpect(status().isBadRequest());
+    }
+
     @DisplayName("Should not return attachment cause wrong courseId")
     @Test
     public void shouldNotReturnAttachmentCauseCourseId() throws Exception {

@@ -134,4 +134,134 @@ class GetTopicIT extends BaseTest {
         var result = asObject(response, TopicsDTO.class);
         assertEquals(objectMapper.writeValueAsString(expectedResult), objectMapper.writeValueAsString(result));
     }
+
+    @DisplayName("Should add and return topic list with password")
+    @Test
+    public void shouldAddAndReturnTopicListWithPassword() throws Exception {
+
+        //given:
+        var userEntity = TestFactory.UserEntityFactory.createUserEntity();
+        var courseEntity = TestFactory.CourseEntityFactory.createCourseEntity();
+        courseEntity.setPassword(passwordEncoder.encode("PasswordTest"));
+
+        var courseUsersEntity = TestFactory.CourseUsersEntityFactory.createCourseUsersEntityBuilder()
+                .courseUsersPK(CourseUsersPK.builder()
+                        .courseEntity(courseEntity)
+                        .userEntity(userEntity)
+                        .build())
+                .owner(Boolean.TRUE)
+                .build();
+
+        courseEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
+        userEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
+
+        entityManager.persist(userEntity);
+        entityManager.persist(courseEntity);
+
+        var topicRequest = AddTopicDTO.builder()
+                .title("Test topic")
+                .note("Test Data for topic")
+                .build();
+
+        MockMultipartFile[] files = {
+                new MockMultipartFile("addTopicDTO", null,
+                        "application/json", asJson(topicRequest).getBytes()),
+
+                new MockMultipartFile("files", "Test.jpg",
+                        "image/jpg", asJson(topicRequest).getBytes())
+        };
+
+        //when
+        var responseSave = mockMvc.perform(MockMvcRequestBuilders.multipart(HttpMethod.POST, SAVE_PATH)
+                .file(files[0])
+                .file(files[1])
+                .param("courseId", courseEntity.getId().toString())
+                .with(user(userEntity))
+        );
+
+        var resultSave = asObject(responseSave, TopicsDTO.class);
+
+        var response = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.GET, GET_PATH).with(user(userEntity))
+                .param("courseId", courseEntity.getId().toString())
+                .param("password", "PasswordTest"));
+
+        //then
+        var expectedResult = TopicsDTO.builder().topics(
+                List.of(
+                        TopicDTO.builder().id(resultSave.getTopics().get(0).getId()).title("Test topic")
+                                .notes(
+                                        List.of(
+                                                NoteDTO.builder()
+                                                        .id(resultSave.getTopics().get(0).getNotes().stream().toList().get(0).getId())
+                                                        .data("Test Data for topic").build()
+                                        )
+                                )
+                                .files(
+                                        List.of(
+                                                FileDTO.builder()
+                                                        .id(resultSave.getTopics().get(0).getFiles().stream().toList().get(0).getId())
+                                                        .name("Test.jpg")
+                                                        .type("image/jpg")
+                                                        .build()
+                                        )
+                                )
+                                .build())
+        ).build();
+
+        var result = asObject(response, TopicsDTO.class);
+        assertEquals(objectMapper.writeValueAsString(expectedResult), objectMapper.writeValueAsString(result));
+    }
+
+    @DisplayName("Should add and not return topic list with wrong password")
+    @Test
+    public void shouldAddAndNotReturnTopicListCauseWrongPassword() throws Exception {
+
+        //given:
+        var userEntity = TestFactory.UserEntityFactory.createUserEntity();
+        var courseEntity = TestFactory.CourseEntityFactory.createCourseEntity();
+        courseEntity.setPassword(passwordEncoder.encode("PasswordTest"));
+
+        var courseUsersEntity = TestFactory.CourseUsersEntityFactory.createCourseUsersEntityBuilder()
+                .courseUsersPK(CourseUsersPK.builder()
+                        .courseEntity(courseEntity)
+                        .userEntity(userEntity)
+                        .build())
+                .owner(Boolean.TRUE)
+                .build();
+
+        courseEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
+        userEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
+
+        entityManager.persist(userEntity);
+        entityManager.persist(courseEntity);
+
+        var topicRequest = AddTopicDTO.builder()
+                .title("Test topic")
+                .note("Test Data for topic")
+                .build();
+
+        MockMultipartFile[] files = {
+                new MockMultipartFile("addTopicDTO", null,
+                        "application/json", asJson(topicRequest).getBytes()),
+
+                new MockMultipartFile("files", "Test.jpg",
+                        "image/jpg", asJson(topicRequest).getBytes())
+        };
+
+        //when
+        mockMvc.perform(MockMvcRequestBuilders.multipart(HttpMethod.POST, SAVE_PATH)
+                .file(files[0])
+                .file(files[1])
+                .param("courseId", courseEntity.getId().toString())
+                .param("password", "PasswordTest")
+        );
+
+        var response = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.GET, GET_PATH)
+                .param("courseId", courseEntity.getId().toString())
+                .param("password", "1234")
+        );
+
+        //then
+        response.andExpect(status().isBadRequest());
+    }
 }

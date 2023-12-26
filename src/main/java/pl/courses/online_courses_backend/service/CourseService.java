@@ -31,13 +31,13 @@ public interface CourseService extends BaseService<CourseDTO> {
 
     CourseDTO editCourse(EditCourseDTO editCourseDTO);
 
-    CourseWithAuthorDTO getCourse(Long courseId);
+    CourseWithAuthorDTO getCourse(Long courseId, String password);
 
     TopicsDTO addTopic(Long courseId, MultipartFile[] files, AddTopicDTO addTopicDTO);
 
-    TopicsDTO getTopics(Long courseId);
+    TopicsDTO getTopics(Long courseId, String password);
 
     TopicsDTO deleteTopic(Long courseId, Long topicId);
 
-    FileDataDTO getAttachment(Long courseId, Long topicId, Long fileId);
+    FileDataDTO getAttachment(Long courseId, Long topicId, Long fileId, String password);
 }

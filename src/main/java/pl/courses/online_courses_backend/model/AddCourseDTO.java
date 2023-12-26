@@ -30,8 +30,6 @@ public class AddCourseDTO {
     @Size(min = 10, max = 30, message = WRONG_FIELD_SIZE)
     private String topic;
 
-    @NotBlank(message = FIELD_REQUIRED)
-    @Size(min = 6, max = 30, message = WRONG_FIELD_SIZE)
     private String password;
 
     @NotBlank(message = FIELD_REQUIRED)

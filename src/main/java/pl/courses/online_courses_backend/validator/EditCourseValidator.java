@@ -1,5 +1,6 @@
 package pl.courses.online_courses_backend.validator;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -18,7 +19,7 @@ public class EditCourseValidator implements Validator {
     }
 
     @Override
-    public void validate(Object target, Errors errors) {
+    public void validate(@NotNull Object target, @NotNull Errors errors) {
         addCourseValidator.validate(target, errors);
     }
 }

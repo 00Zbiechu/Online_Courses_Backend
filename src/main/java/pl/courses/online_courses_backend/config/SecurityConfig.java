@@ -46,7 +46,6 @@ public class SecurityConfig {
                 .requestMatchers(antMatcher("/api/courses/get-course-page")).permitAll()
                 .requestMatchers(antMatcher("/api/courses/search-for-courses")).permitAll()
 
-                //TODO: For anonymous authenticated and logged user
                 .requestMatchers(antMatcher("/api/courses/get-course")).permitAll()
                 .requestMatchers(antMatcher("/api/courses/get-topics")).permitAll()
                 .requestMatchers(antMatcher("/api/courses/get-attachment")).permitAll()

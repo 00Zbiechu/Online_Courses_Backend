@@ -41,7 +41,7 @@ public class CourseEntity extends BaseEditableEntityAudit {
     @Column(length = 30, nullable = false)
     private String topic;
 
-    @Column(length = 60, nullable = false)
+    @Column(length = 60)
     private String password;
 
     @Column(length = 50, nullable = false)

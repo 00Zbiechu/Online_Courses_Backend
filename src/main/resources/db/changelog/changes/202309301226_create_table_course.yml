@@ -41,8 +41,6 @@ databaseChangeLog:
               - column:
                   name: password
                   type: varchar(60)
-                  constraints:
-                    nullable: false
               - column:
                   name: description
                   type: varchar(50)

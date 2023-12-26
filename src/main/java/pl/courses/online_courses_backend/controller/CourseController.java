@@ -77,8 +77,8 @@ public class CourseController extends BaseController<CourseDTO, CourseService> {
     }
 
     @GetMapping("/get-course")
-    public ResponseEntity<CourseWithAuthorDTO> getCourse(@RequestParam Long courseId) {
-        return new ResponseEntity<>(courseService.getCourse(courseId), HttpStatus.OK);
+    public ResponseEntity<CourseWithAuthorDTO> getCourse(@RequestParam Long courseId, @RequestParam(required = false) String password) {
+        return new ResponseEntity<>(courseService.getCourse(courseId, password), HttpStatus.OK);
     }
 
     @PostMapping("/add-course")
@@ -119,8 +119,8 @@ public class CourseController extends BaseController<CourseDTO, CourseService> {
     }
 
     @GetMapping("/get-topics")
-    public ResponseEntity<TopicsDTO> getTopicsForCourse(@RequestParam Long courseId) {
-        return new ResponseEntity<>(courseService.getTopics(courseId), HttpStatus.OK);
+    public ResponseEntity<TopicsDTO> getTopicsForCourse(@RequestParam Long courseId, @RequestParam(required = false) String password) {
+        return new ResponseEntity<>(courseService.getTopics(courseId, password), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete-topic")
@@ -129,7 +129,7 @@ public class CourseController extends BaseController<CourseDTO, CourseService> {
     }
 
     @GetMapping("/get-attachment")
-    public ResponseEntity<FileDataDTO> getCourseAttachment(@RequestParam Long courseId, @RequestParam Long topicId, @RequestParam Long fileId) {
-        return new ResponseEntity<>(courseService.getAttachment(courseId, topicId, fileId), HttpStatus.OK);
+    public ResponseEntity<FileDataDTO> getCourseAttachment(@RequestParam Long courseId, @RequestParam Long topicId, @RequestParam Long fileId, @RequestParam(required = false) String password) {
+        return new ResponseEntity<>(courseService.getAttachment(courseId, topicId, fileId, password), HttpStatus.OK);
     }
 }

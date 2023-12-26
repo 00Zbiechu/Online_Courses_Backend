@@ -23,7 +23,9 @@ public abstract class CourseMapperDecorator implements CourseMapper {
 
     @Override
     public CourseEntity toEntity(AddCourseDTO addCourseDTO) {
-        addCourseDTO.setPassword(passwordEncoder.encode(addCourseDTO.getPassword()));
+        if (addCourseDTO.getPassword() != null && !addCourseDTO.getPassword().isEmpty()) {
+            addCourseDTO.setPassword(passwordEncoder.encode(addCourseDTO.getPassword()));
+        }
         return courseMapper.toEntity(addCourseDTO);
     }
 

@@ -39,6 +39,7 @@ import pl.courses.online_courses_backend.photo.PhotoDTO;
 import pl.courses.online_courses_backend.repository.CourseRepository;
 import pl.courses.online_courses_backend.repository.TopicRepository;
 import pl.courses.online_courses_backend.type.OrderType;
+import pl.courses.online_courses_backend.validator.CourseAccessValidator;
 import pl.courses.online_courses_backend.validator.FileValidator;
 import pl.courses.online_courses_backend.validator.TopicValidator;
 
@@ -64,6 +65,8 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
     private final TopicValidator topicValidator;
 
     private final FileValidator fileValidator;
+
+    private final CourseAccessValidator courseAccessValidator;
 
     private final PhotoCompressor photoCompressor;
 
@@ -109,15 +112,20 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
     public CourseDTO editCourse(EditCourseDTO editCourseDTO) {
         var courseEntity = findCourseOfUser(editCourseDTO.getId());
         courseMapper.updateCourseEntityFromEditCourseDTO(editCourseDTO, courseEntity);
-        courseEntity.setPassword(passwordEncoder.encode(courseEntity.getPassword()));
+        if (editCourseDTO.getPassword() != null && !editCourseDTO.getPassword().isEmpty()) {
+            courseEntity.setPassword(passwordEncoder.encode(courseEntity.getPassword()));
+        }
         var result = courseRepository.save(courseEntity);
         return courseMapper.toDTO(result);
     }
 
     @Override
-    public CourseWithAuthorDTO getCourse(Long courseId) {
+    public CourseWithAuthorDTO getCourse(Long courseId, String password) {
         var courseEntity = courseRepository.findById(courseId)
                 .orElseThrow(() -> new CustomErrorException("course", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND));
+
+        courseAccessValidator.validateCourseAccess(courseEntity, currentUser, passwordEncoder, password);
+
         return courseMapper.toCourseForList(courseEntity);
     }
 
@@ -248,18 +256,22 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
     }
 
     @Override
-    public TopicsDTO getTopics(Long courseId) {
+    public TopicsDTO getTopics(Long courseId, String password) {
         var courseEntity = courseRepository.findById(courseId).orElseThrow(
                 () -> new CustomErrorException("course", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND)
         );
+        courseAccessValidator.validateCourseAccess(courseEntity, currentUser, passwordEncoder, password);
         var topics = courseEntity.getTopics().stream().map(topicMapper::toDTO).toList();
         return TopicsDTO.builder().topics(topics).build();
     }
 
     @Override
-    public FileDataDTO getAttachment(Long courseId, Long topicId, Long fileId) {
+    public FileDataDTO getAttachment(Long courseId, Long topicId, Long fileId, String password) {
         var courseEntity = courseRepository.findById(courseId).orElseThrow(
                 () -> new CustomErrorException("course", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND));
+
+        courseAccessValidator.validateCourseAccess(courseEntity, currentUser, passwordEncoder, password);
+
         var topicEntity = courseEntity.getTopics().stream().filter(topic -> topic.getId().equals(topicId)).findFirst().orElseThrow(
                 () -> new CustomErrorException("topic", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND));
         var fileEntity = topicEntity.getFiles().stream().filter(file -> file.getId().equals(fileId)).findFirst().orElseThrow(

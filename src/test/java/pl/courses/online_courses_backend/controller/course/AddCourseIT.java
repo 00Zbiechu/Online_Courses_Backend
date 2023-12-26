@@ -83,7 +83,6 @@ class AddCourseIT extends BaseTest {
                 .startDate(startDate)
                 .endDate(endDate)
                 .description(description)
-                .password(password)
                 .build();
 
         //when:

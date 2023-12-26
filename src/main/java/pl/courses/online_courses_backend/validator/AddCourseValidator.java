@@ -33,6 +33,7 @@ public class AddCourseValidator implements Validator {
         validateIsEndDateNotNull(dto);
         validateIsStartAndEndDateAreCurrentOrFuture(dto);
         validateIsStartDateIsBeforeEndDate(dto);
+        validatePasswordSizeIfIsSet(dto);
     }
 
     private void validateIsCourseTitleIsUnique(AddCourseDTO dto) {
@@ -64,6 +65,14 @@ public class AddCourseValidator implements Validator {
             throw new CustomErrorException("startDate", ErrorCodes.WRONG_DATE_RANGE, HttpStatus.BAD_REQUEST);
         } else if (dto.getEndDate().isBefore(LocalDate.now())) {
             throw new CustomErrorException("endDate", ErrorCodes.WRONG_DATE_RANGE, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    private void validatePasswordSizeIfIsSet(AddCourseDTO dto) {
+        if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
+            if (dto.getPassword().length() < 3 || dto.getPassword().length() > 30) {
+                throw new CustomErrorException("password", ErrorCodes.WRONG_FIELD_SIZE, HttpStatus.BAD_REQUEST);
+            }
         }
     }
 }
