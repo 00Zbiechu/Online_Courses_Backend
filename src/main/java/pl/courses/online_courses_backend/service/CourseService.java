@@ -10,6 +10,7 @@ import pl.courses.online_courses_backend.model.EditCourseDTO;
 import pl.courses.online_courses_backend.model.FileDataDTO;
 import pl.courses.online_courses_backend.model.PaginationForCourseListDTO;
 import pl.courses.online_courses_backend.model.wrapper.CoursesDTO;
+import pl.courses.online_courses_backend.model.wrapper.ParticipantsDTO;
 import pl.courses.online_courses_backend.model.wrapper.TopicsDTO;
 import pl.courses.online_courses_backend.photo.PhotoDTO;
 
@@ -40,4 +41,6 @@ public interface CourseService extends BaseService<CourseDTO> {
     TopicsDTO deleteTopic(Long courseId, Long topicId);
 
     FileDataDTO getAttachment(Long courseId, Long topicId, Long fileId, String password);
+
+    ParticipantsDTO getCourseParticipants(Long courseId);
 }

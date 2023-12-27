@@ -17,25 +17,26 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService {
     private final ConfirmationTokenRepository confirmationTokenRepository;
 
     @Override
-    public void confirmAccount(String token) {
+    public String confirmAccount(String token) {
         ConfirmationTokenEntity confirmationToken = confirmationTokenRepository
                 .findByToken(token)
                 .orElseThrow(() ->
                         new CustomErrorException("confirmationToken", ErrorCodes.TOKEN_ERROR, HttpStatus.NOT_FOUND));
 
         if (confirmationToken.getConfirmedAt() != null) {
-            throw new CustomErrorException("confirmationToken", ErrorCodes.TOKEN_ALREADY_USED, HttpStatus.BAD_REQUEST);
+            return "Token already used";
         }
 
         LocalDateTime expiredAt = confirmationToken.getExpiresAt();
 
         if (expiredAt.isBefore(LocalDateTime.now())) {
-            throw new CustomErrorException("confirmationToken", ErrorCodes.TOKEN_EXPIRED, HttpStatus.BAD_REQUEST);
+            return "Token expired";
         }
 
         confirmationToken.setConfirmedAt(LocalDateTime.now());
         var user = confirmationToken.getUserEntity();
         user.setEnabled(true);
         confirmationTokenRepository.save(confirmationToken);
+        return "Account confirmed";
     }
 }

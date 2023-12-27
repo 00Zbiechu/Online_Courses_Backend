@@ -31,8 +31,10 @@ import pl.courses.online_courses_backend.model.CourseWithAuthorDTO;
 import pl.courses.online_courses_backend.model.EditCourseDTO;
 import pl.courses.online_courses_backend.model.FileDataDTO;
 import pl.courses.online_courses_backend.model.PaginationForCourseListDTO;
+import pl.courses.online_courses_backend.model.ParticipantDTO;
 import pl.courses.online_courses_backend.model.TopicDTO;
 import pl.courses.online_courses_backend.model.wrapper.CoursesDTO;
+import pl.courses.online_courses_backend.model.wrapper.ParticipantsDTO;
 import pl.courses.online_courses_backend.model.wrapper.TopicsDTO;
 import pl.courses.online_courses_backend.photo.PhotoCompressor;
 import pl.courses.online_courses_backend.photo.PhotoDTO;
@@ -291,5 +293,23 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
         return TopicsDTO.builder().topics(courseEntity.getTopics().stream().map(topicMapper::toDTO)
                 .sorted(Comparator.comparing(TopicDTO::getId))
                 .toList()).build();
+    }
+
+    @Override
+    public ParticipantsDTO getCourseParticipants(Long courseId) {
+
+        var courseEntity = findCourseOfUser(courseId);
+
+        List<CourseUsersEntity> courseUsersEntities = courseEntity.getCourseUser().stream()
+                .filter(courseUsersEntity -> !courseUsersEntity.isOwner()).toList();
+
+        List<ParticipantDTO> participantList = courseUsersEntities.stream().map(user -> ParticipantDTO.builder()
+                .userId(user.getCourseUsersPK().getUserEntity().getId())
+                .username(user.getCourseUsersPK().getUserEntity().getUsername())
+                .photo(user.getCourseUsersPK().getUserEntity().getPhoto())
+                .build()
+        ).toList();
+
+        return ParticipantsDTO.builder().participants(participantList).build();
     }
 }

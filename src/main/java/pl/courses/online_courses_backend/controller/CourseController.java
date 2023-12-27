@@ -27,6 +27,7 @@ import pl.courses.online_courses_backend.model.FileDataDTO;
 import pl.courses.online_courses_backend.model.PaginationForCourseListDTO;
 import pl.courses.online_courses_backend.model.SearchForCourseDTO;
 import pl.courses.online_courses_backend.model.wrapper.CoursesDTO;
+import pl.courses.online_courses_backend.model.wrapper.ParticipantsDTO;
 import pl.courses.online_courses_backend.model.wrapper.TopicsDTO;
 import pl.courses.online_courses_backend.photo.PhotoDTO;
 import pl.courses.online_courses_backend.service.CourseService;
@@ -131,5 +132,10 @@ public class CourseController extends BaseController<CourseDTO, CourseService> {
     @GetMapping("/get-attachment")
     public ResponseEntity<FileDataDTO> getCourseAttachment(@RequestParam Long courseId, @RequestParam Long topicId, @RequestParam Long fileId, @RequestParam(required = false) String password) {
         return new ResponseEntity<>(courseService.getAttachment(courseId, topicId, fileId, password), HttpStatus.OK);
+    }
+
+    @GetMapping("/get-course-participants")
+    public ResponseEntity<ParticipantsDTO> getCourseParticipants(@RequestParam Long courseId) {
+        return new ResponseEntity<>(courseService.getCourseParticipants(courseId), HttpStatus.OK);
     }
 }

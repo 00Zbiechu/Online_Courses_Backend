@@ -18,7 +18,7 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class AddCourseValidator implements Validator {
 
-    private final CourseRepository courseRepository;
+    protected final CourseRepository courseRepository;
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -42,25 +42,25 @@ public class AddCourseValidator implements Validator {
         });
     }
 
-    private void validateIsEndDateNotNull(AddCourseDTO dto) {
+    protected void validateIsEndDateNotNull(AddCourseDTO dto) {
         if (dto.getEndDate() == null) {
             throw new CustomErrorException("endDate", ErrorCodes.FIELD_REQUIRED, HttpStatus.BAD_REQUEST);
         }
     }
 
-    private void validateIsStartDateNotNull(AddCourseDTO dto) {
+    protected void validateIsStartDateNotNull(AddCourseDTO dto) {
         if (dto.getStartDate() == null) {
             throw new CustomErrorException("startDate", ErrorCodes.FIELD_REQUIRED, HttpStatus.BAD_REQUEST);
         }
     }
 
-    private void validateIsStartAndEndDateAreCurrentOrFuture(AddCourseDTO dto) {
+    protected void validateIsStartAndEndDateAreCurrentOrFuture(AddCourseDTO dto) {
         if (dto.getStartDate().isAfter(dto.getEndDate())) {
             throw new CustomErrorException("endDate", ErrorCodes.WRONG_DATE_RANGE, HttpStatus.BAD_REQUEST);
         }
     }
 
-    private void validateIsStartDateIsBeforeEndDate(AddCourseDTO dto) {
+    protected void validateIsStartDateIsBeforeEndDate(AddCourseDTO dto) {
         if (dto.getStartDate().isBefore(LocalDate.now())) {
             throw new CustomErrorException("startDate", ErrorCodes.WRONG_DATE_RANGE, HttpStatus.BAD_REQUEST);
         } else if (dto.getEndDate().isBefore(LocalDate.now())) {
@@ -68,7 +68,7 @@ public class AddCourseValidator implements Validator {
         }
     }
 
-    private void validatePasswordSizeIfIsSet(AddCourseDTO dto) {
+    protected void validatePasswordSizeIfIsSet(AddCourseDTO dto) {
         if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
             if (dto.getPassword().length() < 3 || dto.getPassword().length() > 30) {
                 throw new CustomErrorException("password", ErrorCodes.WRONG_FIELD_SIZE, HttpStatus.BAD_REQUEST);

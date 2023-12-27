@@ -13,6 +13,7 @@ import pl.courses.online_courses_backend.authentication.Role;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class ConfirmationTokenIT extends BaseTest {
@@ -90,7 +91,8 @@ class ConfirmationTokenIT extends BaseTest {
                 .param("token", confirmationToken.getToken()));
 
         //then
-        response.andExpect(status().isBadRequest());
+        response.andExpect(status().isOk())
+                .andExpect(jsonPath("$").value("Token expired"));
     }
 
     @Test
