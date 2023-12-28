@@ -36,6 +36,16 @@ public class CourseUsersEntity {
 
     private boolean owner;
 
+    private boolean participant;
+
+    @Column(nullable = false)
+    private String token;
+
+    @Column(nullable = false)
+    private LocalDateTime tokenExpiresAt;
+
+    private LocalDateTime participantConfirmedAt;
+
     @Column(nullable = false, updatable = false)
     @CreatedBy
     private String createdBy;

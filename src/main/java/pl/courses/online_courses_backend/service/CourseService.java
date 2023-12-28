@@ -43,4 +43,6 @@ public interface CourseService extends BaseService<CourseDTO> {
     FileDataDTO getAttachment(Long courseId, Long topicId, Long fileId, String password);
 
     ParticipantsDTO getCourseParticipants(Long courseId);
+
+    ParticipantsDTO addCourseParticipant(Long courseId, String username);
 }

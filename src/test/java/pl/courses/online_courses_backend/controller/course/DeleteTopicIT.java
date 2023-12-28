@@ -12,7 +12,9 @@ import pl.courses.online_courses_backend.entity.key.CourseUsersPK;
 import pl.courses.online_courses_backend.model.TopicDTO;
 import pl.courses.online_courses_backend.model.wrapper.TopicsDTO;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -33,6 +35,8 @@ class DeleteTopicIT extends BaseTest {
                         .userEntity(userEntity)
                         .build())
                 .owner(Boolean.TRUE)
+                .token(UUID.randomUUID().toString())
+                .tokenExpiresAt(LocalDateTime.now().plusDays(1))
                 .build();
 
         var topicEntity = TestFactory.TopicEntityFactory.createTopicEntityBuilder()
@@ -86,6 +90,8 @@ class DeleteTopicIT extends BaseTest {
                         .userEntity(userEntity)
                         .build())
                 .owner(Boolean.TRUE)
+                .token(UUID.randomUUID().toString())
+                .tokenExpiresAt(LocalDateTime.now().plusDays(1))
                 .build();
 
         var topicEntity = TestFactory.TopicEntityFactory.createTopicEntityBuilder()
@@ -127,6 +133,8 @@ class DeleteTopicIT extends BaseTest {
                         .userEntity(userEntity)
                         .build())
                 .owner(Boolean.TRUE)
+                .token(UUID.randomUUID().toString())
+                .tokenExpiresAt(LocalDateTime.now().plusDays(1))
                 .build();
 
         var topicEntity = TestFactory.TopicEntityFactory.createTopicEntityBuilder()

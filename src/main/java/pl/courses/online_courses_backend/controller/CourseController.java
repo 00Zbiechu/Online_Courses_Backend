@@ -138,4 +138,9 @@ public class CourseController extends BaseController<CourseDTO, CourseService> {
     public ResponseEntity<ParticipantsDTO> getCourseParticipants(@RequestParam Long courseId) {
         return new ResponseEntity<>(courseService.getCourseParticipants(courseId), HttpStatus.OK);
     }
+
+    @PostMapping("/add-course-participant")
+    public ResponseEntity<ParticipantsDTO> addCourseParticipant(@RequestParam Long courseId, @RequestParam String username) {
+        return new ResponseEntity<>(courseService.addCourseParticipant(courseId, username), HttpStatus.CREATED);
+    }
 }

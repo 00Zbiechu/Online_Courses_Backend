@@ -9,6 +9,9 @@ import pl.courses.online_courses_backend.TestFactory;
 import pl.courses.online_courses_backend.entity.key.CourseUsersPK;
 import pl.courses.online_courses_backend.model.wrapper.ParticipantsDTO;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
@@ -30,6 +33,8 @@ public class GetCourseParticipantsIT extends BaseTest {
                         .userEntity(userEntity)
                         .build())
                 .owner(Boolean.TRUE)
+                .token(UUID.randomUUID().toString())
+                .tokenExpiresAt(LocalDateTime.now().plusDays(1))
                 .build();
 
         courseEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
@@ -63,6 +68,8 @@ public class GetCourseParticipantsIT extends BaseTest {
                         .userEntity(userEntity)
                         .build())
                 .owner(Boolean.TRUE)
+                .token(UUID.randomUUID().toString())
+                .tokenExpiresAt(LocalDateTime.now().plusDays(1))
                 .build();
 
         var courseUsersEntityTwo = TestFactory.CourseUsersEntityFactory.createCourseUsersEntityBuilder()
@@ -71,6 +78,10 @@ public class GetCourseParticipantsIT extends BaseTest {
                         .userEntity(userEntityTwo)
                         .build())
                 .owner(Boolean.FALSE)
+                .participant(true)
+                .token(UUID.randomUUID().toString())
+                .tokenExpiresAt(LocalDateTime.now().plusDays(1))
+                .participantConfirmedAt(LocalDateTime.now())
                 .build();
 
         courseEntity.setCourseUser(Sets.newHashSet(courseUsersEntity, courseUsersEntityTwo));
@@ -111,6 +122,8 @@ public class GetCourseParticipantsIT extends BaseTest {
                         .userEntity(userEntity)
                         .build())
                 .owner(Boolean.TRUE)
+                .token(UUID.randomUUID().toString())
+                .tokenExpiresAt(LocalDateTime.now().plusDays(1))
                 .build();
 
         var courseUsersEntityTwo = TestFactory.CourseUsersEntityFactory.createCourseUsersEntityBuilder()
@@ -119,6 +132,8 @@ public class GetCourseParticipantsIT extends BaseTest {
                         .userEntity(userEntityTwo)
                         .build())
                 .owner(Boolean.FALSE)
+                .token(UUID.randomUUID().toString())
+                .tokenExpiresAt(LocalDateTime.now().plusDays(1))
                 .build();
 
         courseEntity.setCourseUser(Sets.newHashSet(courseUsersEntity, courseUsersEntityTwo));

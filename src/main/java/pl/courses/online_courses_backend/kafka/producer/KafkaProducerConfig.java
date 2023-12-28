@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
+import pl.courses.online_courses_backend.event.CourseConfirmationDTO;
 import pl.courses.online_courses_backend.event.UsernameAndMailDTO;
 
 import java.util.HashMap;
@@ -33,12 +34,22 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public ProducerFactory<String, UsernameAndMailDTO> producerFactory() {
+    public ProducerFactory<String, UsernameAndMailDTO> registrationFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfig());
     }
 
     @Bean
-    public KafkaTemplate<String, UsernameAndMailDTO> kafkaTemplate(ProducerFactory<String, UsernameAndMailDTO> producerFactory) {
-        return new KafkaTemplate<>(producerFactory);
+    public KafkaTemplate<String, UsernameAndMailDTO> registrationTemplate(ProducerFactory<String, UsernameAndMailDTO> registrationFactory) {
+        return new KafkaTemplate<>(registrationFactory);
+    }
+
+    @Bean
+    public ProducerFactory<String, CourseConfirmationDTO> courseConfirmationFactory() {
+        return new DefaultKafkaProducerFactory<>(producerConfig());
+    }
+
+    @Bean
+    public KafkaTemplate<String, CourseConfirmationDTO> courseConfirmationTemplate(ProducerFactory<String, CourseConfirmationDTO> courseConfirmationFactory) {
+        return new KafkaTemplate<>(courseConfirmationFactory);
     }
 }

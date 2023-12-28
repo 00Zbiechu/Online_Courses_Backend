@@ -9,8 +9,11 @@ import org.springframework.kafka.config.TopicBuilder;
 @Configuration
 public class KafkaTopicConfig {
 
-    @Value("${online-courses.kafka.topics.email.name}")
-    private String topicName;
+    @Value("${online-courses.kafka.topics.registration.email.name}")
+    private String registrationTopic;
+
+    @Value("${online-courses.kafka.topics.participation.email.name}")
+    private String participationTopic;
 
     @Value("${online-courses.kafka.topics.email.partitions}")
     private int partition;
@@ -18,9 +21,13 @@ public class KafkaTopicConfig {
     @Value("${online-courses.kafka.topics.email.replicationFactory}")
     private short replicationFactory;
 
-
     @Bean
     public NewTopic registrationTopic() {
-        return TopicBuilder.name(topicName).partitions(partition).replicas(replicationFactory).build();
+        return TopicBuilder.name(registrationTopic).partitions(partition).replicas(replicationFactory).build();
+    }
+
+    @Bean
+    public NewTopic participationTopic() {
+        return TopicBuilder.name(participationTopic).partitions(partition).replicas(replicationFactory).build();
     }
 }

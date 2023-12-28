@@ -13,6 +13,8 @@ import pl.courses.online_courses_backend.TestFactory;
 import pl.courses.online_courses_backend.entity.key.CourseUsersPK;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
@@ -36,6 +38,8 @@ class EditCourseIT extends BaseTest {
                         .userEntity(userEntity)
                         .build())
                 .owner(Boolean.TRUE)
+                .token(UUID.randomUUID().toString())
+                .tokenExpiresAt(LocalDateTime.now().plusDays(1))
                 .build();
 
         courseEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
@@ -69,6 +73,8 @@ class EditCourseIT extends BaseTest {
                         .userEntity(userEntity)
                         .build())
                 .owner(Boolean.TRUE)
+                .token(UUID.randomUUID().toString())
+                .tokenExpiresAt(LocalDateTime.now().plusDays(1))
                 .build();
 
         courseEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
@@ -111,6 +117,8 @@ class EditCourseIT extends BaseTest {
                         .userEntity(userEntity)
                         .build())
                 .owner(Boolean.TRUE)
+                .token(UUID.randomUUID().toString())
+                .tokenExpiresAt(LocalDateTime.now().plusDays(1))
                 .build();
 
         courseEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));

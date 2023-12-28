@@ -3,6 +3,7 @@ package pl.courses.online_courses_backend.service;
 import com.google.common.collect.Sets;
 import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -19,6 +20,7 @@ import pl.courses.online_courses_backend.entity.FileEntity;
 import pl.courses.online_courses_backend.entity.TopicEntity;
 import pl.courses.online_courses_backend.entity.UserEntity;
 import pl.courses.online_courses_backend.entity.key.CourseUsersPK;
+import pl.courses.online_courses_backend.event.CourseConfirmationDTO;
 import pl.courses.online_courses_backend.exception.CustomErrorException;
 import pl.courses.online_courses_backend.exception.errors.ErrorCodes;
 import pl.courses.online_courses_backend.mapper.BaseMapper;
@@ -40,15 +42,18 @@ import pl.courses.online_courses_backend.photo.PhotoCompressor;
 import pl.courses.online_courses_backend.photo.PhotoDTO;
 import pl.courses.online_courses_backend.repository.CourseRepository;
 import pl.courses.online_courses_backend.repository.TopicRepository;
+import pl.courses.online_courses_backend.repository.UserRepository;
 import pl.courses.online_courses_backend.type.OrderType;
 import pl.courses.online_courses_backend.validator.CourseAccessValidator;
 import pl.courses.online_courses_backend.validator.FileValidator;
 import pl.courses.online_courses_backend.validator.TopicValidator;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -59,6 +64,8 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
     private final CourseRepository courseRepository;
 
     private final TopicRepository topicRepository;
+
+    private final UserRepository userRepository;
 
     private final CourseMapper courseMapper;
 
@@ -73,6 +80,14 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
     private final PhotoCompressor photoCompressor;
 
     private final PasswordEncoder passwordEncoder;
+
+    private final EmailService emailService;
+
+    @Value("${online-courses.confirmation.token.course.participant.expires.time.day}")
+    private Long expirationCourseParticipation;
+
+    @Value("${online-courses.participation.token.link}")
+    private String confirmationLink;
 
     @Override
     protected JpaRepository<CourseEntity, Long> getRepository() {
@@ -297,19 +312,54 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
 
     @Override
     public ParticipantsDTO getCourseParticipants(Long courseId) {
-
         var courseEntity = findCourseOfUser(courseId);
+        return ParticipantsDTO.builder().participants(buildCourseParticipantsList(courseEntity)).build();
+    }
 
+    @Override
+    public ParticipantsDTO addCourseParticipant(Long courseId, String username) {
+        var courseEntity = findCourseOfUser(courseId);
+        var userEntity = userRepository.findActiveAccountByUsername(username)
+                .orElseThrow(() -> new CustomErrorException("user", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND));
+
+        var activationToken = UUID.randomUUID().toString();
+
+        var courseUsersEntity = CourseUsersEntity.builder()
+                .courseUsersPK(CourseUsersPK.builder()
+                        .courseEntity(courseEntity)
+                        .userEntity(userEntity)
+                        .build()
+                )
+                .owner(Boolean.FALSE)
+                .participant(Boolean.FALSE)
+                .token(activationToken)
+                .tokenExpiresAt(LocalDateTime.now().plusDays(expirationCourseParticipation))
+                .build();
+
+        courseEntity.getCourseUser().add(courseUsersEntity);
+        courseRepository.save(courseEntity);
+
+        emailService.participantConfirmation(CourseConfirmationDTO.newBuilder()
+                .setMail(userEntity.getEmail())
+                .setTitle(courseEntity.getTitle())
+                .setConfirmationLink(confirmationLink + activationToken)
+                .build());
+
+        return ParticipantsDTO.builder().participants(buildCourseParticipantsList(courseEntity)).build();
+    }
+
+    private List<ParticipantDTO> buildCourseParticipantsList(CourseEntity courseEntity) {
         List<CourseUsersEntity> courseUsersEntities = courseEntity.getCourseUser().stream()
-                .filter(courseUsersEntity -> !courseUsersEntity.isOwner()).toList();
+                .filter(courseUsersEntity -> !courseUsersEntity.isOwner())
+                .filter(CourseUsersEntity::isParticipant)
+                .filter(courseUsersEntity -> courseUsersEntity.getParticipantConfirmedAt() != null)
+                .toList();
 
-        List<ParticipantDTO> participantList = courseUsersEntities.stream().map(user -> ParticipantDTO.builder()
+        return courseUsersEntities.stream().map(user -> ParticipantDTO.builder()
                 .userId(user.getCourseUsersPK().getUserEntity().getId())
                 .username(user.getCourseUsersPK().getUserEntity().getUsername())
                 .photo(user.getCourseUsersPK().getUserEntity().getPhoto())
                 .build()
         ).toList();
-
-        return ParticipantsDTO.builder().participants(participantList).build();
     }
 }

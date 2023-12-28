@@ -12,6 +12,8 @@ import pl.courses.online_courses_backend.entity.key.CourseUsersPK;
 import pl.courses.online_courses_backend.model.wrapper.CoursesDTO;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -52,6 +54,8 @@ class GetCoursesForUserIT extends BaseTest {
                         .userEntity(userEntity)
                         .build())
                 .owner(Boolean.TRUE)
+                .token(UUID.randomUUID().toString())
+                .tokenExpiresAt(LocalDateTime.now().plusDays(1))
                 .build();
 
         var courseUsersEntityTwo = TestFactory.CourseUsersEntityFactory.createCourseUsersEntityBuilder()
@@ -60,6 +64,8 @@ class GetCoursesForUserIT extends BaseTest {
                         .userEntity(userEntityTwo)
                         .build())
                 .owner(Boolean.TRUE)
+                .token(UUID.randomUUID().toString())
+                .tokenExpiresAt(LocalDateTime.now().plusDays(1))
                 .build();
 
         courseEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
@@ -106,6 +112,8 @@ class GetCoursesForUserIT extends BaseTest {
                         .userEntity(userEntity)
                         .build())
                 .owner(Boolean.TRUE)
+                .token(UUID.randomUUID().toString())
+                .tokenExpiresAt(LocalDateTime.now().plusDays(1))
                 .build();
 
         courseEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));

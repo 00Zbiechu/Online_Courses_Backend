@@ -92,7 +92,7 @@ public class UsersServiceImpl extends AbstractService<UserEntity, UserDTO> imple
 
         userRepository.save(user);
 
-        emailService.sendMail(UsernameAndMailDTO.newBuilder()
+        emailService.registrationMail(UsernameAndMailDTO.newBuilder()
                 .setUsername(userDTO.getUsername())
                 .setMail(userDTO.getEmail())
                 .setConfirmationLink(confirmationLink + confirmationTokenEntity.getToken())

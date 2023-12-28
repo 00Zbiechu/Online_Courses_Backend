@@ -9,6 +9,9 @@ import pl.courses.online_courses_backend.BaseTest;
 import pl.courses.online_courses_backend.TestFactory;
 import pl.courses.online_courses_backend.entity.key.CourseUsersPK;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -29,6 +32,8 @@ class DeleteCourseIT extends BaseTest {
                         .userEntity(userEntity)
                         .build())
                 .owner(Boolean.TRUE)
+                .token(UUID.randomUUID().toString())
+                .tokenExpiresAt(LocalDateTime.now().plusDays(1))
                 .build();
 
         courseEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
@@ -57,6 +62,8 @@ class DeleteCourseIT extends BaseTest {
                         .userEntity(userEntity)
                         .build())
                 .owner(Boolean.TRUE)
+                .token(UUID.randomUUID().toString())
+                .tokenExpiresAt(LocalDateTime.now().plusDays(1))
                 .build();
 
         courseEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
@@ -66,9 +73,9 @@ class DeleteCourseIT extends BaseTest {
         entityManager.persist(courseEntity);
 
         //when:
-        Long courseId = courseEntity.getId() + 1;
+        long courseId = courseEntity.getId() + 1;
         var response = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.DELETE, PATH).with(user(userEntity))
-                .param("courseId", courseId.toString()));
+                .param("courseId", Long.toString(courseId)));
 
         //then:
         response.andExpect(status().isNotFound());

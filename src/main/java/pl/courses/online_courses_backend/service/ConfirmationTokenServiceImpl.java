@@ -27,9 +27,7 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService {
             return "Token already used";
         }
 
-        LocalDateTime expiredAt = confirmationToken.getExpiresAt();
-
-        if (expiredAt.isBefore(LocalDateTime.now())) {
+        if (confirmationToken.getExpiresAt().isBefore(LocalDateTime.now())) {
             return "Token expired";
         }
 
