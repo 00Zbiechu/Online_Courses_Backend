@@ -316,11 +316,28 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
         return ParticipantsDTO.builder().participants(buildCourseParticipantsList(courseEntity)).build();
     }
 
+    private List<ParticipantDTO> buildCourseParticipantsList(CourseEntity courseEntity) {
+        List<CourseUsersEntity> courseUsersEntities = courseEntity.getCourseUser().stream()
+                .filter(courseUsersEntity -> !courseUsersEntity.isOwner())
+                .filter(CourseUsersEntity::isParticipant)
+                .filter(courseUsersEntity -> courseUsersEntity.getParticipantConfirmedAt() != null)
+                .toList();
+
+        return courseUsersEntities.stream().map(user -> ParticipantDTO.builder()
+                .userId(user.getCourseUsersPK().getUserEntity().getId())
+                .username(user.getCourseUsersPK().getUserEntity().getUsername())
+                .photo(user.getCourseUsersPK().getUserEntity().getPhoto())
+                .build()
+        ).toList();
+    }
+
     @Override
     public void addCourseParticipant(Long courseId, String username) {
         var courseEntity = findCourseOfUser(courseId);
         var userEntity = userRepository.findActiveAccountByUsername(username)
                 .orElseThrow(() -> new CustomErrorException("user", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND));
+
+        validateDuplicateUserParticipation(username, courseEntity);
 
         var activationToken = UUID.randomUUID().toString();
 
@@ -346,18 +363,13 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
                 .build());
     }
 
-    private List<ParticipantDTO> buildCourseParticipantsList(CourseEntity courseEntity) {
-        List<CourseUsersEntity> courseUsersEntities = courseEntity.getCourseUser().stream()
-                .filter(courseUsersEntity -> !courseUsersEntity.isOwner())
-                .filter(CourseUsersEntity::isParticipant)
-                .filter(courseUsersEntity -> courseUsersEntity.getParticipantConfirmedAt() != null)
-                .toList();
+    private void validateDuplicateUserParticipation(String username, CourseEntity courseEntity) {
+        var duplicateUser = courseEntity.getCourseUser().stream()
+                .filter(courseUsersEntity -> courseUsersEntity.getCourseUsersPK().getUserEntity().getUsername().equals(username))
+                .findFirst();
 
-        return courseUsersEntities.stream().map(user -> ParticipantDTO.builder()
-                .userId(user.getCourseUsersPK().getUserEntity().getId())
-                .username(user.getCourseUsersPK().getUserEntity().getUsername())
-                .photo(user.getCourseUsersPK().getUserEntity().getPhoto())
-                .build()
-        ).toList();
+        if (duplicateUser.isPresent()) {
+            throw new CustomErrorException("courseUserEntity", ErrorCodes.ENTITY_ALREADY_EXIST, HttpStatus.BAD_REQUEST);
+        }
     }
 }

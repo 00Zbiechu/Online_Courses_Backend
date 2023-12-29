@@ -1,4 +1,4 @@
-package pl.courses.online_courses_backend.controller.confirmationToken;
+package pl.courses.online_courses_backend.controller.confirmRegistration;
 
 import com.google.common.collect.Sets;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ import java.util.UUID;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class ConfirmationTokenIT extends BaseTest {
+class ConfirmRegistrationIT extends BaseTest {
 
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 

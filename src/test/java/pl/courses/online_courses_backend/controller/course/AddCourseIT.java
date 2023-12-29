@@ -14,8 +14,6 @@ import pl.courses.online_courses_backend.entity.key.CourseUsersPK;
 import pl.courses.online_courses_backend.model.CourseDTO;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -71,8 +69,6 @@ class AddCourseIT extends BaseTest {
                         .userEntity(userEntity)
                         .build())
                 .owner(Boolean.TRUE)
-                .token(UUID.randomUUID().toString())
-                .tokenExpiresAt(LocalDateTime.now().plusDays(1))
                 .build();
 
         courseEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));

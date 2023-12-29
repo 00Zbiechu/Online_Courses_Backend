@@ -10,8 +10,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -22,8 +20,6 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "COURSE_USERS")
 @EntityListeners(AuditingEntityListener.class)
-@SQLDelete(sql = "UPDATE COURSE_USERS SET deleted = true, delete_date = now() WHERE course_id=? AND user_id=?")
-@Where(clause = "deleted=false")
 @Getter
 @Setter
 @Builder
@@ -50,8 +46,4 @@ public class CourseUsersEntity {
 
     @CreatedDate
     private LocalDateTime creationDate;
-
-    private boolean deleted;
-
-    private LocalDateTime deleteDate;
 }

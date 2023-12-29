@@ -8,26 +8,96 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pl.courses.online_courses_backend.BaseTest;
 import pl.courses.online_courses_backend.TestFactory;
 import pl.courses.online_courses_backend.entity.key.CourseUsersPK;
-import pl.courses.online_courses_backend.model.wrapper.ParticipantsDTO;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class GetCourseParticipantsIT extends BaseTest {
+class AddCourseParticipantIT extends BaseTest {
 
-    private final String PATH = "/api/courses/get-course-participants";
+    private final String PATH = "/api/courses/add-course-participant";
 
-    @DisplayName("Should return empty list of participants")
+    @DisplayName("Should add course participant")
     @Test
-    void shouldReturnEmptyListOfParticipants() throws Exception {
+    void shouldAddCourseParticipant() throws Exception {
+
+        //given
+        var userEntity = TestFactory.UserEntityFactory.createUserEntity();
+        var userEntityTwo = TestFactory.UserEntityFactory.createUserEntity();
+        userEntityTwo.setUsername("Test");
 
         var courseEntity = TestFactory.CourseEntityFactory.createCourseEntity();
+
+        var courseUsersEntity = TestFactory.CourseUsersEntityFactory.createCourseUsersEntityBuilder()
+                .courseUsersPK(CourseUsersPK.builder()
+                        .courseEntity(courseEntity)
+                        .userEntity(userEntity)
+                        .build())
+                .owner(Boolean.TRUE)
+                .build();
+
+        courseEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
+        userEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
+
+        entityManager.persist(userEntity);
+        entityManager.persist(userEntityTwo);
+        entityManager.persist(courseEntity);
+
+        //when:
+        var request = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.POST, PATH).with(user(userEntity))
+                .param("courseId", courseEntity.getId().toString())
+                .param("username", userEntityTwo.getUsername())
+        );
+
+        //then:
+        request.andExpect(status().is(200));
+    }
+
+    @DisplayName("Should throw error cause is illegal to add owner")
+    @Test
+    void shouldThrowErrorCauseIsIllegalToAddOwner() throws Exception {
+
+        //given
         var userEntity = TestFactory.UserEntityFactory.createUserEntity();
+        var userEntityTwo = TestFactory.UserEntityFactory.createUserEntity();
+        userEntityTwo.setUsername("Test");
+
+        var courseEntity = TestFactory.CourseEntityFactory.createCourseEntity();
+
+        var courseUsersEntity = TestFactory.CourseUsersEntityFactory.createCourseUsersEntityBuilder()
+                .courseUsersPK(CourseUsersPK.builder()
+                        .courseEntity(courseEntity)
+                        .userEntity(userEntity)
+                        .build())
+                .owner(Boolean.TRUE)
+                .build();
+
+        courseEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
+        userEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
+
+        entityManager.persist(userEntity);
+        entityManager.persist(userEntityTwo);
+        entityManager.persist(courseEntity);
+
+        //when:
+        var request = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.POST, PATH).with(user(userEntity))
+                .param("courseId", courseEntity.getId().toString())
+                .param("username", userEntity.getUsername())
+        );
+
+        //then:
+        request.andExpect(status().is(400));
+    }
+
+    @DisplayName("Should throw error cause user does not exist")
+    @Test
+    void shouldThrowErrorCauseUserDoesNotExist() throws Exception {
+
+        //given
+        var userEntity = TestFactory.UserEntityFactory.createUserEntity();
+        var courseEntity = TestFactory.CourseEntityFactory.createCourseEntity();
 
         var courseUsersEntity = TestFactory.CourseUsersEntityFactory.createCourseUsersEntityBuilder()
                 .courseUsersPK(CourseUsersPK.builder()
@@ -44,24 +114,25 @@ class GetCourseParticipantsIT extends BaseTest {
         entityManager.persist(courseEntity);
 
         //when:
-        var response = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.GET, PATH).with(user(userEntity))
-                .param("courseId", courseEntity.getId().toString()));
-
-        var result = asObject(response, ParticipantsDTO.class);
+        var request = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.POST, PATH).with(user(userEntity))
+                .param("courseId", courseEntity.getId().toString())
+                .param("username", "Test")
+        );
 
         //then:
-        response.andExpect(status().isOk());
-        assertEquals(0L, result.getParticipants().size());
+        request.andExpect(status().is(404));
     }
 
-    @DisplayName("Should list of participants")
+    @DisplayName("Should throw error cause user is already participant")
     @Test
-    void shouldReturnListOfParticipants() throws Exception {
+    void shouldThrowErrorCauseUserIsAlreadyParticipant() throws Exception {
 
-        var courseEntity = TestFactory.CourseEntityFactory.createCourseEntity();
+        //given
         var userEntity = TestFactory.UserEntityFactory.createUserEntity();
         var userEntityTwo = TestFactory.UserEntityFactory.createUserEntity();
         userEntityTwo.setUsername("Test");
+
+        var courseEntity = TestFactory.CourseEntityFactory.createCourseEntity();
 
         var courseUsersEntity = TestFactory.CourseUsersEntityFactory.createCourseUsersEntityBuilder()
                 .courseUsersPK(CourseUsersPK.builder()
@@ -79,8 +150,8 @@ class GetCourseParticipantsIT extends BaseTest {
                 .owner(Boolean.FALSE)
                 .participant(Boolean.TRUE)
                 .token(UUID.randomUUID().toString())
-                .tokenExpiresAt(LocalDateTime.now().plusDays(1))
                 .participantConfirmedAt(LocalDateTime.now())
+                .tokenExpiresAt(LocalDateTime.now().plusDays(1))
                 .build();
 
         courseEntity.setCourseUser(Sets.newHashSet(courseUsersEntity, courseUsersEntityTwo));
@@ -92,59 +163,12 @@ class GetCourseParticipantsIT extends BaseTest {
         entityManager.persist(courseEntity);
 
         //when:
-        var response = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.GET, PATH).with(user(userEntity))
-                .param("courseId", courseEntity.getId().toString()));
-
-        var result = asObject(response, ParticipantsDTO.class);
-
-        //then:
-        response.andExpect(status().isOk());
-        assertAll(
-                () -> assertEquals(1L, result.getParticipants().size()),
-                () -> assertEquals(userEntityTwo.getId(), result.getParticipants().get(0).getUserId()),
-                () -> assertEquals(userEntityTwo.getUsername(), result.getParticipants().get(0).getUsername()),
-                () -> assertEquals(userEntityTwo.getPhoto(), result.getParticipants().get(0).getPhoto())
+        var request = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.POST, PATH).with(user(userEntity))
+                .param("courseId", courseEntity.getId().toString())
+                .param("username", userEntityTwo.getUsername())
         );
-    }
-
-    @DisplayName("Should not find course for user who did not create course")
-    @Test
-    void shouldNotFindCourseForUserWhoDidNotCreateCourse() throws Exception {
-
-        var courseEntity = TestFactory.CourseEntityFactory.createCourseEntity();
-        var userEntity = TestFactory.UserEntityFactory.createUserEntity();
-        var userEntityTwo = TestFactory.UserEntityFactory.createUserEntity();
-        userEntityTwo.setUsername("Test");
-
-        var courseUsersEntity = TestFactory.CourseUsersEntityFactory.createCourseUsersEntityBuilder()
-                .courseUsersPK(CourseUsersPK.builder()
-                        .courseEntity(courseEntity)
-                        .userEntity(userEntity)
-                        .build())
-                .owner(Boolean.TRUE)
-                .build();
-
-        var courseUsersEntityTwo = TestFactory.CourseUsersEntityFactory.createCourseUsersEntityBuilder()
-                .courseUsersPK(CourseUsersPK.builder()
-                        .courseEntity(courseEntity)
-                        .userEntity(userEntityTwo)
-                        .build())
-                .owner(Boolean.FALSE)
-                .build();
-
-        courseEntity.setCourseUser(Sets.newHashSet(courseUsersEntity, courseUsersEntityTwo));
-        userEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
-        userEntityTwo.setCourseUser(Sets.newHashSet(courseUsersEntityTwo));
-
-        entityManager.persist(userEntity);
-        entityManager.persist(userEntityTwo);
-        entityManager.persist(courseEntity);
-
-        //when:
-        var response = mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.GET, PATH).with(user(userEntityTwo))
-                .param("courseId", courseEntity.getId().toString()));
 
         //then:
-        response.andExpect(status().isNotFound());
+        request.andExpect(status().is(400));
     }
 }

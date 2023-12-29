@@ -14,9 +14,6 @@ import pl.courses.online_courses_backend.model.AddTopicDTO;
 import pl.courses.online_courses_backend.model.FileDataDTO;
 import pl.courses.online_courses_backend.model.wrapper.TopicsDTO;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
-
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
@@ -40,8 +37,6 @@ class GetAttachmentIT extends BaseTest {
                         .userEntity(userEntity)
                         .build())
                 .owner(Boolean.TRUE)
-                .token(UUID.randomUUID().toString())
-                .tokenExpiresAt(LocalDateTime.now().plusDays(1))
                 .build();
 
         courseEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
@@ -103,8 +98,6 @@ class GetAttachmentIT extends BaseTest {
                         .userEntity(userEntity)
                         .build())
                 .owner(Boolean.TRUE)
-                .token(UUID.randomUUID().toString())
-                .tokenExpiresAt(LocalDateTime.now().plusDays(1))
                 .build();
 
         courseEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
@@ -167,8 +160,6 @@ class GetAttachmentIT extends BaseTest {
                         .userEntity(userEntity)
                         .build())
                 .owner(Boolean.TRUE)
-                .token(UUID.randomUUID().toString())
-                .tokenExpiresAt(LocalDateTime.now().plusDays(1))
                 .build();
 
         courseEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
@@ -231,8 +222,6 @@ class GetAttachmentIT extends BaseTest {
                         .userEntity(userEntity)
                         .build())
                 .owner(Boolean.TRUE)
-                .token(UUID.randomUUID().toString())
-                .tokenExpiresAt(LocalDateTime.now().plusDays(1))
                 .build();
 
         courseEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
@@ -286,8 +275,6 @@ class GetAttachmentIT extends BaseTest {
                         .userEntity(userEntity)
                         .build())
                 .owner(Boolean.TRUE)
-                .token(UUID.randomUUID().toString())
-                .tokenExpiresAt(LocalDateTime.now().plusDays(1))
                 .build();
 
         courseEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
@@ -341,8 +328,6 @@ class GetAttachmentIT extends BaseTest {
                         .userEntity(userEntity)
                         .build())
                 .owner(Boolean.TRUE)
-                .token(UUID.randomUUID().toString())
-                .tokenExpiresAt(LocalDateTime.now().plusDays(1))
                 .build();
 
         courseEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
@@ -396,8 +381,6 @@ class GetAttachmentIT extends BaseTest {
                         .userEntity(userEntity)
                         .build())
                 .owner(Boolean.TRUE)
-                .token(UUID.randomUUID().toString())
-                .tokenExpiresAt(LocalDateTime.now().plusDays(1))
                 .build();
 
         courseEntity.setCourseUser(Sets.newHashSet(courseUsersEntity));
