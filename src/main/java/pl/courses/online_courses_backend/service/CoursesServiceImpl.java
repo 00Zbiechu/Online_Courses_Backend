@@ -317,7 +317,7 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
     }
 
     @Override
-    public ParticipantsDTO addCourseParticipant(Long courseId, String username) {
+    public void addCourseParticipant(Long courseId, String username) {
         var courseEntity = findCourseOfUser(courseId);
         var userEntity = userRepository.findActiveAccountByUsername(username)
                 .orElseThrow(() -> new CustomErrorException("user", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND));
@@ -344,8 +344,6 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
                 .setTitle(courseEntity.getTitle())
                 .setConfirmationLink(confirmationLink + activationToken)
                 .build());
-
-        return ParticipantsDTO.builder().participants(buildCourseParticipantsList(courseEntity)).build();
     }
 
     private List<ParticipantDTO> buildCourseParticipantsList(CourseEntity courseEntity) {

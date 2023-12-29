@@ -56,6 +56,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/users/logout").permitAll()
 
                 .requestMatchers("/api/tokens/confirm").permitAll()
+                .requestMatchers("/api/course-users/confirm-participation").permitAll()
 
                 .anyRequest()
                 .authenticated()

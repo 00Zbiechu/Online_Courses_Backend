@@ -26,12 +26,13 @@ public class CourseUsersServiceImpl implements CourseUsersService {
             return "Token already used";
         }
 
-        if (courseUsersEntity.getTokenExpiresAt().isAfter(LocalDateTime.now())) {
+        if (courseUsersEntity.getTokenExpiresAt().isBefore(LocalDateTime.now())) {
             return "Token expired";
         }
 
         courseUsersEntity.setParticipantConfirmedAt(LocalDateTime.now());
         courseUsersEntity.setParticipant(true);
+        courseUsersRepository.save(courseUsersEntity);
         return "Participation confirmed";
     }
 }

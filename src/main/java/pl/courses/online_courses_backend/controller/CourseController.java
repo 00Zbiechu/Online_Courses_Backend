@@ -140,7 +140,8 @@ public class CourseController extends BaseController<CourseDTO, CourseService> {
     }
 
     @PostMapping("/add-course-participant")
-    public ResponseEntity<ParticipantsDTO> addCourseParticipant(@RequestParam Long courseId, @RequestParam String username) {
-        return new ResponseEntity<>(courseService.addCourseParticipant(courseId, username), HttpStatus.CREATED);
+    public ResponseEntity<Void> addCourseParticipant(@RequestParam Long courseId, @RequestParam String username) {
+        courseService.addCourseParticipant(courseId, username);
+        return ResponseEntity.ok().build();
     }
 }

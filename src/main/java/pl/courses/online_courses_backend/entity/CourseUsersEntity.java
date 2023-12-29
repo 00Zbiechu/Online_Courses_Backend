@@ -38,10 +38,8 @@ public class CourseUsersEntity {
 
     private boolean participant;
 
-    @Column(nullable = false)
     private String token;
 
-    @Column(nullable = false)
     private LocalDateTime tokenExpiresAt;
 
     private LocalDateTime participantConfirmedAt;
