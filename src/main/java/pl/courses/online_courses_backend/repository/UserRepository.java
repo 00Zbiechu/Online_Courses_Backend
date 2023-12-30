@@ -16,6 +16,9 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Query("SELECT u FROM UserEntity u where u.username=:username AND u.enabled=true")
     Optional<UserEntity> findActiveAccountByUsername(String username);
 
+    @Query("SELECT u FROM UserEntity u where u.id=:userId AND u.enabled=true")
+    Optional<UserEntity> findActiveAccountById(Long userId);
+
     @Query("SELECT u FROM UserEntity u where u.email=:email AND u.enabled=true")
     Optional<UserEntity> findByEmail(String email);
 }

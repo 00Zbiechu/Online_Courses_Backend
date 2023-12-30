@@ -144,4 +144,9 @@ public class CourseController extends BaseController<CourseDTO, CourseService> {
         courseService.addCourseParticipant(courseId, username);
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/delete-course-participant")
+    public ResponseEntity<ParticipantsDTO> deleteCourseParticipant(@RequestParam Long courseId, @RequestParam Long userId) {
+        return new ResponseEntity<>(courseService.deleteCourseParticipant(courseId, userId), HttpStatus.ACCEPTED);
+    }
 }

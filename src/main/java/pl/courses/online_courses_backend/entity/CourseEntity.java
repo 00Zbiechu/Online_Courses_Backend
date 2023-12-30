@@ -51,7 +51,8 @@ public class CourseEntity extends BaseEditableEntityAudit {
 
     @OneToMany(
             mappedBy = "courseUsersPK.courseEntity",
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
+            orphanRemoval = true
     )
     private Set<CourseUsersEntity> courseUser = new HashSet<>();
 

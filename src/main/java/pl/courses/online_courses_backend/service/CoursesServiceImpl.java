@@ -372,4 +372,26 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
             throw new CustomErrorException("courseUserEntity", ErrorCodes.ENTITY_ALREADY_EXIST, HttpStatus.BAD_REQUEST);
         }
     }
+
+    @Override
+    public ParticipantsDTO deleteCourseParticipant(Long courseId, Long userId) {
+        var courseEntity = findCourseOfUser(courseId);
+        var userEntity = userRepository.findActiveAccountById(userId).orElseThrow(
+                () -> new CustomErrorException("user", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND)
+        );
+
+        CourseUsersEntity courseUsersEntity = courseEntity.getCourseUser().stream()
+                .filter(courseUsers -> courseUsers.getCourseUsersPK().getUserEntity().getId().equals(userEntity.getId()))
+                .filter(CourseUsersEntity::isParticipant)
+                .findFirst()
+                .orElseThrow(
+                        () -> new CustomErrorException("courseUsersEntity", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND)
+                );
+
+        userEntity.getCourseUser().remove(courseUsersEntity);
+        courseEntity.getCourseUser().remove(courseUsersEntity);
+        courseRepository.save(courseEntity);
+
+        return ParticipantsDTO.builder().participants(buildCourseParticipantsList(courseEntity)).build();
+    }
 }

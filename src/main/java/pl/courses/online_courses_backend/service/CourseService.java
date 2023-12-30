@@ -45,4 +45,6 @@ public interface CourseService extends BaseService<CourseDTO> {
     ParticipantsDTO getCourseParticipants(Long courseId);
 
     void addCourseParticipant(Long courseId, String username);
+
+    ParticipantsDTO deleteCourseParticipant(Long courseId, Long userId);
 }
