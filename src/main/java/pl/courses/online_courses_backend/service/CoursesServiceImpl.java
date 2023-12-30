@@ -327,6 +327,7 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
                 .userId(user.getCourseUsersPK().getUserEntity().getId())
                 .username(user.getCourseUsersPK().getUserEntity().getUsername())
                 .photo(user.getCourseUsersPK().getUserEntity().getPhoto())
+                .joiningDate(user.getParticipantConfirmedAt().toLocalDate())
                 .build()
         ).toList();
     }
