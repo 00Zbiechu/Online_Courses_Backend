@@ -14,6 +14,8 @@ import pl.courses.online_courses_backend.model.wrapper.ParticipantsDTO;
 import pl.courses.online_courses_backend.model.wrapper.TopicsDTO;
 import pl.courses.online_courses_backend.photo.PhotoDTO;
 
+import java.util.List;
+
 public interface CourseService extends BaseService<CourseDTO> {
 
     Page<CourseWithAuthorDTO> findCoursesPage(PaginationForCourseListDTO paginationForCourseListDTO);
@@ -47,4 +49,6 @@ public interface CourseService extends BaseService<CourseDTO> {
     void addCourseParticipant(Long courseId, String username);
 
     ParticipantsDTO deleteCourseParticipant(Long courseId, Long userId);
+
+    List<CourseWithAuthorDTO> getCoursesWhereUserIsParticipant();
 }

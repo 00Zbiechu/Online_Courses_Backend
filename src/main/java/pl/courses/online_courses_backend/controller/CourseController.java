@@ -34,6 +34,8 @@ import pl.courses.online_courses_backend.service.CourseService;
 import pl.courses.online_courses_backend.validator.AddCourseValidator;
 import pl.courses.online_courses_backend.validator.EditCourseValidator;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/courses")
 @RequiredArgsConstructor
@@ -148,5 +150,10 @@ public class CourseController extends BaseController<CourseDTO, CourseService> {
     @DeleteMapping("/delete-course-participant")
     public ResponseEntity<ParticipantsDTO> deleteCourseParticipant(@RequestParam Long courseId, @RequestParam Long userId) {
         return new ResponseEntity<>(courseService.deleteCourseParticipant(courseId, userId), HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/get-courses-where-user-is-participant")
+    public ResponseEntity<List<CourseWithAuthorDTO>> getCoursesWhereUserIsParticipant() {
+        return new ResponseEntity<>(courseService.getCoursesWhereUserIsParticipant(), HttpStatus.OK);
     }
 }

@@ -19,6 +19,6 @@ public class CourseDataProvider {
 
     public Page<CourseWithAuthorDTO> searchForCourses(SearchForCourseDTO searchForCourseDTO) {
         Page<CourseEntity> foundCourses = courseQueryService.searchForCourses(searchForCourseDTO);
-        return foundCourses.map(courseMapper::toCourseForList);
+        return foundCourses.map(courseMapper::toCourseWithAuthor);
     }
 }

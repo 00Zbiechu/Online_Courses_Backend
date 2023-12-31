@@ -18,5 +18,5 @@ public interface CourseMapper extends BaseMapper<CourseEntity, CourseDTO> {
 
     CourseEntity toEntity(AddCourseDTO addCourseDTO);
 
-    CourseWithAuthorDTO toCourseForList(CourseEntity courseEntity);
+    CourseWithAuthorDTO toCourseWithAuthor(CourseEntity courseEntity);
 }

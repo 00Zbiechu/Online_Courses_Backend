@@ -103,7 +103,7 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
     public Page<CourseWithAuthorDTO> findCoursesPage(PaginationForCourseListDTO paginationForCourseListDTO) {
         PageRequest pageRequest = buildPageRequestForCoursePage(paginationForCourseListDTO);
         Page<CourseEntity> courses = courseRepository.findActiveCourses(pageRequest);
-        return courses.map(courseMapper::toCourseForList);
+        return courses.map(courseMapper::toCourseWithAuthor);
     }
 
     @Override
@@ -143,7 +143,7 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
 
         courseAccessValidator.validateCourseAccess(courseEntity, currentUser, passwordEncoder, password);
 
-        return courseMapper.toCourseForList(courseEntity);
+        return courseMapper.toCourseWithAuthor(courseEntity);
     }
 
     @Override
@@ -394,5 +394,16 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
         courseRepository.save(courseEntity);
 
         return ParticipantsDTO.builder().participants(buildCourseParticipantsList(courseEntity)).build();
+    }
+
+    @Override
+    public List<CourseWithAuthorDTO> getCoursesWhereUserIsParticipant() {
+        UserEntity userEntity = currentUser.getCurrentlyLoggedUser();
+
+        return userEntity.getCourseUser().stream()
+                .filter(CourseUsersEntity::isParticipant)
+                .map(courseUsersEntity -> courseUsersEntity.getCourseUsersPK().getCourseEntity())
+                .map(courseMapper::toCourseWithAuthor)
+                .toList();
     }
 }

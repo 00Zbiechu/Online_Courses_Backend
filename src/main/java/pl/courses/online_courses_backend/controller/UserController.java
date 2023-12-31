@@ -70,12 +70,12 @@ public class UserController extends BaseController<UserDTO, UserService> {
                 });
     }
 
-    @GetMapping(value = "/get-photo")
+    @GetMapping("/get-photo")
     public ResponseEntity<PhotoDTO> getCourseImage() {
         return new ResponseEntity<>(userService.getUserImage(), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/upload-photo")
+    @PostMapping("/upload-photo")
     public ResponseEntity<PhotoDTO> uploadUserImage(@RequestParam("photo") MultipartFile photo) {
         return new ResponseEntity<>(userService.uploadUserImage(photo), HttpStatus.OK);
     }

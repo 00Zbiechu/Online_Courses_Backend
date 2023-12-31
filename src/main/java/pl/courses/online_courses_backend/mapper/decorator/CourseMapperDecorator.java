@@ -30,7 +30,7 @@ public abstract class CourseMapperDecorator implements CourseMapper {
     }
 
     @Override
-    public CourseWithAuthorDTO toCourseForList(CourseEntity courseEntity) {
+    public CourseWithAuthorDTO toCourseWithAuthor(CourseEntity courseEntity) {
 
         String username = courseEntity.getCourseUser()
                 .stream()
@@ -39,7 +39,7 @@ public abstract class CourseMapperDecorator implements CourseMapper {
                 .map(courseUser -> courseUser.getCourseUsersPK().getUserEntity().getUsername())
                 .orElseThrow(() -> new CustomErrorException("username", ErrorCodes.ENTITY_DOES_NOT_EXIST, HttpStatus.NOT_FOUND));
 
-        var result = courseMapper.toCourseForList(courseEntity);
+        var result = courseMapper.toCourseWithAuthor(courseEntity);
 
         result.setUsername(username);
 
