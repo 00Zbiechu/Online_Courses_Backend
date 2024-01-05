@@ -18,6 +18,8 @@
         <maven.compiler.plugin>3.11.0</maven.compiler.plugin>
         <spring.boot.starter>3.1.5</spring.boot.starter>
         <spring.security>6.1.5</spring.security>
+        <spring-cloud.version>2022.0.0</spring-cloud.version>
+        <spring.feign.version>1.4.7.RELEASE</spring.feign.version>
         <hibernate.validator>8.0.1.Final</hibernate.validator>
         <postgresql>42.6.0</postgresql>
         <json.web.token>0.11.5</json.web.token>
@@ -38,6 +40,18 @@
         <avro-serializer>5.2.1</avro-serializer>
     </properties>
     <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-feign</artifactId>
+            <version>${spring.feign.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -220,10 +234,30 @@
 
     </dependencies>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <repositories>
         <repository>
             <id>confluent</id>
             <url>https://packages.confluent.io/maven/</url>
+        </repository>
+        <repository>
+            <id>netflix-candidates</id>
+            <name>Netflix Candidates</name>
+            <url>https://artifactory-oss.prod.netflix.net/artifactory/maven-oss-candidates</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
     </repositories>
 
