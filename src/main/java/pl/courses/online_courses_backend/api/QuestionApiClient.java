@@ -21,5 +21,5 @@ public interface QuestionApiClient {
     ResponseEntity<QuestionsDTO> deleteQuestion(@RequestParam String courseTitle, @RequestParam String title);
 
     @PostMapping("/add-question")
-    ResponseEntity<QuestionsDTO> addQuestion(@Valid @RequestBody QuestionDTO questionDTO);
+    ResponseEntity<QuestionsDTO> addQuestion(@Valid @RequestBody QuestionDTO questionDTO, @RequestParam String courseTitle);
 }

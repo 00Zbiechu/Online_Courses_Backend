@@ -15,7 +15,7 @@ import pl.courses.online_courses_backend.model.QuestionDTO;
 import pl.courses.online_courses_backend.model.wrapper.QuestionsDTO;
 
 @RestController
-@RequestMapping("/api/quiz")
+@RequestMapping("/api/question")
 @RequiredArgsConstructor
 public class QuestionController {
 
@@ -32,7 +32,7 @@ public class QuestionController {
     }
 
     @PostMapping("/add-question")
-    public ResponseEntity<QuestionsDTO> addQuestion(@Valid @RequestBody QuestionDTO questionDTO) {
-        return questionApiClient.addQuestion(questionDTO);
+    public ResponseEntity<QuestionsDTO> addQuestion(@Valid @RequestBody QuestionDTO questionDTO, @RequestParam String courseTitle) {
+        return questionApiClient.addQuestion(questionDTO, courseTitle);
     }
 }
