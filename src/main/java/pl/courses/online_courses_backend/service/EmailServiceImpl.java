@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-import pl.courses.online_courses_backend.event.CourseConfirmationDTO;
-import pl.courses.online_courses_backend.event.UsernameAndMailDTO;
+import pl.courses.online_courses_backend.model.CourseConfirmationDTO;
+import pl.courses.online_courses_backend.model.UsernameAndMailDTO;
 
 @Service
 @RequiredArgsConstructor

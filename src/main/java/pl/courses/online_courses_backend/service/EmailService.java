@@ -1,7 +1,7 @@
 package pl.courses.online_courses_backend.service;
 
-import pl.courses.online_courses_backend.event.CourseConfirmationDTO;
-import pl.courses.online_courses_backend.event.UsernameAndMailDTO;
+import pl.courses.online_courses_backend.model.CourseConfirmationDTO;
+import pl.courses.online_courses_backend.model.UsernameAndMailDTO;
 
 public interface EmailService {
 

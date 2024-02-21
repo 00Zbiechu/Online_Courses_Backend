@@ -16,7 +16,6 @@ import pl.courses.online_courses_backend.authentication.TokenType;
 import pl.courses.online_courses_backend.entity.ConfirmationTokenEntity;
 import pl.courses.online_courses_backend.entity.TokenEntity;
 import pl.courses.online_courses_backend.entity.UserEntity;
-import pl.courses.online_courses_backend.event.UsernameAndMailDTO;
 import pl.courses.online_courses_backend.exception.CustomErrorException;
 import pl.courses.online_courses_backend.exception.errors.ErrorCodes;
 import pl.courses.online_courses_backend.mapper.BaseMapper;
@@ -25,6 +24,7 @@ import pl.courses.online_courses_backend.model.AuthenticationRequestDTO;
 import pl.courses.online_courses_backend.model.AuthenticationResponseDTO;
 import pl.courses.online_courses_backend.model.RefreshTokenDTO;
 import pl.courses.online_courses_backend.model.UserDTO;
+import pl.courses.online_courses_backend.model.UsernameAndMailDTO;
 import pl.courses.online_courses_backend.photo.PhotoCompressor;
 import pl.courses.online_courses_backend.photo.PhotoDTO;
 import pl.courses.online_courses_backend.repository.UserRepository;
@@ -92,10 +92,10 @@ public class UsersServiceImpl extends AbstractService<UserEntity, UserDTO> imple
 
         userRepository.save(user);
 
-        emailService.registrationMail(UsernameAndMailDTO.newBuilder()
-                .setUsername(userDTO.getUsername())
-                .setMail(userDTO.getEmail())
-                .setConfirmationLink(confirmationLink + confirmationTokenEntity.getToken())
+        emailService.registrationMail(UsernameAndMailDTO.builder()
+                .username(userDTO.getUsername())
+                .mail(userDTO.getEmail())
+                .confirmationLink(confirmationLink + confirmationTokenEntity.getToken())
                 .build()
         );
     }

@@ -20,7 +20,6 @@ import pl.courses.online_courses_backend.entity.FileEntity;
 import pl.courses.online_courses_backend.entity.TopicEntity;
 import pl.courses.online_courses_backend.entity.UserEntity;
 import pl.courses.online_courses_backend.entity.key.CourseUsersPK;
-import pl.courses.online_courses_backend.event.CourseConfirmationDTO;
 import pl.courses.online_courses_backend.exception.CustomErrorException;
 import pl.courses.online_courses_backend.exception.errors.ErrorCodes;
 import pl.courses.online_courses_backend.mapper.BaseMapper;
@@ -28,6 +27,7 @@ import pl.courses.online_courses_backend.mapper.CourseMapper;
 import pl.courses.online_courses_backend.mapper.TopicMapper;
 import pl.courses.online_courses_backend.model.AddCourseDTO;
 import pl.courses.online_courses_backend.model.AddTopicDTO;
+import pl.courses.online_courses_backend.model.CourseConfirmationDTO;
 import pl.courses.online_courses_backend.model.CourseDTO;
 import pl.courses.online_courses_backend.model.CourseWithAuthorDTO;
 import pl.courses.online_courses_backend.model.EditCourseDTO;
@@ -357,10 +357,10 @@ public class CoursesServiceImpl extends AbstractService<CourseEntity, CourseDTO>
         courseEntity.getCourseUser().add(courseUsersEntity);
         courseRepository.save(courseEntity);
 
-        emailService.participantConfirmation(CourseConfirmationDTO.newBuilder()
-                .setMail(userEntity.getEmail())
-                .setTitle(courseEntity.getTitle())
-                .setConfirmationLink(confirmationLink + activationToken)
+        emailService.participantConfirmation(CourseConfirmationDTO.builder()
+                .mail(userEntity.getEmail())
+                .title(courseEntity.getTitle())
+                .confirmationLink(confirmationLink + activationToken)
                 .build());
     }
 

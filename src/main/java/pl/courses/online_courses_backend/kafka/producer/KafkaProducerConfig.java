@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
-import pl.courses.online_courses_backend.event.CourseConfirmationDTO;
-import pl.courses.online_courses_backend.event.UsernameAndMailDTO;
+import pl.courses.online_courses_backend.model.CourseConfirmationDTO;
+import pl.courses.online_courses_backend.model.UsernameAndMailDTO;
 
 import java.util.HashMap;
 import java.util.Map;
